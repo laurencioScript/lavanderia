@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -19,4 +19,15 @@
 
 .App-link {
   color: #09d3ac;
+} */
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap);
+
+*{
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+}
+html, body, #root{
+  min-height: 100%;
 }
