@@ -1,18 +1,24 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap);
+
+/* centraliza o elemento principal DIV */
 #login{
-    margin: 80px auto 0;
+    margin: 5% auto 0;
+
+
     height: 100%;
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
+
+/* Determina o tamanho da div */
 #logo-login{
     height: 500px;
     max-width: 500px;
     width: 100%;
-    background-color: brown;
 }
+/* Faz com que o logo tenha o "mesmo" tamanho do form ao lado */
 #logo-login img{
     height: 100%;
     width: 100%;
@@ -21,10 +27,14 @@
     /* Teste para visualização */
     background-color: cadetblue;
 }
+
+/* limita o tamanho do icone USER */
 #form-login img{
     max-width: 90px;
     margin-bottom: 10px;
 }
+
+/* alinha o form */
 #form-login form{
     height: 500px;
     width: 500px;
@@ -32,12 +42,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}#form-login form input
+}
+
+/* coloca margin e padding entre os inputs do form */
+#form-login form input
 {
     padding: 3px;
     margin: 5px;
+    width: 200px;
 }
 
+/* mexe com o ultimo elemento do form(BOTÃO) */
 #form-login form input:last-child{
     font-family: 'Roboto Slab', 'Times New Roman', Times, sans-serif;
     color: white;
@@ -46,5 +61,5 @@
     border-radius: 3px;
     background-color: #06ce11;
     height: 25px;
-    width: 80px;
+    width: 90px;
 }
