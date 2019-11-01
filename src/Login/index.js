@@ -4,7 +4,7 @@ import img_placeholder from "../public/placeholder-img.jpg";
 
 function Index() {
     return(
-        <div id="login">
+        <div id="container">
             <div id="logo-login">
                 <img src={img_placeholder} alt=""/>
             </div>
