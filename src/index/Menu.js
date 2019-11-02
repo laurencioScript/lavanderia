@@ -5,7 +5,8 @@ import img_placeholder from '../public/placeholder-img.jpg';
 class Menu extends Component{
     render() {
         return(
-            <div id='container'>
+            <>
+            <div id='container-menu'>
                 <div id="content">
                     <div id='OS'>
                         <img src={img_placeholder} alt=" "></img>
@@ -17,6 +18,7 @@ class Menu extends Component{
                             <img src={img_placeholder} alt=" "></img>
                             <p>Relatorios</p>
                         </div>
+                        
                         <div id='cliente'>
                             <img src={img_placeholder} alt=" "></img>
                             <p>Cliente</p>
@@ -51,7 +53,20 @@ class Menu extends Component{
                     </div>
                 </div>
             </div>
-        )
+
+            <div id="footer">
+                <div id="user">
+                    <p id="usuaario"> EXEMPLO</p>
+                    <strong><p id="nv_acesso">EXEMPLO MASTER</p></strong>
+                </div>
+
+                <div id='new-user'>
+                    <img src={img_placeholder} alt=" "></img>
+                    <p>Criar Novo Usuário</p>
+                </div>
+            </div>
+            </>
+       )
     }
 }
 
