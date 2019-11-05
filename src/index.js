@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 
 import Menu from './index/Index';
-// import Login from './Login';
+import Users from './Users';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 ReactDOM.render(
@@ -12,6 +12,7 @@ ReactDOM.render(
         <Switch>
             <Route path="/" exact="true" component={App} />
             <Route path="/Menu" component={Menu} />
+            <Route path="/Usuarios" component={Users} />
         </Switch>
     </BrowserRouter>
     , document.getElementById('root'));

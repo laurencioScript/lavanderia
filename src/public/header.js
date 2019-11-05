@@ -7,11 +7,11 @@ class Header extends Component{
     render(){
         return(
             <div id="header">
-                <img src={img_placeholder}></img>
+                <img src={img_placeholder} alt=" "></img>
 
                 <h1>MENU</h1>
 
-                <img src={img_placeholder}></img>
+                <img src={img_placeholder} alt=" "></img>
             </div>
         );
     }
