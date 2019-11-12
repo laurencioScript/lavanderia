@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import img_placeholder from '../public/placeholder-img.jpg';
 import './Users.css';
 
+import TableUsers from './tableUsers';
+
 class Users extends Component{
     render(){
         return(
@@ -27,27 +29,13 @@ class Users extends Component{
                         
                         <button id="btn-find">Localizar</button>
 
-
                         <button id="btn-create">+ Criar</button>
                         <button id="btn-delete">Excluir</button>
                         <button id="btn-edit">Editar</button>
                     </div>
                 </div>
-
-                <div id="table-users">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>E-mail</th>
-                                <th>Nível</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
+                
+                <TableUsers></TableUsers>
             </>
         );
     }

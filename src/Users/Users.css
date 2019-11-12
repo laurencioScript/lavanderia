@@ -86,24 +86,4 @@
     background-color: #f4eb49;
 }
 
-#table-users{
-    max-height: 100%;
-    width: 100%;
-    background-color: rebeccapurple;
-}
-#table-users > table{
-    max-height: 90%;
-    width: 90%;
-    /* border: 1px black solid; */
-    background-color: #c0c0c0;
-
-    margin: 30px auto;
-}
-
-/* FINALIZAR A TABELA */
-
-#table-users > table  th, td{
-    border: 1px black solid;
-    padding: 0px;
-    margin: 0px;
-}
+/* TABELA */

@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import'./header.css';
+import {Link} from 'react-router-dom';
 
-import img_placeholder from "./placeholder-img.jpg";
+import icon_maquina from '../public/icons/icon_maquina.png';
+import icon_sair from '../public/icons/icon_sair.png';
 
 class Header extends Component{
+    sair = () =>{
+        sessionStorage.clear();
+    }
     render(){
         return(
             <div id="header">
-                <img src={img_placeholder} alt=" "></img>
+                <Link to='/Menu'>
+                    <img src={icon_maquina} alt=" " ></img>
+                </Link>
 
                 <h1>MENU</h1>
-
-                <img src={img_placeholder} alt=" "></img>
+                <Link to='/'><img src={icon_sair} alt=" " onClick={this.sair} /></Link>
             </div>
         );
     }

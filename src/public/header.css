@@ -8,6 +8,7 @@
 #header img{
     max-height: 50px;
     margin-top: 4px;
+    cursor: pointer;
 }
 #header h1{
     color: white;
@@ -17,13 +18,13 @@
     grid-column: 2;
     grid-row: 1;
 }
-#header img:first-child{
+#header a:first-child{
     justify-self: start;
     grid-column: 1;
     grid-row: 1;
     margin-left: 5px;
 }
-#header img:last-child{
+#header a:last-child{
     justify-self: end;
     grid-column: 3;
     grid-row: 1;

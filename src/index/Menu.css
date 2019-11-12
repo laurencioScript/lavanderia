@@ -17,17 +17,13 @@
       font-size: 60px;
   }
   #content img{
-    width: 120px;
+    width: 100px;
   }
 
   #content > div{
     display: flex;
     flex-direction: row;
     justify-content: center;
-  }
-  #content > #OS, #segunda-linha{
-    max-width: 800px;
-    margin: auto;
   }
   #content > div:not(#segunda-linha), #segunda-linha > div{
     background-color: #3087f9;
@@ -47,6 +43,7 @@
 
   #segunda-linha > div{
     width: 50%;
+    height: 130px;
     display: flex;
   }
 
