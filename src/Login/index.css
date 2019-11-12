@@ -1,8 +1,8 @@
 #login{
     height: 100%;
     width: 100%;
-
     background-color: #7cb3fb;
+
 }
 #container{
     display: flex;
@@ -66,9 +66,17 @@
     border-radius: 10px;
 
     background-color: #3087f9;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
 
     height: 40px;
     width: 150px;
 
     margin: auto;
+}
+
+#form-login > form #btn-login:active{
+    background-color: #1370eb;
+    padding-top: 2px;
 }

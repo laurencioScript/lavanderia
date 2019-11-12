@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './Menu.css';
-import img_placeholder from '../public/placeholder-img.jpg';
+import { Link } from 'react-router-dom';
 
+import img_placeholder from '../public/placeholder-img.jpg';
 
 import icon_os from '../public/icons/icon_os.png';
 import icon_relatorio from '../public/icons/icon_relatorio.png';
@@ -18,46 +19,62 @@ class Menu extends Component{
                 <div id='container-menu'>
                     <div id="content">
                         <div id='OS'>
-                            <img src={icon_os} alt=" "></img>
-                            <p>Serviços</p>
+                            <Link to='/OS'>
+                                <img src={icon_os} alt=" "></img>
+                                <p>Serviços</p>
+                            </Link>
                         </div>
 
                         <div id='segunda-linha'>
                             <div id='relatorios'>
-                                <img src={icon_relatorio} alt=" "></img>
-                                <p>Relatorios</p>
+                                <Link to='/Relatorios'>
+                                    <img src={icon_relatorio} alt=" "></img>
+                                    <p>Relatorios</p>
+                                </Link>
                             </div>
                             
                             <div id='cliente'>
+                                <Link to='/Clientes'>
                                 <img src={img_placeholder} alt=" "></img>
                                 <p>Cliente</p>
+                                </Link>
                             </div>
                         </div>
 
                         <div id='controles'>
                             <div id='pecas'>
-                                <img src={icon_camisa} alt=" "></img>
-                                <p>Peças</p>
+                                <Link to='/Pecas'>
+                                    <img src={icon_camisa} alt=" "></img>
+                                    <p>Peças</p>
+                                </Link>
                             </div>
 
                             <div id='medidas'>
-                                <img src={icon_regua} alt=" "></img>
-                                <p>Medidas</p>
+                                <Link to='/Medidas'>
+                                    <img src={icon_regua} alt=" "></img>
+                                    <p>Medidas</p>
+                                </Link>
                             </div>
 
                             <div id='defeitos'>
-                                <img src={icon_defeito} alt=" "></img>
-                                <p>Defeitos</p>
+                                <Link to='/Defeitos'>
+                                    <img src={icon_defeito} alt=" "></img>
+                                    <p>Defeitos</p>
+                                </Link>
                             </div>
 
                             <div id='cores'>
-                                <img src={icon_paleta} alt=" "></img>
-                                <p>Cores</p>
+                                <Link to='/Cores'>
+                                    <img src={icon_paleta} alt=" "></img>
+                                    <p>Cores</p>
+                                </Link>
                             </div>
 
                             <div id='caracteristicas'>
-                                <img src={img_placeholder} alt=" "></img>
-                                <p>Caracteristicas</p>
+                                <Link to='/Caracteristicas'>
+                                    <img src={img_placeholder} alt=" "></img>
+                                    <p>Caracteristicas</p>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -70,8 +87,10 @@ class Menu extends Component{
                     </div>
 
                     <div id='new-user'>
-                        <img src={icon_user} alt=" "></img>
-                        <p>Criar Novo Usuário</p>
+                        <Link to='/Usuarios'>
+                            <img src={icon_user} alt=" "></img>
+                            <p>Criar Novo Usuário</p>
+                        </Link>
                     </div>
                 </div>
             </div>

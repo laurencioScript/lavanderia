@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-// import TableLine from './tableLine';
-
 import './tableUsers.css';
 
 class tableUsers extends Component{   
@@ -25,16 +23,6 @@ class tableUsers extends Component{
         });
     }
 
-    // testaId = (id) => {
-    //     localStorage.setItem("Selecionado", localStorage.getItem("Selecionado") === id ? null : id);
-
-    //     // localStorage.getItem("Selecionado") == this.state.Id ? "selecionado" : " ";
-    //     // this.setState({ Estado: localStorage.getItem("Selecionado") == this.state.Id ? true : false });
-
-    //     console.log(id);
-        
-    // }
-
     verificaLista = (linha) =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
@@ -44,6 +32,16 @@ class tableUsers extends Component{
             a.classList.remove("selecionado");
         }
         linha.classList.toggle("selecionado");
+    }
+
+    nomeNivel = (nv) =>{
+        var nivel = "";
+        switch(nv){
+            case 1: {nivel = "Atendente"; break;}
+            case 2: {nivel = "Administrador"; break;}
+            case 3: {nivel = "Mestre"; break;}
+        };
+        return nivel;
     }
 
     render(){
@@ -60,14 +58,12 @@ class tableUsers extends Component{
                 <tbody id="corpo_tabela">
                     {this.state.Users.map(Users => 
                     <tr onClick={() => {
-                        localStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_usuario ? null : Users.id_usuario); 
-                        console.log(Users.id_usuario);
+                        localStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_usuario ? null : Users.id_usuario);
                         this.verificaLista(document.getElementById(Users.id_usuario));
                     }} id={Users.id_usuario}>
                         <td>{Users.nome}</td>
                         <td>{Users.email}</td>
-                        <td>{Users.nivel}</td>
-                        {/* <TableLine Nome={Users.nome} Email={Users.email} Nivel={Users.nivel} Id={Users.id_usuario}/> this.state.Estado ? "selecionado" : ""*/}
+                        <td>{this.nomeNivel(Users.nivel)}</td>
                     </tr>
                     )}
                 </tbody>

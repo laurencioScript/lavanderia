@@ -1,12 +1,14 @@
 import React from 'react';
 import './index.css';
-import img_placeholder from "../public/placeholder-img.jpg";
-import {withRouter} from 'react-router-dom';
 import axios from '../../node_modules/axios';
+
+import icon_maquina from '../public/icons/icon_maquina.png';
+import icon_user from '../public/icons/icon_user.png';
+import icon_password from '../public/icons/icon_password.png';
 
 class Index extends React.Component{
     state = {
-        serverMessage: "",
+        Message: "",
         login: "",
         senha: ""
     }
@@ -19,7 +21,6 @@ class Index extends React.Component{
                 email: this.state.login,
                 senha: this.state.senha
         }).then(function(response){
-            console.log(response.data);
             var nivel = 0;
             switch(response.data.nivel){
                 case 1: {nivel = "Atendente"; break;}
@@ -30,7 +31,7 @@ class Index extends React.Component{
             sessionStorage.setItem("E-mail", response.data.email);
             sessionStorage.setItem("Nivel", nivel);
         });
-        
+                
         this.props.history.push('/Menu');
     }
     
@@ -41,18 +42,17 @@ class Index extends React.Component{
     render(){
         sessionStorage.clear();
         return(
-            
             <div id="login">
                 <div id="container">
                     <div id="logo-login">
-                        <img src={img_placeholder} alt=""/>
+                        <img src={icon_maquina} alt=""/>
                     </div>
 
                     <div id="form-login">
                         <form onSubmit={this.submitLogin} >       
                             {/* */}
                             <div>
-                                <img src={img_placeholder} alt=" "/>
+                                <img src={icon_user} alt=" "/>
                                 <input 
                                     id="input-login"
                                     type="text" 
@@ -61,7 +61,7 @@ class Index extends React.Component{
                             </div>
 
                             <div>
-                                <img src={img_placeholder} alt=" "/>
+                                <img src={icon_password} alt=" "/>
                                 <input 
                                     id="input-senha"
                                     type="password" 
