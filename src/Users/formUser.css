@@ -1,0 +1,53 @@
+#cad-container{
+    background-color: #7cb3fb;
+
+    max-height: 700px;
+    max-width: 800px;
+    height: 500px;
+    width: 700px;
+
+    display: flex;
+    justify-content: center;
+    margin: auto;
+}
+#cad-content{
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+
+    width: 70%;
+
+    font-size: 25px;
+}
+#cad-content > *{
+    margin: 10px 0px;
+}
+#cad-content > p{
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+#cad-content > form{
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+#cad-content > form > div{
+    width: 100%;
+}
+#cad-content > form input{
+    width: 90%;
+    height: 35px;
+    border: 2px solid white;
+    border-radius: 10px;
+
+    background-color: transparent;
+
+    font-size: 20px;
+    font-weight: 500;
+}
+/* #cad-content > button{
+    background-color: #;
+} */

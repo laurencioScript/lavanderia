@@ -17,20 +17,30 @@ class Index extends React.Component{
         e.preventDefault();
 
         const url = 'http://localhost:3000/login';
-        await axios.post(url, {
-                email: this.state.login,
-                senha: this.state.senha
-        }).then(function(response){
-            var nivel = 0;
-            switch(response.data.nivel){
-                case 1: {nivel = "Atendente"; break;}
-                case 2: {nivel = "Administrador"; break;}
-                case 3: {nivel = "Mestre"; break;}
-            };
-            sessionStorage.setItem("Nome", response.data.nome);
-            sessionStorage.setItem("E-mail", response.data.email);
-            sessionStorage.setItem("Nivel", nivel);
+        
+            await axios.post(url, {
+                    email: this.state.login,
+                    senha: this.state.senha
+            }).then(function(response){
+                var nivel = 0;
+                console.log(response.data);
+                switch(response.data.nivel){
+                    case 1: {nivel = "Atendente"; break;}
+                    case 2: {nivel = "Administrador"; break;}
+                    case 3: {nivel = "Mestre"; break;}
+                };
+                sessionStorage.setItem("Nome", response.data.nome);
+                sessionStorage.setItem("E-mail", response.data.email);
+                sessionStorage.setItem("Nivel", nivel);
+            }).
+        catch (e =>{
+            console.log(e.status);
+            if(e == 'Error: "Resquest failed with status code 400"'){
+                sessionStorage.setItem('message', 'Usuário e/ou senha incorretos ou inexistente');
+                console.log('estou aqui');
+            }
         });
+        
                 
         this.props.history.push('/Menu');
     }
@@ -39,8 +49,14 @@ class Index extends React.Component{
         this.setState({ login: document.querySelector("#input-login").value,
                         senha: document.querySelector("#input-senha").value});
     }
+
+    printMessage = () => {
+        // sessionStorage.setItem('message', 'Você não está Logado');
+        // sessionStorage.clear();
+        return sessionStorage.getItem('message');
+    }
+
     render(){
-        sessionStorage.clear();
         return(
             <div id="login">
                 <div id="container">
@@ -48,9 +64,10 @@ class Index extends React.Component{
                         <img src={icon_maquina} alt=""/>
                     </div>
 
+                    <p>{sessionStorage.getItem('message')}</p>
+
                     <div id="form-login">
-                        <form onSubmit={this.submitLogin} >       
-                            {/* */}
+                        <form onSubmit={this.submitLogin} >  
                             <div>
                                 <img src={icon_user} alt=" "/>
                                 <input 

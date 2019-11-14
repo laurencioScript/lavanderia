@@ -10,20 +10,36 @@ class tableUsers extends Component{
         Selecionado: localStorage.getItem("Selecioando")
     }
     componentDidMount(){
-        
+        localStorage.clear();
+
+        axios.get('http://localhost:3000/user/')
+        .then(res => {
+            var Users = res.data;
+            const result = Users.result;            
+            Users = result[0];
+
+
+            this.setState({Users});
+        });
+    }
+    componentDidUpdate(){
+        // this.state.Users = [];
         localStorage.clear();
 
         axios.get('http://localhost:3000/user/')
         .then(res => {
             var Users = res.data;
             const result = Users.result
+            if(Users.data != result[0].data){
+                this.forceUpdate();
+            }
             Users = result[0];
+
 
             this.setState({Users});
         });
     }
-
-    verificaLista = (linha) =>{
+    limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
 
@@ -31,6 +47,9 @@ class tableUsers extends Component{
             var a = linhas[i];
             a.classList.remove("selecionado");
         }
+    }
+    verificaLista = (linha) =>{
+        this.limpaLista();
         linha.classList.toggle("selecionado");
     }
 
@@ -55,17 +74,17 @@ class tableUsers extends Component{
                         <th>Nível</th>
                     </tr>
                 </thead>
-                <tbody id="corpo_tabela">
-                    {this.state.Users.map(Users => 
+                <tbody id="corpo_tabela">{
+                this.state.Users.map(Users => 
                     <tr onClick={() => {
-                        localStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_usuario ? null : Users.id_usuario);
+                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_usuario ? null : Users.id_usuario);
                         this.verificaLista(document.getElementById(Users.id_usuario));
                     }} id={Users.id_usuario}>
                         <td>{Users.nome}</td>
                         <td>{Users.email}</td>
                         <td>{this.nomeNivel(Users.nivel)}</td>
                     </tr>
-                    )}
+                )}
                 </tbody>
             </table>
             </div>

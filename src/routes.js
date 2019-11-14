@@ -5,6 +5,8 @@ import Login from './Login';
 import Menu from './index/Index';
 import Users from './Users';
 
+import formUser from './Users/formUser';
+
 const localAuthentication = () =>{
     var retorno = false;
     retorno = sessionStorage.getItem("E-mail") == null ? false : true;
@@ -15,9 +17,9 @@ const localAuthentication = () =>{
 const PrivateRoute = ({ component: Component , ...rest }) =>(
     <Route {...rest} render={props =>(
         localAuthentication() ? (
-            <Component {...props} />
+            <Component {...props} to={sessionStorage.clear()}/>
         ) : ( 
-          <Redirect to={{ pathname: '/', state: { from: props.location, Message: 'Você não está logado' }}} />
+          <Redirect to={{ pathname: '/', state: { from: props.location}}, sessionStorage.setItem('message', "Você não está Logado")}/>
         )
     )}/>
 )
@@ -28,6 +30,7 @@ const Routes = ()=> (
             <Route exact path='/' component={Login} />
             <PrivateRoute path='/Menu' component={Menu}/>
             <PrivateRoute path='/Usuarios' component={Users}/>
+            <Route path='/formUser' component={formUser} />
         </Switch>
     </BrowserRouter>
 );
