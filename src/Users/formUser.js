@@ -13,7 +13,7 @@ class formUser extends React.Component{
         <input type='button' value="X" id='btn_fechar' onClick={this.closeForm}/>
         <div id='cad-content'>
             <p>Cadastro de Usuário</p>
-            <form>
+            <form onSubmit={e =>{e.preventDefault();}}>
                 <div id='cad-primeira_linha'>
                     <div className='cad-primeiro_elemento'>
                         <p>Nome</p>
@@ -32,31 +32,29 @@ class formUser extends React.Component{
                     <div className='cad-segundo_elemento'>
                         <p>Nivel</p>
                         <select id="form-select">
-                            <option value="Atendente">Atendente</option>
-                            <option value="Administrador">Administrador</option>
-                            <option value="Mestre">Mestre</option>
+                            <option value="1">Atendente</option>
+                            <option value="2">Administrador</option>
+                            <option value="3">Mestre</option>
                         </select>
                     </div>
                 </div>
             </form>
             
             <input type="button" id="btn_formUser" value="Salvar" onClick={() =>{
-                var nivel = document.querySelector('#form-select').value;
-                if(nivel == "Atendente"){
-                    nivel = 1;
-                }else if(nivel == "Administrador"){
-                    nivel = 2;
-                }else if(nivel == "Mestre"){
-                    nivel = 3;
-                }
                 var data = {
-                    "name":document.querySelector('#form-name').value,
-	                "password":document.querySelector('#form-password').value,
-	                "email":document.querySelector('#form-email').value,
-	                "level": document.querySelector('#form-select').value
+                        "name": document.querySelector('#form-name').value,
+                        "password": document.querySelector('#form-password').value,
+                        "email": document.querySelector('#form-email').value,
+                        "level": parseInt(document.querySelector('#form-select').value)
+                    };
+                if(sessionStorage.getItem('action') == 1){
+                    axios.post('http://localhost:3000/user/register', data);
+                }
+                else if(sessionStorage.getItem('action') == 2){
+                    axios.put('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado"), data);
                 }
 
-                axios.post('http://localhost:3000/user/register', data);
+                sessionStorage.removeItem("action");
             }}/>
             
         </div>

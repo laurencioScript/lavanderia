@@ -80,9 +80,9 @@ class tableUsers extends Component{
                         sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_usuario ? null : Users.id_usuario);
                         this.verificaLista(document.getElementById(Users.id_usuario));
                     }} id={Users.id_usuario}>
-                        <td>{Users.nome}</td>
-                        <td>{Users.email}</td>
-                        <td>{this.nomeNivel(Users.nivel)}</td>
+                        <td id="user-name">{Users.nome}</td>
+                        <td id="user-email">{Users.email}</td>
+                        <td id="user-nivel">{this.nomeNivel(Users.nivel)}</td>
                     </tr>
                 )}
                 </tbody>
