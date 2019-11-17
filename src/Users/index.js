@@ -5,6 +5,7 @@ import img_placeholder from '../public/placeholder-img.jpg';
 import './Users.css';
 
 import TableUsers from './tableUsers';
+import FormUser from './formUser';
 
 class index extends Component{
     constructor (props){
@@ -23,6 +24,9 @@ class index extends Component{
         }else{
             this.setState({Message: "Você não tem permissão"});
         }
+    }
+    showPopup(){
+
     }
     verificaNivel(){
         sessionStorage.removeItem("Selecionado");
@@ -56,13 +60,15 @@ class index extends Component{
                         
                         <button id="btn-find">Localizar</button>
 
-                        <button id="btn-create">+ Criar</button>
+                        <button id="btn-create" onClick={() =>{document.querySelector('#cad-container').style.display = "flex";}}>+ Criar</button>
                         <button id="btn-delete" onClick={this.deleteUser}>Excluir</button>
                         <button id="btn-edit">Editar</button>
                     </div>
                 </div>
                 
                 <TableUsers></TableUsers>
+                
+                <FormUser></FormUser>
             </>;
         }
 

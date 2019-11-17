@@ -82,8 +82,8 @@ class Menu extends Component{
 
                 <div id="footer">
                     <div id="user">
-                        <strong><p id="nv_acesso">{sessionStorage.getItem("Nivel")}</p></strong>
-                        <p id="usuario">{sessionStorage.getItem("Nome")}</p>
+                        <strong><p id="nv_acesso">{sessionStorage.getItem("nivel")}</p></strong>
+                        <p id="usuario">{sessionStorage.getItem("nome")}</p>
                     </div>
 
                     <div id='new-user'>

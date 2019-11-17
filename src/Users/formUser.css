@@ -6,16 +6,32 @@
     height: 500px;
     width: 700px;
 
-    display: flex;
+    display: none;
     justify-content: center;
-    margin: auto;
+    align-items: center;
+
+    position: absolute;
+    left: auto;
+    right: auto;
+    top: 10%;
+    right: 25%;
+}#cad-container > #btn_fechar{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    
+    background: none;
+    border: none;
+
+    font-size: 25px;
+    font-weight: 600;
 }
 #cad-content{
     display: flex;
     flex-direction: column; 
     justify-content: center;
 
-    width: 70%;
+    width: 80%;
 
     font-size: 25px;
 }
@@ -30,14 +46,18 @@
 #cad-content > form{
     display: flex;
     flex-direction: row;
-    margin-left: auto;
-    margin-right: auto;
+    justify-content: center;
     width: 100%;
+    margin: 20px 10px;
 }
 #cad-content > form > div{
     width: 100%;
+    /* align-content: center; */
 }
-#cad-content > form input{
+#cad-content > form > div > div{
+    margin: 20px 0;
+}
+#cad-content > form input, select{
     width: 90%;
     height: 35px;
     border: 2px solid white;
@@ -48,6 +68,25 @@
     font-size: 20px;
     font-weight: 500;
 }
-/* #cad-content > button{
-    background-color: #;
-} */
+#cad-content > form select{
+    background-color: white !important;
+}
+#cad-content > form > div > div > input{
+    padding: 5px;
+}
+#cad-content > #btn_formUser{
+    margin: 5px auto;
+    width: 40%;
+    height: 35px;
+    border: 2px solid white;
+    border-radius: 10px;
+
+    background-color: transparent;
+
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+}
+#cad-content > #btn_formUser:active{
+    background-color: teal;
+}

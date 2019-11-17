@@ -9,7 +9,7 @@ import formUser from './Users/formUser';
 
 const localAuthentication = () =>{
     var retorno = false;
-    retorno = sessionStorage.getItem("E-mail") == null ? false : true;
+    retorno = sessionStorage.getItem("email") == null ? false : true;
 
     return retorno;
 };
@@ -17,9 +17,9 @@ const localAuthentication = () =>{
 const PrivateRoute = ({ component: Component , ...rest }) =>(
     <Route {...rest} render={props =>(
         localAuthentication() ? (
-            <Component {...props} to={sessionStorage.clear()}/>
+            <Component {...props} />
         ) : ( 
-          <Redirect to={{ pathname: '/', state: { from: props.location}}, sessionStorage.setItem('message', "Você não está Logado")}/>
+          <Redirect to={{ pathname: '/', state: { from: props.location}}}/>
         )
     )}/>
 )
