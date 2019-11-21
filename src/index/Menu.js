@@ -86,7 +86,7 @@ class Menu extends Component{
                         <p id="usuario">{sessionStorage.getItem("nome")}</p>
                     </div>
 
-                    <div id='new-user'>
+                    <div id='new-user' onLoad={()=> {sessionStorage.getItem('nivel') == 'Atendente' ? document.querySelector('#new-user').style.display = 'none' : console.log("você tem nivel suficiente");}}>
                         <Link to='/Usuarios'>
                             <img src={icon_user} alt=" "></img>
                             <p>Criar Novo Usuário</p>

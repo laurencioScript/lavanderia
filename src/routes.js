@@ -4,8 +4,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './Login';
 import Menu from './index/Index';
 import Users from './Users';
-
-import formUser from './Users/formUser';
+import Pieces from './pieces'
 
 const localAuthentication = () =>{
     var retorno = false;
@@ -30,7 +29,7 @@ const Routes = ()=> (
             <Route exact path='/' component={Login} />
             <PrivateRoute path='/Menu' component={Menu}/>
             <PrivateRoute path='/Usuarios' component={Users}/>
-            <Route path='/formUser' component={formUser} />
+            <PrivateRoute path='/Pecas' component={Pieces}/>
         </Switch>
     </BrowserRouter>
 );

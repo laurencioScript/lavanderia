@@ -29,19 +29,21 @@ class index extends Component{
     verificaNivel(){
         sessionStorage.removeItem("Selecionado");
         var retorno = ' ';
-        if(sessionStorage.getItem("Nivel") == 'Atendente'){
+        if(sessionStorage.getItem("nivel") == 'Atendente'){
             console.log("Você não tem nivél de acesso necessario");
             retorno = 
             <> 
-                <h1>Você não tem direito de acesso a está pagina</h1>
+                <div id="reclusion">
+                    <h1>Você não tem direito de acesso a está pagina</h1>
+                </div>
             </>;
         }
         else{
             retorno = 
             <>
                 <div id="volta">
-                    <img src={img_placeholder} alt=" "></img>
-                    <p>Voltar</p>
+                    {/* <img src={img_placeholder} alt=" "></img> */}
+                    <p>↪ Voltar</p>
                 </div>
 
                 <div id="icon-page">
@@ -53,7 +55,7 @@ class index extends Component{
                         <p>Lista de Usuários</p>
                         <div id="search">
                             <img src={img_placeholder} alt=" "></img>
-                            <input type="text" placeholder="Procurar" name="search"></input>
+                            <input type="text" placeholder="Procurar" name="search" id="search-user" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
                         </div>
                         
                         <button id="btn-find">Localizar</button>
