@@ -1,0 +1,69 @@
+#piecesReadjustment-container{
+    position: absolute;
+    top: 10%;
+    left: 25%;
+
+    display: none;
+    
+    height: 350px;
+    width: 600px;
+
+    background-color: whitesmoke;
+    border: 2px solid black;
+}
+#piecesReadjustment-content{
+    margin: 10%;
+    height: 90%;
+    width: 90%;
+}
+#piecesReadjustment-content > p:first-child{
+    /* TITULO */
+    font-size: 50px;
+    font-weight: bold;
+    margin-left: 25%;
+}
+#piecesReadjustment-content p, label{
+    font-size: 20px;
+}
+#piecesReadjustment-content > div{
+    display: flex;
+    flex-direction: row;
+}
+#piecesReadjustment-content > #piecesReadjustment-first > p:first-child{
+    margin-right: 70%;
+}
+#piecesReadjustment-content > input{
+    width: 90%;
+    height: 30px;
+}
+#piecesReadjustment-content > #piecesReadjustment-second{
+    margin: 20px 0;
+}
+#piecesReadjustment-content > #piecesReadjustment-second > p{
+    margin-right: 40px;
+}
+
+#piecesReadjustment-content > #piecesReadjustment-buttons{
+    display: flex;
+    flex-direction: row;
+}
+#piecesReadjustment-content > #piecesReadjustment-buttons > input{
+    height: 30px;
+    width: 125px;
+
+    border: none;
+    color: white;
+
+    font-size: 20px;
+    font-weight: 500;
+
+    border-radius: 5px;
+}
+#piecesReadjustment-content > #piecesReadjustment-buttons > input:first-child{
+    margin-left: 40px;
+    background: #06ce11;
+}
+#piecesReadjustment-content > #piecesReadjustment-buttons > input:last-child{
+    margin-left: 30%;
+    background: #ef0909;
+}

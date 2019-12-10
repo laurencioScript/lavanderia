@@ -42,7 +42,6 @@ class index extends Component{
             retorno = 
             <>
                 <div id="volta">
-                    {/* <img src={img_placeholder} alt=" "></img> */}
                     <p>↪ Voltar</p>
                 </div>
 
@@ -66,9 +65,9 @@ class index extends Component{
                                 document.querySelector('#cad-container').style.display = "flex"; 
                                 sessionStorage.setItem("action", 1);
                                 document.querySelector('#form-name').value = ""
-                                    document.querySelector('#form-password').value = "";
-                                    document.querySelector('#form-email').value = "";
-                                    document.querySelector("#form-select").value = "";
+                                document.querySelector('#form-password').value = "";
+                                document.querySelector('#form-email').value = "";
+                                document.querySelector("#form-select").value = "";
                             }
                         }>+ Criar</button>
                         <button 
@@ -104,7 +103,7 @@ class index extends Component{
     render(){
         return(
             <>
-                <Header></Header>
+                <Header name="Usuários"/>
                 {this.verificaNivel()}
             </>
         );

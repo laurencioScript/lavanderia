@@ -87,7 +87,7 @@
     background-color: #e61610;
 } #btn-edit{
     grid-row: 2;
-    grid-column: 5;
+    grid-column: 5 !important;
     background-color: #f4eb49;
 }
 

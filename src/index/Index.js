@@ -6,7 +6,7 @@ class Index extends Component{
     render() {
         return(
             <div id='todo'>
-                <Header></Header>
+                <Header name="Menu"></Header>
                 <Menu></Menu>
             </div>
         )

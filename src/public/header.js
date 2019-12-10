@@ -16,7 +16,7 @@ class Header extends Component{
                     <img src={icon_maquina} alt=" " ></img>
                 </Link>
 
-                <h1>MENU</h1>
+                <h1>{this.props.name.toUpperCase()}</h1>
                 <Link to='/'><img src={icon_sair} alt=" " onClick={this.sair} /></Link>
             </div>
         );

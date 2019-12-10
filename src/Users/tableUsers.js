@@ -40,17 +40,6 @@ class tableUsers extends Component{
             this.setState({Users});
         });
     }
-    montaPesquisa(){
-        var input = sessionStorage.getItem('pesquisa');
-        var users =  this.state.Users;
-
-        for(var a = users.length - 1; a >= 0; a--){
-            if(users[a].nome.toLowerCase().includes(input.toLowerCase())){
-                this.state.Pesquisa += this.state.Users[a];
-            }
-        }
-        console.log(this.state.Pesquisa);
-    }
     limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
