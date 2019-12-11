@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 import Header from '../public/header';
 
 import icon_user from '../public/icons/icon_user.png';
 import img_placeholder from '../public/placeholder-img.jpg';
 
 import Axios from 'axios';
+
+import './customers.css';
 
 class index extends Component{
     state = {
@@ -42,15 +45,11 @@ class index extends Component{
                             
                             <button id="btn-find">Localizar</button>
 
-                            <button 
-                                id="btn-create" 
-                                onClick={() =>{
-                                    this.setState({createState: !this.state.createState});
-                                    this.state.createState == true ? document.querySelector("#color-name").disabled = true : document.querySelector("#color-name").disabled = false;
-                                    if(this.state.editState)
-                                        this.setState({editState: false});
-                                }}
-                            >Criar</button>
+                            {/* <Link to='/create'> */}
+                                <button 
+                                    id="btn-create"
+                                >Criar</button>
+                            {/* </Link> */}
                         </div>
                     </div>
                 </>
@@ -67,7 +66,26 @@ class index extends Component{
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                {/* Encapsular em um .map() */}
+                                <tr>
+                                    <td>{/* Cliente.nome */}</td>
+                                    <td>{/* Cliente.telefone */}</td>
+                                    <td>{/* Cliente.cpf */}</td>
+                                    <td id='list-customers-buttons'>
+                                        <button 
+                                            id="btn-edit"
+                                        >Editar</button>
+
+                                        <button 
+                                            id="btn-create"
+                                        >Listar</button>
+
+                                        <button 
+                                            id="btn-delete"
+                                        >Excluir</button>
+                                    </td>
+                                </tr>
+                                {/*                          */}
                             </tbody>
                         </table>
                     </div>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Header from '../../public/header';
 import { Link } from 'react-router-dom';
+import InputMask from 'react-input-mask';
 
 import Axios from 'axios';
 
@@ -8,7 +9,7 @@ import './create.css';
 import Cor from './Cor';
 
 class index extends Component{
-    
+
     render(){
         return(
             <>
@@ -175,7 +176,10 @@ class index extends Component{
                         <div id="fourthy-line">
                             <div id="phone">
                                 <p class="title">Telefone</p>
-                                <input type="text" />                            
+                                {/* <input type="text" maxLength="14"/>  */}
+
+                                <InputMask mask="(99) 9 9999-9999"/>
+
                             </div>
 
                             <div id="cellphone">

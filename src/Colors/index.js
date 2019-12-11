@@ -8,6 +8,7 @@ import img_placeholder from '../public/placeholder-img.jpg';
 import icon_paleta from '../public/icons/icon_paleta2.png';
 
 import './colors.css';
+import { isObject } from 'util';
 
 class index extends Component{
     state ={
@@ -66,8 +67,15 @@ class index extends Component{
         }catch(e){
         }
     }
-    handleChangeComplete = (color) =>{
-        this.setState({Cor: color.hex});
+    mudaCor = (color) =>{
+        var param;
+
+        if(color.hex === undefined)
+            param = ({Cor: color});
+        else 
+            param = ({Cor: color.hex});
+        
+        this.setState(param);
     }
     render(){
         return(
@@ -127,14 +135,18 @@ class index extends Component{
                                     this.state.Cores.map(Colors => 
                                         <tr id={Colors.id_cor}
                                             onClick={() =>{
+                                                var cor = Colors.hexadecimal;
+                                                this.mudaCor(cor);
+
                                                 sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Colors.id_cor ? " " : Colors.id_cor);
                                                 this.verificaLista(document.getElementById(Colors.id_cor));
-                                                this.state.createState || this.state.editState ? document.querySelector("#color-name").value = Colors.cor_nome : document.querySelector("#color-name").value = null;
+                                                this.state.editState ? document.querySelector("#color-name").value = Colors.cor_nome : document.querySelector("#color-name").value = null;
                                             }}
                                         >   
                                             <td><div id='nome'>{Colors.cor_nome}</div> <Bolinha cor={Colors.hexadecimal} /></td>
                                         </tr>
-                                    )}</tbody>
+                                    )}
+                                    </tbody>
                             </table>
                         </div>
 
@@ -166,7 +178,7 @@ class index extends Component{
                             <div id='color-picker'>
                                 <SliderPicker 
                                     color={this.state.Cor}
-                                    onChange={this.handleChangeComplete}/>
+                                    onChangeComplete={this.mudaCor}/>
                                 
                                 <p>{this.state.Cor}</p>
                             </div>

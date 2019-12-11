@@ -1,0 +1,19 @@
+#customers-table > thead > tr{
+    background-color: black;
+    color: white;
+
+    font-weight: bold;
+}
+
+#customers-table > tbody > tr > #list-customers-buttons > button{
+    border-radius: 10px;
+    border: none;
+
+    width: 120px;
+    height: 35px;
+    margin: 0 15px;
+
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
