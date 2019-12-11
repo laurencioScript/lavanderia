@@ -9,9 +9,12 @@ import Medidas from './Measures';
 import Cores from './Colors';
 import Defeitos from './Defect';
 import Caract from './Features';
-// import Clientes from './Clients';
+import Clientes from './Customers';
 // import OS from './OS';
 // import Relatorios from './report';
+
+import read from './Customers/Read';
+import create from './Customers/Create';
 
 const localAuthentication = () =>{
     var retorno = false;
@@ -34,6 +37,10 @@ const Routes = ()=> (
     <BrowserRouter>
         <Switch>
             <Route exact path='/' component={Login} />
+
+            <Route path='/read' component={read} />
+            <Route path='/create' component={create} />
+
             <PrivateRoute path='/Menu' component={Menu}/>
             <PrivateRoute path='/Usuarios' component={Users}/>
             <PrivateRoute path='/Pecas' component={Pieces}/>
@@ -41,8 +48,8 @@ const Routes = ()=> (
             <PrivateRoute path='/Cores' component={Cores}/>
             <PrivateRoute path='/Defeitos' component={Defeitos}/>
             <PrivateRoute path='/Caracteristicas' component={Caract}/>
-            {/* <PrivateRoute path='/Clientes' component={Clientes}/>
-            <PrivateRoute path='/OS' component={OS}/>
+            <PrivateRoute path='/Clientes' component={Clientes}/>
+            {/*<PrivateRoute path='/OS' component={OS}/>
             <PrivateRoute path='/Relatorios' component={Relatorios}/> */}
         </Switch>
     </BrowserRouter>

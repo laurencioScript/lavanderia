@@ -91,4 +91,14 @@
     background-color: #f4eb49;
 }
 
+.btn-edit-disabled{
+    opacity: 0.5;
+}
+.btn-delete-disabled{
+    opacity: 0.5;
+}
+.btn-create-disabled{
+    opacity: 0.5;
+}
+
 /* TABELA */

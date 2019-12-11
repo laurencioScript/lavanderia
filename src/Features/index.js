@@ -33,14 +33,17 @@ class index extends Component{
     verificaNivel(){
         if(sessionStorage.getItem('nivel') == 'Atendente')
         {   console.log("BTN DESABILITADO");
-            document.querySelector('#btn-create').disabled = true;
             document.querySelector('#btn-edit').disabled = true;
             document.querySelector("#btn-delete").disabled = true;
+
+            document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
+            document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
         }else{
             console.log("BTN HABILITADO");
-            document.querySelector("#btn-create").disabled = false;
             document.querySelector("#btn-edit").disabled = false;
             document.querySelector("#btn-delete").disabled = false;
+            document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
+            document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
         }
     }
     limpaLista = () =>{
