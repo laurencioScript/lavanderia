@@ -1,0 +1,59 @@
+#report-content{
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+}
+#report-content > #report-option{
+    display: flex;
+    flex-direction: row;
+    padding: 10% 10%;
+    width: 50%;
+}#report-content > #report-option > div{
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px;
+    padding: 10px;
+
+    width: 200px;
+}#report-content > #report-option > div > img{
+    width: 150px;
+}
+
+#report-content > #report-format{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    width: 50%;
+}#report-content > #report-format > *{
+    margin: 10px auto;
+}#report-content > #report-format > p{
+    font-size: 25px;
+    font-weight: bold;
+}#report-content > #report-format > #report-date{
+    display: flex;
+    flex-direction: row;
+}#report-content > #report-format > #report-date > input{
+    width: 200px;
+    height: 30px;
+
+    font-size: 20px;
+}#report-content > #report-format > #report-date > p{
+    margin: 5px;
+    font-size: 20px;
+}#report-content > #report-format > input{
+    width: 150px;
+    height: 30px;
+
+    background-color: dimgray;
+
+    border: none;
+    border-radius: 15px;
+
+    color: white;
+    font-size: 25px;
+}#report-content > #report-format > input:disabled{
+    background-color: silver;
+}
