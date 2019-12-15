@@ -10,6 +10,10 @@ import Cor from './Cor';
 
 class index extends Component{
 
+    createClient(){
+        
+    }
+
     render(){
         return(
             <>
@@ -178,13 +182,13 @@ class index extends Component{
                                 <p class="title">Telefone</p>
                                 {/* <input type="text" maxLength="14"/>  */}
 
-                                <InputMask mask="(99) 9 9999-9999"/>
+                                <InputMask id="inpute_telefone" mask="(99) 9999-9999" />
 
                             </div>
 
                             <div id="cellphone">
                                 <p class="title">Celular</p>
-                                <input type="text" />
+                                <InputMask mask="(99) 9 9999-9999"/>
                             </div>
 
                             <div id="note">
@@ -202,6 +206,7 @@ class index extends Component{
                                 <input 
                                     type="button" 
                                     value="Salvar"
+                                    onClick={this.createClient}
                                 />
                             </div>
 

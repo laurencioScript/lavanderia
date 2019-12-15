@@ -43,8 +43,8 @@ class pieces extends Component{
                                 document.querySelector('#pieces-value').value = "";
                             }}
                         >Criar</button>
-                        <button 
-                            id="btn-edit"
+                        <button
+                            id="btn-edit-pieces"
                             onClick={() =>{
                                 Axios.get('http://localhost:3000/piece/'+sessionStorage.getItem("Selecionado")).then( res =>{
                                     sessionStorage.setItem("action", 2);
