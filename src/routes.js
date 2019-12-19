@@ -10,7 +10,7 @@ import Cores from './Colors';
 import Defeitos from './Defect';
 import Caract from './Features';
 import Clientes from './Customers';
-// import OS from './OS';
+import OS from './OS';
 import Relatorios from './report';
 
 import read from './Customers/Read';
@@ -51,7 +51,7 @@ const Routes = ()=> (
             <PrivateRoute path='/Defeitos' component={Defeitos}/>
             <PrivateRoute path='/Caracteristicas' component={Caract}/>
             <PrivateRoute path='/Clientes' component={Clientes}/>
-            {/*<PrivateRoute path='/OS' component={OS}/> */}
+            <PrivateRoute path='/OS' component={OS}/>
             <PrivateRoute path='/Relatorios' component={Relatorios}/>
         </Switch>
     </BrowserRouter>
