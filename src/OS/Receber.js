@@ -13,6 +13,9 @@ class Receber extends Component {
     render() {
         return (
             <div id="osReceberContainer">
+                <p id='fecha' onClick={ () => {
+                    document.getElementById("osReceberContainer").style.display = "none";
+                }}>X</p>
 
                 <div id="osReceberContent">
 
@@ -43,7 +46,11 @@ class Receber extends Component {
                                 type="number" 
                                 id="osPercentNumber"
                                 min='1'
-                                max='100'/> <p>   % {}</p></div>
+                                max='100'
+                                onClick={() => {
+                                    
+                                }}/> 
+                                <p>   % {}</p></div>
                         <p>Juros</p>
                         <div><input  
                                 type="number" 

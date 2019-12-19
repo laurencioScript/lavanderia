@@ -16,6 +16,7 @@ import Relatorios from './report';
 import read from './Customers/Read';
 import create from './Customers/Create';
 import update from './Customers/Update';
+import sell from './OS/Sell';
 
 const localAuthentication = () =>{
     var retorno = false;
@@ -42,6 +43,7 @@ const Routes = ()=> (
             <Route path='/read' component={read} />
             <Route path='/create' component={create} />
             <Route path="/update" component={update} />
+            <Route path="/Venda" component={sell} />
 
             <PrivateRoute path='/Menu' component={Menu}/>
             <PrivateRoute path='/Usuarios' component={Users}/>

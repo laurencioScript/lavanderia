@@ -1,5 +1,5 @@
 #osReceberContainer{
-    display: flex;
+    display: none;
     flex-direction: column;
 
     position: absolute;
@@ -15,7 +15,17 @@
     height: 55%;
 
     background-color: #fbf7e3;
-}#osReceberContainer > #osReceberContent{
+    border: 1px solid black;
+
+    font-size: 30px;
+    font-weight: bold;
+}#osReceberContainer > p{
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: 20px;
+    cursor: default;
+}
+#osReceberContainer > #osReceberContent{
     display: flex;
     flex-direction: row;
 
@@ -26,7 +36,7 @@
 }
 #osReceberContent > div{
     /* width: 33%; */
-    height: 100%;
+    height: 95%;
     margin: auto;
     text-align: center;
 
@@ -35,9 +45,9 @@
     font-weight: bold;
 
     /* background-color: steelblue; */
-}#osReceberContent > div:first-child, div:last-child{
-    background-color: grey;
-    padding: 20px 5px;
+}#osReceberContent > div:first-child, #osReceberContent > div:last-child{
+    background-color: silver;
+    /* padding: 20px 5px; */
 }
 #osReceberContent input{
     border: 2px solid black !important;
@@ -103,6 +113,7 @@
 
 #osReceberContainer > input{
     margin: 0 auto;
+    margin-bottom: 5px;
     width: 150px;
     height: 100%;
 

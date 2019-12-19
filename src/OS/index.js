@@ -8,6 +8,7 @@ import OsResumeTable from './OsResumeTable';
 import './OS.css';
 import { Link } from 'react-router-dom';
 import Receber from './Receber';
+import Pagamento from './Pagamento';
 
 class index extends Component{
     render(){
@@ -41,14 +42,21 @@ class index extends Component{
                     </div>
 
                     <div id="OS_buttons">
-                        <input type="button" value="RECEBER" id="btn-osReceber"/>
-                        <input type="button" value="PAGAMENTO $" id="btn-osPagamento"/>
+                        <input type="button" value="RECEBER" id="btn-osReceber" 
+                            onClick={() => {
+                                document.getElementById("osReceberContainer").style.display = "flex";
+                            }}
+                        />
+                        <input type="button" value="PAGAMENTO $" id="btn-osPagamento" 
+                            onClick={() => {
+                                document.getElementById("osPagamentoContainer").style.display = "flex";
+                            }}/>
                     </div>
                 </div>
 
                 <OsResumeTable />
 
-                <Link to="/menu">
+                <Link to="/Venda">
                     <input 
                         type="button"
                         value="REALIZAR VENDA"
@@ -56,6 +64,8 @@ class index extends Component{
                 </Link>
 
                 <Receber />
+
+                <Pagamento />
                 
             </>
         )
