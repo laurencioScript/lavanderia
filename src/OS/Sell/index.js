@@ -7,23 +7,37 @@ import Axios from 'axios';
 
 import './Sell.css';
 import Selltable from './Selltable';
+import CADcliente from './CADcliente/CADcliente';
+import Pagamento from './Pagamento/Pagamento';
 
 class index extends Component {
     state={
-        clientes: []
+        clientes: [],
+
+        OptionCliente: [],
+        SelectedOption: null,
     }
     componentDidMount(){
-        // Axios.get('http://localhost:3000/client').then(res =>{
-        //     var clientes = res.data.result[0]    ;
+        Axios.get('http://localhost:3000/user').then(res =>{
+            var clientes = res.data.result[0];
 
-        //     this.setState({clientes});
-        // });
-
-
+            this.setState({clientes});
+            this.montaOption();
+        });
 
         document.querySelector("#sell-DateSell").value = this.pegaData();
-        console.log(this.pegaData());
+    }
+    handleChange = SelectedOption =>{
+        this.setState({SelectedOption}, () => console.log("Optin Selected: ", this.state.SelectedOption));
+    }
+    montaOption(){
+        var OptionCliente = [];
 
+        this.state.clientes.map(Cliente =>{
+            OptionCliente.push({value: Cliente.id_usuario, label: Cliente.nome});
+        });
+
+        this.setState({OptionCliente});
     }
 
     pegaData(){
@@ -31,7 +45,6 @@ class index extends Component {
 
         return date.getFullYear() + "-" + date.getMonth() +"-" +date.getDate();
     }
-
 
     render() {
         return (
@@ -51,11 +64,13 @@ class index extends Component {
 
                 <div id="osRV-content">
                     <div id="primeira-parte">
-                        <Select options={[{value:"teste", label:"teste"},{value: "teste2", label:"teste2"}]} />
+                        <Select options={this.state.OptionCliente} onChange={this.handleChange} value={this.state.SelectedOption} />
 
                         <p>OU</p>
 
-                        <input type="button" value="Cadastrar"/>
+                        <input type="button" value="Cadastrar"onClick={()=>{
+                            document.querySelector("#quickCADcustomer-Container").style.display = "flex";
+                        }}/>
                     </div>
 
 
@@ -75,6 +90,27 @@ class index extends Component {
                 </div>
                 
                 <Selltable />
+
+                <div id="RVfinal">
+                    
+                        <div id="RVobservacao">
+                            <p>Obervação de Venda</p>
+                            <textarea placeholder="Observações"/>
+                        </div>
+                        <div id="RVfinalizar">
+                            <p id="ValorTotal">Valor Total: R$ </p>
+    
+                            <input type="button" value="Pagamento"onClick={()=>{
+                                document.querySelector("#osPagamentoContainer").style.display = "flex";
+                            }}/>
+                            
+                            <input type="button" value="Finalizar"/>
+                            
+                        </div>
+                </div>
+
+                <CADcliente />
+                <Pagamento />
 
             </>
         );

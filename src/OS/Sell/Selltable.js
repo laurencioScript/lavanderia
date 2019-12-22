@@ -1,78 +1,64 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
 
-import icon_close from '../../public/icons/icon_close.png';
+import './SellTable.css';
+import LineTable from './LineTable';
 
 class Selltable extends Component {
-
     state = {
-        Pecas: [],
-        Cores: [],
-        Caract: [],
-        Defeitos: []
+        itens: [{Linha: 1}]
     }
-
-    componentDidMount(){
-        var Pecas;
-        var Cores;
-        var Caract;
-        var Defeitos;
-
-        Axios.get('http://localhost:3000/piece').then(res => {
-            Pecas = res.data.result[0];
+    componentDidUpdate(){
+        let precos = document.querySelectorAll("#prec_total");
+        var valores=[];
+        var precoTotal = 0;
+        for(var a = 1; a < precos.length; a ++)
+        {
+            valores.push({preco: precos[a-1].innerText.slice(3)})
+        }
+        valores.map(preco =>{
+            precoTotal += parseFloat(preco.preco);
         });
-        Axios.get('http://localhost:3000/color').then(res => {
-            Cores = res.data.result[0];
-        });
-        Axios.get('http://localhost:3000/characteristic').then(res => {
-            Caract = res.data.result[0];
-        });
-        Axios.get('http://localhost:3000/defect').then(res => {
-            Defeitos = res.data.result[0];
-        });
-        
-        this.setState({
-            Pecas,
-            Cores,
-            Caract,
-            Defeitos
-        });
+        document.querySelector("#ValorTotal").innerHTML = "Valor Total: R$ " + precoTotal;
     }
 
     render() {
         return (
-            <table>
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td>Peças</td>
-                        <td>Cores</td>
-                        <td>Caracteristicas</td>
-                        <td>Defeitos</td>
-                        <td>Identificação</td>
-                        <td>Qtd</td>
-                        <td>Unidade</td>
-                        <td>Val_Unit</td>
-                        <td>Val_Parcial</td>
-                    </tr>
-                </thead>
+            <>
+                <table className="itenTable">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>Peças</td>
+                            <td>Cores</td>
+                            <td>Caracteristicas</td>
+                            <td>Defeitos</td>
+                            <td>Identificação</td>
+                            <td>Qtd</td>
+                            <td>Unidade</td>
+                            <td>Val_Unit</td>
+                            <td>Val_Parcial</td>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr>
-                        <td>{icon_close}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-                
-            </table>
+                    <tbody id="itenTbody">{
+                        this.state.itens.map(itens =>
+                        <LineTable iten={itens.Linha} />
+                    )}                       
+                    </tbody>
+                    
+                </table>
+
+                <input 
+                    id="RVadiconaLinha"
+                    type="button" 
+                    value="Adicionar Item" 
+                    onClick={() => {
+                        var linha = this.state.itens;
+
+                        linha.push({Linha: this.state.itens.length + 1});
+                        this.setState({itens: linha});
+                    }} />
+            </>
         );
     }
 }

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import './Pagamento.css';
+import '../../Pagamento.css';
 
-import icon_percentage from '../public/icons/icon_percentage.png';
-import icon_cheque from '../public/icons/icon_cheque.png';
-import icon_debit from '../public/icons/icon_debit-card.png';
-import icon_money from '../public/icons/icon_money.png';
-import icon_credit from '../public/icons/icon_credit-card.png';
+import icon_percentage from '../../../public/icons/icon_percentage.png';
+import icon_cheque from '../../../public/icons/icon_cheque.png';
+import icon_debit from '../../../public/icons/icon_debit-card.png';
+import icon_money from '../../../public/icons/icon_money.png';
+import icon_credit from '../../../public/icons/icon_credit-card.png';
 
 class Pagamento extends Component {
     render() {
@@ -22,22 +22,38 @@ class Pagamento extends Component {
                         <div id="osPagamentoPaymentCheck">
                             <img src={icon_cheque}/>
                             <input type="checkBox" />
-                            <p>CHEQUE = R${}</p>
+                            <p>CHEQUE</p>
+                            <input 
+                                type="text"
+                                placeholder="R$ 00,00"
+                            />
                         </div>
                         <div id="osPagamentoPaymentDebt">
                             <img src={icon_credit} />
                             <input type="checkBox" />
-                            <p>CARTÃO CRÉDITO = R${}</p>
+                            <p>CARTÃO CRÉDITO</p>
+                            <input 
+                                type="text"
+                                placeholder="R$ 00,00"
+                            />
                         </div>
                         <div id="osPagamentoPaymentCredit">
                             <img src={icon_debit} />
                             <input type="checkBox" />
-                            <p>CARTÃO DÉBITO = R${}</p>
+                            <p>CARTÃO DÉBITO</p>
+                            <input 
+                                type="text"
+                                placeholder="R$ 00,00"
+                            />
                         </div>
                         <div id="osPagamentoPaymentMoney">
                             <img src={icon_money} />
                             <input type="checkBox" />
-                            <p>DINHEIRO = R${}</p>
+                            <p>DINHEIRO</p>
+                            <input 
+                                type="text"
+                                placeholder="R$ 00,00"
+                            />
                         </div>
                     </div>
 
@@ -50,13 +66,17 @@ class Pagamento extends Component {
                                 id="osPercentNumber"
                                 min='1'
                                 max='100'/>
-                        <p>= {}</p>
+                        <input 
+                            type="text"
+                            placeholder="R$ 00,00"
+                        />
                     </div>
                     
                     
                     <div>
                         <p>Valor a Receber: R${}</p>
                         <p>Total Pago: R${}</p>
+                        <p>Troco: R${}</p>
                     </div>
 
 
@@ -64,7 +84,10 @@ class Pagamento extends Component {
                 
                 </div>
 
-                <p>Pago em: {}</p>
+                <input 
+                    type="button"
+                    value="SALVAR"
+                />
                 
             </div>
         );
