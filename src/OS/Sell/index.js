@@ -26,6 +26,8 @@ class index extends Component {
         });
 
         document.querySelector("#sell-DateSell").value = this.pegaData();
+
+        sessionStorage.removeItem("precoTotal");
     }
     handleChange = SelectedOption =>{
         this.setState({SelectedOption}, () => console.log("Optin Selected: ", this.state.SelectedOption));
@@ -101,7 +103,7 @@ class index extends Component {
                             <p id="ValorTotal">Valor Total: R$ </p>
     
                             <input type="button" value="Pagamento"onClick={()=>{
-                                document.querySelector("#osPagamentoContainer").style.display = "flex";
+                                document.querySelector("#RVpagamentoContainer").style.display = "flex";
                             }}/>
                             
                             <input type="button" value="Finalizar"/>

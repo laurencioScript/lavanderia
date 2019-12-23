@@ -19,6 +19,8 @@ class Selltable extends Component {
             precoTotal += parseFloat(preco.preco);
         });
         document.querySelector("#ValorTotal").innerHTML = "Valor Total: R$ " + precoTotal;
+        
+        sessionStorage.setItem("precoTotal", precoTotal);
     }
 
     render() {
