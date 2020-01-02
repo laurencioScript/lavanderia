@@ -18,8 +18,8 @@ class index extends Component{
         Cores: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/color').then(res => {
-            var Cores = res.data.result[0];
+        Axios.get('http://localhost:3000/color',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Cores = res.data.result;
             this.setState({Cores});
         });
         this.verificaNivel();
@@ -28,8 +28,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/color').then(res => {
-            var Cores = res.data.result[0];
+        Axios.get('http://localhost:3000/color',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Cores = res.data.result;
             this.setState({Cores});
         });
     }
@@ -122,7 +122,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado'));
+                                    Axios.delete('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado') ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                 }}
                             >Excluir</button>
                         </div>
@@ -133,17 +133,17 @@ class index extends Component{
                             <table>
                                 <tbody id="corpo_tabela">{
                                     this.state.Cores.map(Colors => 
-                                        <tr id={Colors.id_cor}
+                                        <tr id={Colors.id_color}
                                             onClick={() =>{
                                                 var cor = Colors.hexadecimal;
                                                 this.mudaCor(cor);
 
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Colors.id_cor ? " " : Colors.id_cor);
-                                                this.verificaLista(document.getElementById(Colors.id_cor));
-                                                this.state.editState ? document.querySelector("#color-name").value = Colors.cor_nome : document.querySelector("#color-name").value = null;
+                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Colors.id_color ? " " : Colors.id_color);
+                                                this.verificaLista(document.getElementById(Colors.id_color));
+                                                this.state.editState ? document.querySelector("#color-name").value = Colors.color_name : document.querySelector("#color-name").value = null;
                                             }}
                                         >   
-                                            <td><div id='nome'>{Colors.cor_nome}</div> <Bolinha cor={Colors.hexadecimal} /></td>
+                                            <td><div id='nome'>{Colors.color_name}</div> <Bolinha cor={Colors.hexadecimal} /></td>
                                         </tr>
                                     )}
                                     </tbody>
@@ -165,14 +165,14 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     var data = {
-                                        "color": document.getElementById('color-name').value,
+                                        "name": document.getElementById('color-name').value,
                                         "hexadecimal": this.state.Cor
                                     };
                                     if(this.state.createState && !document.querySelector("#color-name").disabled)
-                                        {Axios.post('http://localhost:3000/color/register', data);
+                                        {Axios.post('http://localhost:3000/color/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                         console.log(document.querySelector("#color-name").disabled);}
                                     else if(this.state.editState && !document.querySelector("#color-name").disabled)
-                                        {Axios.put('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado'), data)}
+                                        {Axios.put('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
                                 }}
                             />
                             <div id='color-picker'>

@@ -20,20 +20,22 @@ class Index extends React.Component{
         
             await axios.post(url, {
                     email: this.state.login,
-                    senha: this.state.senha
+                    password: this.state.senha
             }).then(function(response){
-                var nivel = 0;
-                // console.log(response.data);
-                switch(response.data.nivel){
-                    case 1: {nivel = "Atendente"; break;}
+                var nivel = null;
+                var res = response.data.result;
+                // console.log(res);
+                switch(res.level_user){
+                    case 1: {nivel = "Mestre"; break;}
                     case 2: {nivel = "Administrador"; break;}
-                    case 3: {nivel = "Mestre"; break;}
+                    case 3: {nivel = "Atendente"; break;}
                 };
                 sessionStorage.clear();
-                sessionStorage.setItem("nome", response.data.nome);
-                sessionStorage.setItem("email", response.data.email);
+                sessionStorage.setItem("nome", res.name_user);
+                sessionStorage.setItem("email", res.email);
                 sessionStorage.setItem("nivel", nivel);
-                sessionStorage.setItem("id", response.data.id_usuario);
+                sessionStorage.setItem("id", res.id_user);
+                sessionStorage.setItem("Token", res.token);
             }).catch (e =>{
                 console.log(e.message);
             });

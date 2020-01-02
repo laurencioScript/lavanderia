@@ -13,8 +13,8 @@ class index extends Component{
         Medidas: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/unity').then(res => {
-            var Medidas = res.data.result[0];
+        Axios.get('http://localhost:3000/unity' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Medidas = res.data.result;
             this.setState({Medidas});
         });
         this.verificaNivel();
@@ -23,8 +23,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/unity').then(res => {
-            var Medidas = res.data.result[0];
+        Axios.get('http://localhost:3000/unity' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Medidas = res.data.result;
             this.setState({Medidas});
         });
     }
@@ -107,7 +107,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/unity/' + sessionStorage.getItem('Selecionado'));
+                                    Axios.delete('http://localhost:3000/unity/' + sessionStorage.getItem('Selecionado') ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                 }}
                             >Excluir</button>
                         </div>
@@ -118,14 +118,14 @@ class index extends Component{
                             <table>
                                 <tbody id="corpo_tabela">{
                                     this.state.Medidas.map(Medidas => 
-                                        <tr id={Medidas.id_unidade}
+                                        <tr id={Medidas.id_unity}
                                             onClick={() =>{
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Medidas.id_unidade ? " " : Medidas.id_unidade);
-                                                this.verificaLista(document.getElementById(Medidas.id_unidade));
-                                                this.state.createState || this.state.editState ? document.querySelector("#measure-name").value = Medidas.unidade : document.querySelector("#measure-name").value = null;
+                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Medidas.id_unity ? " " : Medidas.id_unity);
+                                                this.verificaLista(document.getElementById(Medidas.id_unity));
+                                                this.state.createState || this.state.editState ? document.querySelector("#measure-name").value = Medidas.unity_name : document.querySelector("#measure-name").value = null;
                                             }}    
                                         >
-                                            <td>{Medidas.unidade}</td>
+                                            <td>{Medidas.unity_name}</td>
                                         </tr>
                                     )}</tbody>
                             </table>
@@ -146,13 +146,13 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     var data = {
-                                        "unidade": document.getElementById('measure-name').value
+                                        "name": document.getElementById('measure-name').value
                                     };
                                     if(this.state.createState && !document.querySelector("#measure-name").disabled)
-                                        {Axios.post('http://localhost:3000/unity/register', data);
+                                        {Axios.post('http://localhost:3000/unity/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                         console.log(document.querySelector("#measure-name").disabled);}
                                     else if(this.state.editState && !document.querySelector("#measure-name").disabled)
-                                        {Axios.put('http://localhost:3000/unity/' + sessionStorage.getItem('Selecionado'), data)}
+                                        {Axios.put('http://localhost:3000/unity/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
                                 }}
                             />
                         </div>

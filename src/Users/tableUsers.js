@@ -13,13 +13,9 @@ class tableUsers extends Component{
     componentDidMount(){
         localStorage.clear();
 
-        axios.get('http://localhost:3000/user/')
+        axios.get('http://localhost:3000/user/' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
         .then(res => {
-            var Users = res.data;
-            const result = Users.result;            
-            Users = result[0];
-
-
+            var Users = res.data.result;
             this.setState({Users});
         });
     }
@@ -27,14 +23,14 @@ class tableUsers extends Component{
         // this.state.Users = [];
         localStorage.clear();
 
-        axios.get('http://localhost:3000/user/')
+        axios.get('http://localhost:3000/user/' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
         .then(res => {
             var Users = res.data;
             const result = Users.result
-            if(Users.data != result[0].data){
+            if(Users.data != result.data){
                 this.forceUpdate();
             }
-            Users = result[0];
+            Users = result;
 
 
             this.setState({Users});
@@ -57,9 +53,9 @@ class tableUsers extends Component{
     nomeNivel = (nv) =>{
         var nivel = "";
         switch(nv){
-            case 1: {nivel = "Atendente"; break;}
+            case 1: {nivel = "Mestre"; break;}
             case 2: {nivel = "Administrador"; break;}
-            case 3: {nivel = "Mestre"; break;}
+            case 3: {nivel = "Atendente"; break;}
         };
         return nivel;
     }
@@ -78,12 +74,12 @@ class tableUsers extends Component{
                 <tbody id="corpo_tabela">{
                 this.state.Users.map(Users => 
                     <tr onClick={() => {
-                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_usuario ? null : Users.id_usuario);
-                        this.verificaLista(document.getElementById(Users.id_usuario));
-                    }} id={Users.id_usuario}>
-                        <td id="user-name">{Users.nome}</td>
+                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_user ? null : Users.id_user);
+                        this.verificaLista(document.getElementById(Users.id_user));
+                    }} id={Users.id_user}>
+                        <td id="user-name">{Users.name_user}</td>
                         <td id="user-email">{Users.email}</td>
-                        <td id="user-nivel">{this.nomeNivel(Users.nivel)}</td>
+                        <td id="user-nivel">{this.nomeNivel(Users.level_user)}</td>
                     </tr>
                 )}
                 </tbody>

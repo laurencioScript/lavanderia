@@ -32,9 +32,9 @@ class formUser extends React.Component{
                             <div className='cad-segundo_elemento'>
                                 <p>Nivel</p>
                                 <select id="form-select">
-                                    <option value="1">Atendente</option>
+                                    <option value="1">Mestre</option>
                                     <option value="2">Administrador</option>
-                                    <option value="3">Mestre</option>
+                                    <option value="3">Atendente</option>
                                 </select>
                             </div>
                         </div>
@@ -48,10 +48,10 @@ class formUser extends React.Component{
                                 "level": parseInt(document.querySelector('#form-select').value)
                             };
                         if(sessionStorage.getItem('action') == 1){
-                            axios.post('http://localhost:3000/user/register', data);
+                            axios.post('http://localhost:3000/user/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                         }
                         else if(sessionStorage.getItem('action') == 2){
-                            axios.put('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado"), data);
+                            axios.put('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado"), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                         }
 
                         sessionStorage.removeItem("action");

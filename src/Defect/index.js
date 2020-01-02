@@ -13,9 +13,11 @@ class index extends Component{
         Defeitos: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/defect').then(res => {
-            var Defeitos = res.data.result[0];
+        Axios.get('http://localhost:3000/defect',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Defeitos = res.data.result;
             this.setState({Defeitos});
+
+            console.log(Defeitos);
         });
         this.verificaNivel();
 
@@ -23,8 +25,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/defect').then(res => {
-            var Defeitos = res.data.result[0];
+        Axios.get('http://localhost:3000/defect',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Defeitos = res.data.result;
             this.setState({Defeitos});
         });
 
@@ -111,7 +113,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/defect/' + sessionStorage.getItem('Selecionado'));
+                                    Axios.delete('http://localhost:3000/defect/' + sessionStorage.getItem('Selecionado') ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                 }}
                             >Excluir</button>
                         </div>
@@ -122,14 +124,14 @@ class index extends Component{
                             <table>
                                 <tbody id="corpo_tabela">{
                                     this.state.Defeitos.map(Defeitos => 
-                                        <tr id={Defeitos.id_defeito}
+                                        <tr id={Defeitos.id_defect}
                                             onClick={() =>{
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Defeitos.id_defeito ? " " : Defeitos.id_defeito);
-                                                this.verificaLista(document.getElementById(Defeitos.id_defeito));
+                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Defeitos.id_defect ? " " : Defeitos.id_defect);
+                                                this.verificaLista(document.getElementById(Defeitos.id_defect));
                                                 this.state.createState || this.state.editState ? document.querySelector("#defect-name").value = Defeitos.defeito : document.querySelector("#defect-name").value = null;
                                             }}    
                                         >
-                                            <td>{Defeitos.defeito}</td>
+                                            <td>{Defeitos.defect_name}</td>
                                         </tr>
                                     )}</tbody>
                             </table>
@@ -150,13 +152,13 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     var data = {
-                                        "defect": document.getElementById('defect-name').value
+                                        "name": document.getElementById('defect-name').value
                                     };
                                     if(this.state.createState && !document.querySelector("#defect-name").disabled)
-                                        {Axios.post('http://localhost:3000/defect/register', data);
+                                        {Axios.post('http://localhost:3000/defect/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                         console.log(document.querySelector("#defect-name").disabled);}
                                     else if(this.state.editState && !document.querySelector("#defect-name").disabled)
-                                        {Axios.put('http://localhost:3000/defect/' + sessionStorage.getItem('Selecionado'), data)}
+                                        {Axios.put('http://localhost:3000/defect/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
                                 }}
                             />
                         </div>

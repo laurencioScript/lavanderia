@@ -14,8 +14,8 @@ class index extends Component{
         Caract: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/characteristic').then(res => {
-            var Caract = res.data.result[0];
+        Axios.get('http://localhost:3000/characteristic',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Caract = res.data.result;
             this.setState({Caract});
         });
         this.verificaNivel();
@@ -24,8 +24,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/characteristic').then(res => {
-            var Caract = res.data.result[0];
+        Axios.get('http://localhost:3000/characteristic',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+            var Caract = res.data.result;
             this.setState({Caract});
         });
     }
@@ -108,7 +108,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'));
+                                    Axios.delete('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                 }}
                             >Excluir</button>
                         </div>
@@ -119,14 +119,14 @@ class index extends Component{
                             <table>
                                 <tbody id="corpo_tabela">{
                                     this.state.Caract.map(Caract => 
-                                        <tr id={Caract.id_caracteristica}
+                                        <tr id={Caract.id_characteristic}
                                             onClick={() =>{
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Caract.id_caracteristica ? " " : Caract.id_caracteristica);
-                                                this.verificaLista(document.getElementById(Caract.id_caracteristica));
-                                                this.state.createState || this.state.editState ? document.querySelector("#feature-name").value = Caract.caracteristica : document.querySelector("#feature-name").value = null;
+                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Caract.id_characteristic ? " " : Caract.id_characteristic);
+                                                this.verificaLista(document.getElementById(Caract.id_characteristic));
+                                                this.state.createState || this.state.editState ? document.querySelector("#feature-name").value = Caract.characteristic_name : document.querySelector("#feature-name").value = null;
                                             }}    
                                         >
-                                            <td>{Caract.caracteristica}</td>
+                                            <td>{Caract.characteristic_name}</td>
                                         </tr>
                                     )}</tbody>
                             </table>
@@ -147,13 +147,13 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     var data = {
-                                        "caracteristica": document.getElementById('feature-name').value
+                                        "name": document.getElementById('feature-name').value
                                     };
                                     if(this.state.createState && !document.querySelector("#feature-name").disabled)
-                                        {Axios.post('http://localhost:3000/characteristic/register', data);
+                                        {Axios.post('http://localhost:3000/characteristic/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                         console.log(document.querySelector("#feature-name").disabled);}
                                     else if(this.state.editState && !document.querySelector("#feature-name").disabled)
-                                        {Axios.put('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'), data)}
+                                        {Axios.put('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
                                 }}
                             />
                         </div>

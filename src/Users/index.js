@@ -20,7 +20,7 @@ class index extends Component{
     deleteUser = () =>{
         if(sessionStorage.getItem("Selecionado") != ' ')
         {
-            axios.delete('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado"));
+            axios.delete('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado") ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
             sessionStorage.removeItem('Selecionado');
         }else{
             this.setState({Message: "Você não tem permissão"});
@@ -78,13 +78,14 @@ class index extends Component{
                         <button 
                             id="btn-edit" 
                             onClick={() =>{
-                                axios.get('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado")).then( res =>{
+                                axios.get('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado"),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then( res =>{
                                     sessionStorage.setItem("action", 2);
+                                    console.log(res.data.result[0]);
                                     document.querySelector('#cad-container').style.display = "flex";
-                                    document.querySelector('#form-name').value = res.data.result[0][0].nome;
+                                    document.querySelector('#form-name').value = res.data.result[0].name_user;
                                     document.querySelector('#form-password').value = "";
-                                    document.querySelector('#form-email').value = res.data.result[0][0].email;
-                                    document.querySelector("#form-select").value = res.data.result[0][0].nivel;
+                                    document.querySelector('#form-email').value = res.data.result[0].email;
+                                    document.querySelector("#form-select").value = res.data.result[0].level_user;
                                 });
                             }
                         }>Editar</button>
