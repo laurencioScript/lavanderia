@@ -15,8 +15,8 @@ class index extends Component{
     }
 
     componentDidMount(){
-        Axios.get("http://loacalhost:3000/client").then(res =>{
-            this.setState({Clientes: res.data.result[0]});
+        Axios.get("http://localhost:3000/client", {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
+            this.setState({Clientes: res.data.result});
         })
     }
 
@@ -37,7 +37,7 @@ class index extends Component{
 
                     <div id="content-users" on >
                         <div id="navigation-users">
-                            <p>Lista de Cores</p>
+                            <p>Lista de Clientes</p>
                             <div id="search">
                                 <img src={img_placeholder} alt=" "></img>
                                 <input type="text" placeholder="Procurar" name="search" id="search-piece" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
@@ -45,11 +45,13 @@ class index extends Component{
                             
                             <button id="btn-find">Localizar</button>
 
-                            {/* <Link to='/create'> */}
-                                <button 
-                                    id="btn-create"
-                                >Criar</button>
-                            {/* </Link> */}
+                            {/* <div id='botao'> */}
+                                <Link to='/create' id='link'>
+                                    <button 
+                                        id="btn-create"
+                                    >Criar</button>
+                                </Link>
+                            {/* </div> */}
                         </div>
                     </div>
                 </>
@@ -66,26 +68,43 @@ class index extends Component{
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* Encapsular em um .map() */}
-                                <tr>
-                                    <td>{/* Cliente.nome */}</td>
-                                    <td>{/* Cliente.telefone */}</td>
-                                    <td>{/* Cliente.cpf */}</td>
-                                    <td id='list-customers-buttons'>
-                                        <button 
-                                            id="btn-edit"
-                                        >Editar</button>
+                                {this.state.Clientes.map(Cliente =>
+                                    <tr>
+                                        <td>{Cliente.name_client}</td>
+                                        <td>{Cliente.contact.map(numero => {
+                                            var num = '(' + numero.substr(0, 2) + ') ' + numero.substr(2);
+                                            Cliente.contact.length >= 2 ? num += '  |  ' : num = num;
+                                            
+                                            return num;
+                                            })}</td>
+                                        <td>{Cliente.cpf_cnpj}</td>
+                                        <td id='list-customers-buttons'>
+                                            <Link to='/update' >
+                                                <button 
+                                                    id="btn-edit"
+                                                    onClick={() =>{
+                                                        console.log(Cliente.id_client);
+                                                        sessionStorage.setItem("Selecionado", Cliente.id_client);
+                                                    }}
+                                                >Editar</button>
+                                            </Link>
+                                            
+                                            <Link to='/read'>
+                                                <button 
+                                                    id="btn-create"
+                                                >Listar</button>
+                                            </Link>
 
-                                        <button 
-                                            id="btn-create"
-                                        >Listar</button>
+                                            <button 
+                                                id="btn-delete"
+                                                onClick={() =>{
+                                                    Axios.delete('http://localhost:3000/client/' + Cliente.id_client, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
 
-                                        <button 
-                                            id="btn-delete"
-                                        >Excluir</button>
-                                    </td>
-                                </tr>
-                                {/*                          */}
+                                                }}
+                                            >Excluir</button>
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

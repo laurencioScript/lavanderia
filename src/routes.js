@@ -40,10 +40,10 @@ const Routes = ()=> (
         <Switch>
             <Route exact path='/' component={Login} />
 
-            <Route path='/read' component={read} />
-            <Route path='/create' component={create} />
-            <Route path="/update" component={update} />
-            <Route path="/Venda" component={sell} />
+            <PrivateRoute path='/read' component={read} />
+            <PrivateRoute path='/create' component={create} />
+            <PrivateRoute path="/update" component={update} />
+            <PrivateRoute path="/Venda" component={sell} />
 
             <PrivateRoute path='/Menu' component={Menu}/>
             <PrivateRoute path='/Usuarios' component={Users}/>

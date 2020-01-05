@@ -6,10 +6,10 @@ class tablePieces extends Component{
         Pieces: []
     }
      componentDidMount(){
-         Axios.get('http://localhost:3000/piece').then(res => {
+         Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
             var Pieces = res.data;
             const result = Pieces.result;            
-            Pieces = result[0];
+            Pieces = result;
 
             this.setState({Pieces});
         });
@@ -17,10 +17,10 @@ class tablePieces extends Component{
     componentDidUpdate(){
         localStorage.clear();
 
-        Axios.get('http://localhost:3000/piece').then(res => {
+        Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
             var Pieces = res.data;
             const result = Pieces.result;            
-            Pieces = result[0];
+            Pieces = result;
 
             this.setState({Pieces});
         });
@@ -58,12 +58,12 @@ class tablePieces extends Component{
                 <tbody id="corpo_tabela">{
                 this.state.Pieces.map(Pieces => 
                     <tr onClick={() => {
-                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Pieces.id_peca ? null : Pieces.id_peca);
-                        this.verificaLista(document.getElementById(Pieces.id_peca));                        
-                    }} id={Pieces.id_peca}>
-                        <td id="pices-name">{Pieces.peca}</td>
-                        <td id="pices-email">{Pieces.unidade}</td>
-                        <td id="pieces-nivel">{Pieces.valor}</td>
+                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Pieces.id_piece ? null : Pieces.id_piece);
+                        this.verificaLista(document.getElementById(Pieces.id_piece));                        
+                    }} id={Pieces.id_piece}>
+                        <td id="pices-name">{Pieces.piece_name}</td>
+                        <td id="pices-email">{Pieces.unity}</td>
+                        <td id="pieces-nivel">{Pieces.value}</td>
                     </tr>
                 )}
                 </tbody>

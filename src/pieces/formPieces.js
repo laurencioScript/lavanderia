@@ -39,15 +39,15 @@ class formPieces extends Component{
                         </div>
                         <input type="button" id='btn_create_pieces' value='Salvar' onClick={() =>{
                             var data = {
-                                "peca" : document.querySelector('#pieces-name').value,
-                                "unidade" : document.querySelector('#pieces-unit').value,
-                                "valor" : parseInt(document.querySelector('#pieces-value').value)
+                                "name" : document.querySelector('#pieces-name').value,
+                                "unity" : document.querySelector('#pieces-unit').value,
+                                "value" : parseInt(document.querySelector('#pieces-value').value)
                             };
                             if(sessionStorage.getItem('action') == 1){
-                                Axios.post('http://localhost:3000/piece/register', data);
+                                Axios.post('http://localhost:3000/piece/register', data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                             }
                             else if(sessionStorage.getItem('action') == 2){
-                                Axios.put('http://localhost:3000/piece/'+sessionStorage.getItem("Selecionado"), data);
+                                Axios.put('http://localhost:3000/piece/'+sessionStorage.getItem("Selecionado"), data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                             }
     
                             sessionStorage.removeItem("action");

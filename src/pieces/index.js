@@ -46,12 +46,12 @@ class pieces extends Component{
                         <button
                             id="btn-edit-pieces"
                             onClick={() =>{
-                                Axios.get('http://localhost:3000/piece/'+sessionStorage.getItem("Selecionado")).then( res =>{
+                                Axios.get('http://localhost:3000/piece/'+sessionStorage.getItem("Selecionado"),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then( res =>{
                                     sessionStorage.setItem("action", 2);
                                     document.querySelector('#formPieces-container').style.display = "flex";
-                                    document.querySelector('#pieces-name').value = res.data.result[0][0].peca;
-                                    document.querySelector('#pieces-unit').value = res.data.result[0][0].unidade;
-                                    document.querySelector('#pieces-value').value = res.data.result[0][0].valor;
+                                    document.querySelector('#pieces-name').value = res.data.result[0].piece_name;
+                                    document.querySelector('#pieces-unit').value = res.data.result[0].unity;
+                                    document.querySelector('#pieces-value').value = res.data.result[0].value;
 
                                     console.log(res);
                                 });

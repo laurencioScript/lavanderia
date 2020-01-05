@@ -1,3 +1,15 @@
+
+#navigation-users > #botao > #link > #btn-create {
+    background-color:#06ce11;
+
+    width: 150px;
+    border: none;
+    border-radius: 10px;
+    color:
+    white;
+    font-size: 15px;
+    font-weight: bold;
+}
 #customers-table > thead > tr{
     background-color: black;
     color: white;
@@ -8,12 +20,15 @@
 #customers-table > tbody > tr > #list-customers-buttons > button{
     border-radius: 10px;
     border: none;
-
+    
     width: 120px;
     height: 35px;
     margin: 0 15px;
-
+    
     color: white;
     font-size: 20px;
     font-weight: bold;
+}
+#customers-table > tbody > tr > td:last-child{
+    width: 30%;
 }

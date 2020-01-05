@@ -8,10 +8,10 @@ class piecesReadjustment extends Component{
         Pecas: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/piece').then(res => {
+        Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
            var Pecas = res.data;
            const result = Pecas.result;            
-           Pecas = result[0];
+           Pecas = result;
 
            this.setState({Pecas});
        });
@@ -21,31 +21,32 @@ class piecesReadjustment extends Component{
         var reajuste = document.querySelector("#piecesReadjustment-Number").value;
         this.state.Pecas.map(Pecas =>{
             var data = {
-                "peca": Pecas.peca,
-                "unidade": Pecas.unidade,
-                "valor": Pecas.valor + (Pecas.valor * (reajuste / 100))
+                "name": Pecas.piece_name,
+                "unity": Pecas.unity,
+                "value": Pecas.value + (Pecas.value * (reajuste / 100))
             }
-            Axios.put("http://localhost:3000/piece/" + Pecas.id_peca, data);
+            Axios.put("http://localhost:3000/piece/" + Pecas.id_piece, data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
         })
     }
     updateOnePiece(peca){
         var reajuste = document.querySelector("#piecesReadjustment-Number").value;
 
-        var sla = this.state.Pecas.find(element => element.id_peca == peca);
+        var sla = this.state.Pecas.find(element => element.id_piece == peca);
 
         var data = {
-            "peca": sla.peca,
-            "unidade": sla.unidade,
-            "valor": sla.valor + (sla.valor * (reajuste / 100))
+            "name": sla.peca,
+            "unity": sla.unidade,
+            "value": sla.valor + (sla.valor * (reajuste / 100))
         }
-        Axios.put("http://localhost:3000/piece/" + peca, data)
+        console.log(peca);
+        Axios.put("http://localhost:3000/piece/" + peca, data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
     }
 
     montaSelect(){
         var option =        
         this.state.Pecas.map(Pecas =>
-            <option value={Pecas.id_peca}>
-                {Pecas.peca}
+            <option value={Pecas.id_piece}>
+                {Pecas.piece_name}
             </option>
         );
 
