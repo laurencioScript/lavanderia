@@ -7,88 +7,11 @@ class OsResumeTable extends Component{
 
     }
     componentDidMount(){
-        // Axios.get('http://localhost:3000').then(res =>{
-        //     var OS = res.data.result[0];
-        //     this.setState({OS});
-        // });
-
-        this.setState({OS: [{
-            "data_entrada":"2019-11-08 9:30:00",
-            "data_entrega":"2019-11-15 9:30:00",
-            "data_pagamento":"1800-01-01 00:00:00",
-            "data_retirada":"1800-01-01 00:00:00",
-            "observacao":"o cliente é muito gato",
-            "situacao":"Falta pagar/falta entregar",
-            "pagamento":{
-                
-                "cartao_debito":0,
-                "cartao_credito":0,
-                "cheque":0,
-                "dinheiro":50.0,
-                "desconto":0,
-                "valor_pago":0,
-                "valor_total":0
-            },
-            
-            "cliente":{
-                "nome":"Felipe Oliveira Mummy Silveira",
-                "cpf_cnpj":"345.321.456-12",
-                "contato":["13 -9881535-5821"],
-                "tipo":"fisica",
-                "email":"felipe@gmail.com"
-            },
-            
-            "items":[
-                {
-                    "quantidade":"2",
-                    "unidade":"unidade",
-                    "valor_unitario":13.50,
-                    "valor_total":27.00,
-                    "peca":"camisa",
-                    "cores":{"cores":["azul"]},
-                    "defeitos":{"defeitos":["rasgada"]},
-                    "caracteristicas":{"caracteristicas":["listrada"]}
-                }
-            ]                
-        },{
-            "data_entrada":"2019-11-08 9:30:00",
-            "data_entrega":"2019-11-15 9:30:00",
-            "data_pagamento":"1800-01-01 00:00:00",
-            "data_retirada":"1800-01-01 00:00:00",
-            "observacao":"o cliente é muito gato",
-            "situacao":"Pago/falta entregar",
-            "pagamento":{
-                
-                "cartao_debito":0,
-                "cartao_credito":0,
-                "cheque":0,
-                "dinheiro":50.0,
-                "desconto":0,
-                "valor_pago":0,
-                "valor_total":0
-            },
-            
-            "cliente":{
-                "nome":"Felipe Oliveira Mummy Silveira",
-                "cpf_cnpj":"345.321.456-12",
-                "contato":["13 -9881535-5821"],
-                "tipo":"fisica",
-                "email":"felipe@gmail.com"
-            },
-            
-            "items":[
-                {
-                    "quantidade":"2",
-                    "unidade":"unidade",
-                    "valor_unitario":13.50,
-                    "valor_total":27.00,
-                    "peca":"camisa",
-                    "cores":{"cores":["azul"]},
-                    "defeitos":{"defeitos":["rasgada"]},
-                    "caracteristicas":{"caracteristicas":["listrada"]}
-                }
-            ]                
-        }]});
+        Axios.get('http://localhost:3000/service', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
+            var OS = res.data.result;
+            console.log(OS);
+            this.setState({OS});
+        });
     }
 
     // componentDidUpdate(){
@@ -111,6 +34,23 @@ class OsResumeTable extends Component{
         
         return retorno.color;
     }
+    limpaLista = () =>{
+        var tabela = document.getElementById("corpo_tabela");
+        var linhas = tabela.getElementsByTagName("tr");
+
+        for(var i = 0; i < linhas.length; i++){
+            var a = linhas[i];
+            a.classList.remove("selecionado");
+        }
+    }
+    verificaLista = (linha) =>{
+        this.limpaLista();
+        // linha.classList.toggle("selecionado");
+        try{
+            document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
+        }catch(e){
+        }
+    }
 
     render(){
         return(
@@ -129,24 +69,28 @@ class OsResumeTable extends Component{
                         <td>Data Pagto</td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id='corpo_tabela'>
                     {this.state.OS.map(Vendas =>
                         <tr 
-                            id="01"
-                        >
+                            id={Vendas.id_service}
+                            onClick={() => {
+                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Vendas.id_service ? null : Vendas.id_service);
+                                this.verificaLista(document.getElementById(Vendas.id_service)); 
+                        }}>
+
                             <td id="OS-rol">{"01"}</td>
-                            <td id="OS-cliente">{Vendas.cliente.nome}</td>
-                            <td id="OS-telefone">{Vendas.cliente.contato[0]}</td>
-                            <td id="OS-dtEntrada">{Vendas.data_entrada}</td>
-                            <td id="OS-dtEntrega">{Vendas.data_entrega}</td>
-                            <td id="OS-vlTotal">{Vendas.pagamento.valor_total}</td>
+                            <td id="OS-cliente">{Vendas.client.nome}</td>
+                            <td id="OS-telefone">{Vendas.client.contato}</td>
+                            <td id="OS-dtEntrada">{Vendas.date_input}</td>
+                            <td id="OS-dtEntrega">{Vendas.date_ouput}</td>
+                            <td id="OS-vlTotal">{Vendas.payment.value_total}</td>
                             <td id="OS-situa" 
-                                style={{backgroundColor: this.situaCor(Vendas.situacao)}}
+                                style={{backgroundColor: this.situaCor(Vendas.situation)}}
                             >
-                                {Vendas.situacao}
+                                {Vendas.situation}
                             </td>
-                            <td id="OS-vlPago">{Vendas.pagamento.valor_pago}</td>
-                            <td id="OS-dtPaga">{Vendas.data_pagamento}</td>
+                            <td id="OS-vlPago">{Vendas.payment.amount_paid}</td>
+                            <td id="OS-dtPaga">{Vendas.date_payment}</td>
                         </tr>   
                     )}
                 </tbody>

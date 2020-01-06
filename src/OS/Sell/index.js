@@ -11,15 +11,27 @@ import CADcliente from './CADcliente/CADcliente';
 import Pagamento from './Pagamento/Pagamento';
 
 class index extends Component {
-    state={
-        clientes: [],
+    constructor(props){
+        super(props)
 
-        OptionCliente: [],
-        SelectedOption: null,
+        this.state = {
+            clientes: [],
+            OptionCliente: [],
+            SelectedOption: null,
+            precoTotal: 0
+        }
+        this.mudaPreco = this.mudaPreco.bind(this)
     }
+
+    mudaPreco(precoTotal){
+        this.setState({precoTotal}, () => {
+            console.log("ODIN " + this.state.precoTotal);
+        });
+    }
+
     componentDidMount(){
-        Axios.get('http://localhost:3000/user').then(res =>{
-            var clientes = res.data.result[0];
+        Axios.get('http://localhost:3000/client', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
+            var clientes = res.data.result;
 
             this.setState({clientes});
             this.montaOption();
@@ -36,7 +48,7 @@ class index extends Component {
         var OptionCliente = [];
 
         this.state.clientes.map(Cliente =>{
-            OptionCliente.push({value: Cliente.id_usuario, label: Cliente.nome});
+            OptionCliente.push({value: Cliente.id_client, label: Cliente.name_client});
         });
 
         this.setState({OptionCliente});
@@ -91,7 +103,7 @@ class index extends Component {
                     </div>
                 </div>
                 
-                <Selltable />
+                <Selltable mudaPreco={this.mudaPreco}/>
 
                 <div id="RVfinal">
                     
@@ -112,7 +124,7 @@ class index extends Component {
                 </div>
 
                 <CADcliente />
-                <Pagamento />
+                <Pagamento precoTotal={this.state.precoTotal}/>
 
             </>
         );

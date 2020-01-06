@@ -4,8 +4,15 @@ import './SellTable.css';
 import LineTable from './LineTable';
 
 class Selltable extends Component {
-    state = {
-        itens: [{Linha: 1}]
+
+    constructor(props){
+        super(props)
+
+        this.state = {
+            itens: [{Linha: 1}],
+            precoT: 0
+        }
+        this.mudaPreco = this.mudaPreco.bind(this)
     }
     componentDidUpdate(){
         let precos = document.querySelectorAll("#prec_total");
@@ -21,6 +28,15 @@ class Selltable extends Component {
         document.querySelector("#ValorTotal").innerHTML = "Valor Total: R$ " + precoTotal;
         
         sessionStorage.setItem("precoTotal", precoTotal);
+    }
+
+    mudaPreco(preco){
+        this.setState({precoT: parseFloat(this.state.precoT) + parseFloat(preco)}, () => {
+            // console.log(this.state.precoT);
+
+            this.props.mudaPreco(this.state.precoT);
+        });
+
     }
 
     render() {
@@ -44,7 +60,7 @@ class Selltable extends Component {
 
                     <tbody id="itenTbody">{
                         this.state.itens.map(itens =>
-                        <LineTable iten={itens.Linha} />
+                        <LineTable iten={itens.Linha} mudaPreco={this.mudaPreco}/>
                     )}                       
                     </tbody>
                     

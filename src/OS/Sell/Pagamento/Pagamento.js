@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import TextMask from 'react-text-mask';
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
 import './Pagamento.css';
 
@@ -7,6 +9,21 @@ import icon_cheque from '../../../public/icons/icon_cheque.png';
 import icon_debit from '../../../public/icons/icon_debit-card.png';
 import icon_money from '../../../public/icons/icon_money.png';
 import icon_credit from '../../../public/icons/icon_credit-card.png';
+
+const amountMask = createNumberMask({
+    prefix:'R$ ',
+    suffix:'',
+    decimalSymbol: ',',
+    thousandsSeparatorSymbol: '.',
+    allowDecimal: true,
+    decimalLimit: 2,
+    requireDecimal: true
+});
+const percentMask = createNumberMask({
+    prefix: '',
+    suffix: '%',
+    allowDecimal: false
+})
 
 class Pagamento extends Component {
     state = {
@@ -19,13 +36,18 @@ class Pagamento extends Component {
             dinheiro: 0
         }
     }
-
+    chamaPreco(){
+        // setInterval(()=>{
+        //     console.log(sessionStorage.getItem('precoTotal'))
+        //     document.querySelector('#ValorTotalPagamento').value = 'Valor Total: R$ ' + sessionStorage.getItem('precoTotal');
+        // }, 500)
+    }
     atualizaPago(){
         this.setState({pago: 
-            this.state.pagamento.cheque != Float32Array ? 0 : this.state.pagamento.cheque  + 
-            this.state.pagamento.credito != Float32Array ? 0 : this.state.pagamento.credito + 
-            this.state.pagamento.debito != Float32Array ? 0 : this.state.pagamento.debito + 
-            this.state.pagamento.dinheiro != Float32Array ? 0 : this.state.pagamento.dinheiro})
+            this.state.pagamento.cheque + 
+            this.state.pagamento.credito + 
+            this.state.pagamento.debito + 
+            this.state.pagamento.dinheiro })
     }
 
     render() {
@@ -33,64 +55,60 @@ class Pagamento extends Component {
             <div id="RVpagamentoContainer">
                 <p id="fecha" onClick={() => {document.getElementById('RVpagamentoContainer').style.display = "none";}}>X</p>
 
-                <p className="ValorTotal">Valor Total: R$ {this.state.precoTotal} </p>
+                <p id='ValorTotalPagamento' className="ValorTotal">Valor Total: R$ {this.props.precoTotal}</p>
 
                 <div id="RVpagamentoContent">
                     <div id="RVpagamentoContentOne">
                         <p>FORMA DE PAGAMENTO</p>
                         <div id="RVpagamentoPaymentCheck">
                             <img src={icon_cheque}/>
-                            <input type="checkBox" />
                             <p>CHEQUE</p>
-                            <input 
-                                id="pagoCheque"
-                                type="text"
+                            <TextMask 
+                                id='pagoCheque'
+                                mask={amountMask}
                                 placeholder="R$ 00,00"
                                 onChange={()=>{
-                                    this.setState({pagamento: {cheque: parseFloat(document.querySelector("#pagoCheque").value)}});
+                                    this.setState({pagamento: {cheque: parseFloat(document.querySelector("#pagoCheque").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
                                     this.atualizaPago()
                                 }}
                             />
                         </div>
                         <div id="RVpagamentoPaymentCredit">
                             <img src={icon_credit} />
-                            <input type="checkBox" />
                             <p>CARTÃO CRÉDITO</p>
-                            <input 
-                                id="pagoCredito"
-                                type="text"
+                            <TextMask 
+                                id='pagoCredito'
+                                mask={amountMask}
                                 placeholder="R$ 00,00"
                                 onChange={()=>{
-                                    this.setState({pagamento: {credito: parseFloat(document.querySelector("#pagoCredito").value)}});
+                                    this.setState({pagamento: {credito: parseFloat(document.querySelector("#pagoCredito").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
                                     this.atualizaPago()
                                 }}
                             />
                         </div>
                         <div id="RVpagamentoPaymentDebt">
                             <img src={icon_debit} />
-                            <input type="checkBox" />
                             <p>CARTÃO DÉBITO</p>
-                            <input 
-                                id="pagoDebito"
-                                type="text"
+                            <TextMask 
+                                id='pagoDebito'
+                                mask={amountMask}
                                 placeholder="R$ 00,00"
                                 onChange={()=>{
-                                    this.setState({pagamento: {debito: parseFloat(document.querySelector("#pagoDebito").value)}});
+                                    this.setState({pagamento: {debito: parseFloat(document.querySelector("#pagoDebito").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
                                     this.atualizaPago()
                                 }}
                             />
                         </div>
                         <div id="RVpagamentoPaymentMoney">
                             <img src={icon_money} />
-                            <input type="checkBox" />
                             <p>DINHEIRO</p>
-                            <input 
-                                id="pagoDinhe"
-                                type="text"
+                            <TextMask 
+                                id='pagoDinhe'
+                                mask={amountMask}
                                 placeholder="R$ 00,00"
                                 onChange={()=>{
-                                    this.setState({pagamento: {dinheiro: parseFloat(document.querySelector("#pagoDinhe").value)}});
-                                    this.atualizaPago()
+                                    this.setState({pagamento: {dinheiro: parseFloat(document.querySelector("#pagoDinhe").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
+                                    this.atualizaPago();
                                 }}
                             />
                         </div>
@@ -100,20 +118,20 @@ class Pagamento extends Component {
                     <div>
                         <img src={icon_percentage} />
                         <p>Desconto</p>
-                        <input  
-                                type="number" 
-                                id="RVPercentNumber"
-                                min='1'
-                                max='100'/>
-                        <input 
-                            type="text"
+                        <TextMask 
+                                mask={percentMask}
+                                placeholder="% Desconto %"
+                            />
+
+                        <TextMask 
+                            mask={amountMask}
                             placeholder="R$ 00,00"
                         />
                     </div>
                     
                     
                     <div>
-                        <p>Valor a Receber: R$ {sessionStorage.getItem("precoTotal")}</p>
+                        <p>Valor a Receber: R$ {this.props.precoTotal}</p>
                         <p>Total Pago: R${this.state.pago}</p>
                         <p>Troco: R${}</p>
                     </div>

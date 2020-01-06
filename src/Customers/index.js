@@ -19,6 +19,11 @@ class index extends Component{
             this.setState({Clientes: res.data.result});
         })
     }
+    componentDidUpdate(){
+        Axios.get("http://localhost:3000/client", {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
+            this.setState({Clientes: res.data.result});
+        })
+    }
 
     render(){
         return(
@@ -92,6 +97,10 @@ class index extends Component{
                                             <Link to='/read'>
                                                 <button 
                                                     id="btn-create"
+                                                    onClick={() =>{
+                                                        console.log(Cliente.id_client);
+                                                        sessionStorage.setItem("Selecionado", Cliente.id_client);
+                                                    }}
                                                 >Listar</button>
                                             </Link>
 
@@ -99,7 +108,6 @@ class index extends Component{
                                                 id="btn-delete"
                                                 onClick={() =>{
                                                     Axios.delete('http://localhost:3000/client/' + Cliente.id_client, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
-
                                                 }}
                                             >Excluir</button>
                                         </td>

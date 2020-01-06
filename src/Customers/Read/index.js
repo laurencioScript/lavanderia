@@ -32,9 +32,12 @@ class index extends Component{
                     </div>
 
                     <div id="buttons">
-                        <button 
-                            id="btn-edit" 
-                        >Editar</button>
+                        <Link to='/update' >
+                            <button 
+                                id="btn-edit" 
+                                onClick={() => {sessionStorage.setItem("Selecionado", this.state.Clientes.id_client)}}
+                            >Editar</button>
+                        </Link>
 
                         <Link to='/clientes' >
                             <button 
@@ -44,6 +47,8 @@ class index extends Component{
                         
                         <button 
                             id="btn-delete" 
+                            onClick={() => {
+                                Axios.delete('http://localhost:3000/client/' + sessionStorage.getItem("Selecionado"), {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(this.props.history.push('/Clientes'));}}
                         >Excluir</button>
                     </div>
                 </div>

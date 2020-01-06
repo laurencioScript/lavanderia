@@ -22,7 +22,7 @@ class LineTable extends Component {
             Defeitos: []
         },
 
-        SelectedOption: null
+        SelectedOption: ''
     }
     componentDidMount(){
         var Pecas;
@@ -30,23 +30,23 @@ class LineTable extends Component {
         var Caract;
         var Defeitos;
         
-        Axios.get('http://localhost:3000/piece').then(resA => {
-            Pecas = resA.data.result[0];
+        Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(resA => {
+            Pecas = resA.data.result;
             this.setState({Pecas});
             this.montaOption();
         });
-        Axios.get('http://localhost:3000/color').then(resB => {
-            Cores = resB.data.result[0];
+        Axios.get('http://localhost:3000/color', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(resB => {
+            Cores = resB.data.result;
             this.setState({Cores});
             this.montaOption();
         });
-        Axios.get('http://localhost:3000/characteristic').then(resC => {
-            Caract = resC.data.result[0];
+        Axios.get('http://localhost:3000/characteristic', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(resC => {
+            Caract = resC.data.result;
             this.setState({Caract});
             this.montaOption();
         });
-        Axios.get('http://localhost:3000/defect').then(resD => {
-            Defeitos = resD.data.result[0];
+        Axios.get('http://localhost:3000/defect', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(resD => {
+            Defeitos = resD.data.result;
             this.setState({Defeitos});
             this.montaOption();
         });
@@ -61,17 +61,17 @@ class LineTable extends Component {
             Defeitos: []
         };
 
-        this.state.Pecas.map(Peca =>{            
-            Option.Pecas.push({value: Peca, label: Peca.peca});
+        this.state.Pecas.map(Peca =>{
+            Option.Pecas.push({value: Peca, label: Peca.piece_name});
         });
         this.state.Cores.map(cor =>{
-            Option.Cores.push({value: cor, label: cor.cor_nome});
+            Option.Cores.push({value: cor, label: cor.color_name});
         });
         this.state.Caract.map(caract =>{
-            Option.Caract.push({value: caract, label: caract.caracteristica});
+            Option.Caract.push({value: caract, label: caract.characteristic_name});
         });
         this.state.Defeitos.map(Defeitos =>{
-            Option.Defeitos.push({value:  Defeitos, label: Defeitos.defeito });
+            Option.Defeitos.push({value:  Defeitos, label: Defeitos.defect_name});
         });
 
         this.setState({Option})
@@ -81,17 +81,22 @@ class LineTable extends Component {
         this.setState({SelectedOption}, () => {
             this.mudaTexto();
         });
+
     }
     mudaTexto = () => {
-        document.querySelector("#id-" + this.state.id).querySelector("#unidade").innerHTML = this.state.SelectedOption == null ? " " : this.state.SelectedOption.value.unidade;
-        document.querySelector("#id-" + this.state.id).querySelector("#prec_Unit").innerHTML = this.state.SelectedOption == null ? "R$ --" : "R$ " + this.state.SelectedOption.value.valor;
-        document.querySelector("#id-" + this.state.id).querySelector("#prec_total").innerHTML = this.state.SelectedOption  == null ? "R$ --" : "R$ " + this.state.SelectedOption.value.valor * document.querySelector("#id-" + this.state.id).querySelector("#numberQTD").value;       
+        document.querySelector("#id-" + this.state.id).querySelector("#unidade").innerHTML = this.state.SelectedOption == null ? " " : this.state.SelectedOption.value.unity;
+        document.querySelector("#id-" + this.state.id).querySelector("#prec_Unit").innerHTML = this.state.SelectedOption == null ? "R$ --" : "R$ " + this.state.SelectedOption.value.value;
+        document.querySelector("#id-" + this.state.id).querySelector("#prec_total").innerHTML = this.state.SelectedOption  == null ? "R$ --" : "R$ " + this.state.SelectedOption.value.value * document.querySelector("#id-" + this.state.id).querySelector("#numberQTD").value;       
+        
+        this.props.mudaPreco(this.state.SelectedOption.value.value)
     }
 
     render() {
         return (
             <tr id={"id-" + this.state.id}>
-                <td><img src={icon_close} id="sellTableClose" /></td>
+                <td><img src={icon_close} id="sellTableClose" onClick={() => {
+                    document.querySelector('#id-'+this.state.id).parentNode.removeChild(document.querySelector('#id-'+this.state.id));
+                }}/></td>
                 <td>
                     <Select 
                         options={this.state.Option.Pecas } 

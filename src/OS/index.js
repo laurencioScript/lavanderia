@@ -55,13 +55,15 @@ class index extends Component{
                 </div>
 
                 <OsResumeTable />
-
-                <Link to="/Venda">
-                    <input 
-                        type="button"
-                        value="REALIZAR VENDA"
-                        id="osRealizarVenda"/>
-                </Link>
+                
+                <div id='realizarVenda' >
+                    <Link to="/Venda">
+                        <input 
+                            type="button"
+                            value="REALIZAR VENDA"
+                            id="osRealizarVenda"/>
+                    </Link>
+                </div>
 
                 <Receber />
 
