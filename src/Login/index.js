@@ -1,10 +1,12 @@
 import React from 'react';
 import './index.css';
-import axios from '../../node_modules/axios';
 
 import icon_maquina from '../public/icons/icon_maquina.png';
 import icon_user from '../public/icons/icon_user.png';
 import icon_password from '../public/icons/icon_password.png';
+
+const Connection = require('../public/connection');
+
 
 class Index extends React.Component{
     state = {
@@ -15,31 +17,26 @@ class Index extends React.Component{
 
     submitLogin = async (e) =>{
         e.preventDefault();
+        var data = {
+            email: this.state.login,
+            password: this.state.senha
+        };
 
-        const url = 'http://localhost:3000/login';
-        
-            await axios.post(url, {
-                    email: this.state.login,
-                    password: this.state.senha
-            }).then(function(response){
-                var nivel = null;
-                var res = response.data.result;
-                // console.log(res);
-                switch(res.level_user){
-                    case 1: {nivel = "Mestre"; break;}
-                    case 2: {nivel = "Administrador"; break;}
-                    case 3: {nivel = "Atendente"; break;}
-                };
-                sessionStorage.clear();
-                sessionStorage.setItem("nome", res.name_user);
-                sessionStorage.setItem("email", res.email);
-                sessionStorage.setItem("nivel", nivel);
-                sessionStorage.setItem("id", res.id_user);
-                sessionStorage.setItem("Token", res.token);
-            }).catch (e =>{
-                console.log(e.message);
-            });
-        this.props.history.push('/Menu');        
+        Connection.getLogin(data).then(response =>{
+            var nivel = null;
+            switch(response.level_user){
+                case 1: {nivel = "Mestre"; break;}
+                case 2: {nivel = "Administrador"; break;}
+                case 3: {nivel = "Atendente"; break;}
+            };
+            sessionStorage.clear();
+            sessionStorage.setItem("nome", response.name_user);
+            sessionStorage.setItem("email", response.email);
+            sessionStorage.setItem("nivel", nivel);
+            sessionStorage.setItem("id", response.id_user);
+            sessionStorage.setItem("Token", response.token);
+            this.props.history.push('/Menu');
+        });
 }
     
     inputChange = () => {
@@ -56,7 +53,7 @@ class Index extends React.Component{
                         <img src={icon_maquina} alt=""/>
                     </div>
 
-                    <p>{sessionStorage.getItem('message')}</p>
+                    <p>{this.state.Message}</p>
 
                     <div id="form-login">
                         <form onSubmit={this.submitLogin} >  

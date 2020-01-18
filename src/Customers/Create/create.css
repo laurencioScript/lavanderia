@@ -74,8 +74,12 @@
 #createCustomer-content > div > div > p:last-child{
     font-size: 20px;
 }
-#createCustomer-content > div > #note > input {
+#createCustomer-content > div > #note > textarea {
     height: 100%;
+    width: 85%;
+    resize: none;
+
+    padding: 5px;
 }
 
 #createCustomer-content > div > input{
@@ -91,7 +95,13 @@
     border: none;
     border-radius: 10px;
 }
-#createCustomer-content > div > #color{
+#createCustomer-content > div > div > #color{
     display: flex;
     flex-direction: column;
+    
+    margin: 20px 0;
+}
+#createCustomer-content > div > div > #color > p:first-child{
+    font-size: 25px;
+    font-weight: bold;
 }

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
 
 import './pieces.css';
 import Header from '../public/header';
@@ -8,6 +7,8 @@ import FormPieces from './formPieces';
 import PiecesReadjustment from './piecesReadjustment';
 
 import img_placeholder from '../public/placeholder-img.jpg';
+
+const Connection = require('../public/connection');
 
 class pieces extends Component{
     render(){
@@ -46,12 +47,12 @@ class pieces extends Component{
                         <button
                             id="btn-edit-pieces"
                             onClick={() =>{
-                                Axios.get('http://localhost:3000/piece/'+sessionStorage.getItem("Selecionado"),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then( res =>{
+                                Connection.getPiece(sessionStorage.getItem("Selecionado")).then( res =>{
                                     sessionStorage.setItem("action", 2);
                                     document.querySelector('#formPieces-container').style.display = "flex";
-                                    document.querySelector('#pieces-name').value = res.data.result[0].piece_name;
-                                    document.querySelector('#pieces-unit').value = res.data.result[0].unity;
-                                    document.querySelector('#pieces-value').value = res.data.result[0].value;
+                                    document.querySelector('#pieces-name').value = res.piece_name;
+                                    document.querySelector('#pieces-unit').value = res.unity;
+                                    document.querySelector('#pieces-value').value = res.value;
 
                                     console.log(res);
                                 });

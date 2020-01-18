@@ -1,19 +1,19 @@
 import React, {Component} from 'react';
 
 import './piecesReadjustment.css';
-import Axios from 'axios';
+
+
+const Connection = require('../public/connection');
 
 class piecesReadjustment extends Component{
     state = {
-        Pecas: []
+        Pecas: [],
+        checkBox: false
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-           var Pecas = res.data;
-           const result = Pecas.result;            
-           Pecas = result;
-
-           this.setState({Pecas});
+        Connection.getPieces().then(res => {
+        // Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
+           this.setState({Pecas: res});
        });
     }
 
@@ -23,23 +23,23 @@ class piecesReadjustment extends Component{
             var data = {
                 "name": Pecas.piece_name,
                 "unity": Pecas.unity,
-                "value": Pecas.value + (Pecas.value * (reajuste / 100))
+                "value": parseFloat(Pecas.value) + (parseFloat(Pecas.value) * (reajuste / 100))
             }
-            Axios.put("http://localhost:3000/piece/" + Pecas.id_piece, data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+            Connection.putPiece(Pecas.id_piece, data);
+            // Axios.put("http://localhost:3000/piece/" + Pecas.id_piece, data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
         })
     }
-    updateOnePiece(peca){
+    updateOnePiece(id){
         var reajuste = document.querySelector("#piecesReadjustment-Number").value;
-
-        var sla = this.state.Pecas.find(element => element.id_piece == peca);
-
+        
+        var peca = this.state.Pecas.find(element => element.id_piece == id);
         var data = {
-            "name": sla.peca,
-            "unity": sla.unidade,
-            "value": sla.valor + (sla.valor * (reajuste / 100))
+            "name": peca.piece_name,
+            "unity": peca.unity,
+            "value": parseFloat(peca.value) + (parseFloat(peca.value) * (reajuste / 100))
         }
-        console.log(peca);
-        Axios.put("http://localhost:3000/piece/" + peca, data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
+        Connection.putPiece(id, data);
+        // Axios.put("http://localhost:3000/piece/" + peca, data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
     }
 
     montaSelect(){
@@ -61,12 +61,15 @@ class piecesReadjustment extends Component{
 
                     <div id='piecesReadjustment-first'>
                         <p>Peça</p>
-                        <input type='checkbox' name='todas'/>
+                        <input type='checkbox' name='todas' id="checkTodas"
+                            onChange={()=>{
+                               document.querySelector("#piecesReadjustment-select").disabled =  !document.querySelector("#piecesReadjustment-select").disabled;
+                            }} />
                         <label for='todas'>Todas</label>
                     </div>
 
                     <select id="piecesReadjustment-select">
-                        <option value="null">---</option>
+                        <option value="null" >---</option>
                         { this.montaSelect() }
                     </select>
 
@@ -84,7 +87,7 @@ class piecesReadjustment extends Component{
                             id='save'
                             value='Salvar'
                             onClick={() =>{
-                                if(document.querySelector("#piecesReadjustment-select").value == "null")
+                                if(document.querySelector("#checkTodas").checked)
                                     this.updateAllPieces();
                                 else
                                     this.updateOnePiece(document.querySelector("#piecesReadjustment-select").value);

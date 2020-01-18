@@ -3,10 +3,11 @@ import Header from '../../public/header';
 import { Link } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 
-import Axios from 'axios';
 
 import './update.css';
 import Cor from '../Create/Cor';
+
+const Connection = require('../../public/connection');
 
 class index extends Component{
     state = {
@@ -14,8 +15,8 @@ class index extends Component{
     }
 
     componentDidMount(){
-        Axios.get("http://localhost:3000/client/" + sessionStorage.getItem('Selecionado'), {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
-            this.setState({Clientes: res.data.result[0]});
+        Connection.getCustomer(sessionStorage.getItem("Selecionado")).then(res =>{
+            this.setState({Clientes: res});
 
                 
                 
@@ -41,13 +42,14 @@ class index extends Component{
         });
     }
     updateDataBase(){
-        var contato;
+        var contato = [];
         if(document.querySelector("#telefone_input").value == ''){
             contato = [document.querySelector("#celular_input").value.replace(/\D/g, "")];
         }else if(document.querySelector("#celular_input").value == ''){
             contato = [document.querySelector("#telefone_input").value.replace(/\D/g, "")];
         }else{
-            contato = [document.querySelector("#telefone_input").value.replace(/\D/g, ""), document.querySelector("#celular_input").value.replace(/\D/g, "")];
+            contato.push(document.querySelector("#telefone_input").value.replace(/\D/g, "").toString(), document.querySelector("#celular_input").value.replace(/\D/g, "").toString())
+            console.log(contato);
         }
         var data = {
             "info":{
@@ -56,7 +58,7 @@ class index extends Component{
                 "name_client": document.querySelector("#name_input").value,
                 "corporate_name": document.querySelector("#razao_input").value,
                 "email": document.querySelector("#email_input").value,
-                "observation_description": document.querySelector("#observacao_input").value,
+                "observation_description": document.querySelector("#observacao_input").value == '' ? " " : document.querySelector("#observacao_input").value,
                 "observation_color": '#ffffff',
                 "contact": contato
             },"end":{
@@ -69,8 +71,8 @@ class index extends Component{
                 "cep": 'a',                
             }
         }
-
-        Axios.put("http://localhost:3000/client/" + sessionStorage.getItem('Selecionado'), data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
+        
+        Connection.putCustomer(sessionStorage.getItem("Selecionado"), data).then(()=>{
                 document.querySelector("#cnpj_input").value = '';
                 document.querySelector("#name_input").value = '';
                 document.querySelector("#razao_input").value = '';

@@ -5,9 +5,10 @@ import Header from '../public/header';
 import icon_user from '../public/icons/icon_user.png';
 import img_placeholder from '../public/placeholder-img.jpg';
 
-import Axios from 'axios';
 
 import './customers.css';
+
+const Connection = require('../public/connection');
 
 class index extends Component{
     state = {
@@ -15,13 +16,14 @@ class index extends Component{
     }
 
     componentDidMount(){
-        Axios.get("http://localhost:3000/client", {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
-            this.setState({Clientes: res.data.result});
+        Connection.getCustomers().then(res =>{
+            this.setState({Clientes: res});
+            sessionStorage.removeItem("Selecionado");
         })
     }
     componentDidUpdate(){
-        Axios.get("http://localhost:3000/client", {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
-            this.setState({Clientes: res.data.result});
+        Connection.getCustomers().then(res=> {
+            this.setState({Clientes: res})
         })
     }
 
@@ -84,30 +86,34 @@ class index extends Component{
                                             })}</td>
                                         <td>{Cliente.cpf_cnpj}</td>
                                         <td id='list-customers-buttons'>
-                                            <Link to='/update' >
+                                            {/* <Link to='/update' > */}
                                                 <button 
                                                     id="btn-edit"
                                                     onClick={() =>{
                                                         console.log(Cliente.id_client);
                                                         sessionStorage.setItem("Selecionado", Cliente.id_client);
+                                                        this.props.history.push('/update');
                                                     }}
                                                 >Editar</button>
-                                            </Link>
+                                            {/* </Link> */}
                                             
-                                            <Link to='/read'>
+                                            {/* <Link to='/read'> */}
                                                 <button 
                                                     id="btn-create"
                                                     onClick={() =>{
                                                         console.log(Cliente.id_client);
                                                         sessionStorage.setItem("Selecionado", Cliente.id_client);
+                                                        this.props.history.push('/read');
                                                     }}
-                                                >Listar</button>
-                                            </Link>
+                                                >Listar </button>
+                                            {/* </Link> */}
 
                                             <button 
                                                 id="btn-delete"
                                                 onClick={() =>{
-                                                    Axios.delete('http://localhost:3000/client/' + Cliente.id_client, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
+                                                    Connection.deleteCustomer(Cliente.id_client);
+                                                    console.log("DELETEI")
+                                                    console.log(Cliente.id_client)
                                                 }}
                                             >Excluir</button>
                                         </td>

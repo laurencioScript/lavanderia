@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
 
 import Header from '../public/header';
 // import img_caracteristicas from '../public/icons/icon_caract.png';
 import img_placeholder from '../public/placeholder-img.jpg';
 
 import './features.css';
+
+const Connection = require('../public/connection');
 
 class index extends Component{
     state ={
@@ -14,8 +15,8 @@ class index extends Component{
         Caract: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/characteristic',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Caract = res.data.result;
+        Connection.getCharacteristics().then(res => {
+            var Caract = res;
             this.setState({Caract});
         });
         this.verificaNivel();
@@ -24,8 +25,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/characteristic',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Caract = res.data.result;
+        Connection.getCharacteristics().then(res => {
+            var Caract = res;
             this.setState({Caract});
         });
     }
@@ -108,7 +109,8 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                    Connection.deleteCharacteristic(sessionStorage.getItem('Selecionado'));
+                                    // Axios.delete('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                 }}
                             >Excluir</button>
                         </div>
@@ -150,10 +152,14 @@ class index extends Component{
                                         "name": document.getElementById('feature-name').value
                                     };
                                     if(this.state.createState && !document.querySelector("#feature-name").disabled)
-                                        {Axios.post('http://localhost:3000/characteristic/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
-                                        console.log(document.querySelector("#feature-name").disabled);}
+                                        {
+                                            Connection.postCharacteristic(data);
+                                            console.log(document.querySelector("#feature-name").disabled);
+                                        }
                                     else if(this.state.editState && !document.querySelector("#feature-name").disabled)
-                                        {Axios.put('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
+                                        {
+                                            Connection.putCharacteristic(sessionStorage.getItem('Selecionado'), data);
+                                        }
                                 }}
                             />
                         </div>

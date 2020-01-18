@@ -13,6 +13,7 @@ class Selltable extends Component {
             precoT: 0
         }
         this.mudaPreco = this.mudaPreco.bind(this)
+        this.tiraPreco = this.tiraPreco.bind(this)
     }
     componentDidUpdate(){
         let precos = document.querySelectorAll("#prec_total");
@@ -25,7 +26,7 @@ class Selltable extends Component {
         valores.map(preco =>{
             precoTotal += parseFloat(preco.preco);
         });
-        document.querySelector("#ValorTotal").innerHTML = "Valor Total: R$ " + precoTotal;
+        // document.querySelector("#ValorTotal").innerHTML = "Valor Total: R$ " + precoTotal;
         
         sessionStorage.setItem("precoTotal", precoTotal);
     }
@@ -37,6 +38,13 @@ class Selltable extends Component {
             this.props.mudaPreco(this.state.precoT);
         });
 
+    }
+    tiraPreco(preco){
+        this.setState({precoT: parseFloat(this.state.precoT) - parseFloat(preco)}, () => {
+            // console.log(this.state.precoT);
+
+            this.props.mudaPreco(this.state.precoT);
+        });
     }
 
     render() {
@@ -60,7 +68,7 @@ class Selltable extends Component {
 
                     <tbody id="itenTbody">{
                         this.state.itens.map(itens =>
-                        <LineTable iten={itens.Linha} mudaPreco={this.mudaPreco}/>
+                        <LineTable iten={itens.Linha} mudaPreco={this.mudaPreco} tiraPreco={this.tiraPreco}/>
                     )}                       
                     </tbody>
                     

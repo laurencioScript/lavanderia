@@ -18,15 +18,47 @@ class index extends Component {
             clientes: [],
             OptionCliente: [],
             SelectedOption: null,
-            precoTotal: 0
+
+
+            pagamento:{
+                debito: 0,
+                credito: 0,
+                cheque: 0,
+                dinheiro: 0,
+                desconto: 0,
+                totalPago: 0,
+                precoTotal: 0
+            },
+
+            itens:[{
+                amount: null,
+                unity: null,
+                value_unity: null,
+                value_total: null,
+                piece: null,
+                color: null,
+                defect: null,
+                characteristics: [null]
+            }]
         }
         this.mudaPreco = this.mudaPreco.bind(this)
+        this.mudaPagamento = this.mudaPagamento.bind(this)
     }
 
     mudaPreco(precoTotal){
-        this.setState({precoTotal}, () => {
-            console.log("ODIN " + this.state.precoTotal);
+        this.setState({ pagamento: {precoTotal} }, () => {
+            console.log("ODIN " + this.state.pagamento.precoTotal);
         });
+    }
+    mudaPagamento(pagamento){
+        this.setState({pagamento: {
+            debito: pagamento.debito,
+            credito: pagamento.credito,
+            cheque: pagamento.cheque,
+            dinheiro: pagamento.dinheiro,
+            desconto: pagamento.desconto,
+            totalPago: pagamento.totalPago
+        }});
     }
 
     componentDidMount(){
@@ -57,7 +89,7 @@ class index extends Component {
     pegaData(){
         var date = new Date();
 
-        return date.getFullYear() + "-" + date.getMonth() +"-" +date.getDate();
+        return date.getFullYear() + "-" + date.getMonth() + "-" +date.getDate();
     }
 
     render() {
@@ -112,7 +144,7 @@ class index extends Component {
                             <textarea placeholder="Observações"/>
                         </div>
                         <div id="RVfinalizar">
-                            <p id="ValorTotal">Valor Total: R$ </p>
+                            <p id="ValorTotal">Valor Total: R$ {this.state.pagamento.precoTotal}</p>
     
                             <input type="button" value="Pagamento"onClick={()=>{
                                 document.querySelector("#RVpagamentoContainer").style.display = "flex";
@@ -124,7 +156,7 @@ class index extends Component {
                 </div>
 
                 <CADcliente />
-                <Pagamento precoTotal={this.state.precoTotal}/>
+                <Pagamento precoTotal={this.state.pagamento.precoTotal} mudaPagamento={this.mudaPagamento}/>
 
             </>
         );

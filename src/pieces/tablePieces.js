@@ -1,28 +1,21 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
+
+const Connection = require('../public/connection');
 
 class tablePieces extends Component{
     state = {
         Pieces: []
     }
      componentDidMount(){
-         Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Pieces = res.data;
-            const result = Pieces.result;            
-            Pieces = result;
-
-            this.setState({Pieces});
+         Connection.getPieces().then(res => {
+            this.setState({Pieces: res});
         });
     }
     componentDidUpdate(){
         localStorage.clear();
 
-        Axios.get('http://localhost:3000/piece', {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Pieces = res.data;
-            const result = Pieces.result;            
-            Pieces = result;
-
-            this.setState({Pieces});
+        Connection.getPieces().then(res => {
+            this.setState({Pieces: res});
         });
     }
 
@@ -52,7 +45,7 @@ class tablePieces extends Component{
                     <tr>
                         <th>Peça</th>
                         <th>Unidade</th>
-                        <th>Valor $</th>
+                        <th>Valor R$</th>
                     </tr>
                 </thead>
                 <tbody id="corpo_tabela">{
@@ -63,7 +56,7 @@ class tablePieces extends Component{
                     }} id={Pieces.id_piece}>
                         <td id="pices-name">{Pieces.piece_name}</td>
                         <td id="pices-email">{Pieces.unity}</td>
-                        <td id="pieces-nivel">{Pieces.value}</td>
+                        <td id="pieces-nivel">{"R$ " + Pieces.value}</td>
                     </tr>
                 )}
                 </tbody>

@@ -1,41 +1,34 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import './tableUsers.css';
+
+const Connection = require('../public/connection');
 
 class tableUsers extends Component{   
 
     state = {
         Users: [],
         Selecionado: localStorage.getItem("Selecioando"),
-        Pesquisa: []
+        Conteudo: [],
+        Pesquisa: "",
+        Atualiza: true
     }
     componentDidMount(){
         localStorage.clear();
 
-        axios.get('http://localhost:3000/user/' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
-        .then(res => {
-            var Users = res.data.result;
+        Connection.getUsers().then(res => {
+            var Users = res;
+            this.setState({Users,
+            Conteudo: res});
+        });
+    }
+    conponentAtualiza(){
+        Connection.getUsers().then(res => {
+            var Users = res;
             this.setState({Users});
         });
     }
-    componentDidUpdate(){
-        // this.state.Users = [];
-        localStorage.clear();
 
-        axios.get('http://localhost:3000/user/' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
-        .then(res => {
-            var Users = res.data;
-            const result = Users.result
-            if(Users.data != result.data){
-                this.forceUpdate();
-            }
-            Users = result;
-
-
-            this.setState({Users});
-        });
-    }
     limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
@@ -60,6 +53,32 @@ class tableUsers extends Component{
         return nivel;
     }
 
+    setPesquisa = async (Pesquisa) =>{
+        await this.pesquisa(Pesquisa).then(()=>{
+        })
+    }
+
+    pesquisa = async (val) => {
+        val === "" 
+        ? this.setState({Conteudo: await Connection.getUsers()})
+        : this.setState({Conteudo: this.retornaPesquisa(val)});
+    }
+
+    retornaPesquisa = val =>{
+        var data = this.state.Users.map(res => {
+            return  res.name_user.toLowerCase().search(val) !== -1 ||
+                    res.email.toLowerCase().search(val) !== -1 ||
+                    this.nomeNivel(res.level_user).toLowerCase().search(val) !== -1
+                    ? res : undefined;
+        });
+
+        return data
+    }
+
+    validaConteudo(){
+        return this.state.Conteudo
+    }
+    
     render(){
         return(
             <div id="table-users">
@@ -71,17 +90,22 @@ class tableUsers extends Component{
                         <th>Nível</th>
                     </tr>
                 </thead>
-                <tbody id="corpo_tabela">{
-                this.state.Users.map(Users => 
-                    <tr onClick={() => {
-                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_user ? null : Users.id_user);
-                        this.verificaLista(document.getElementById(Users.id_user));
-                    }} id={Users.id_user}>
-                        <td id="user-name">{Users.name_user}</td>
-                        <td id="user-email">{Users.email}</td>
-                        <td id="user-nivel">{this.nomeNivel(Users.level_user)}</td>
-                    </tr>
-                )}
+                <tbody id="corpo_tabela" >{
+                this.validaConteudo().map(Users => {
+                    if(Users !== undefined){
+                        return (
+                            <tr onClick={() => {
+                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Users.id_user ? null : Users.id_user);
+                                this.verificaLista(document.getElementById(Users.id_user));
+                            }}
+                            id={Users.id_user}>
+                                <td id="user-name">{Users.name_user}</td>
+                                <td id="user-email">{Users.email}</td>
+                                <td id="user-nivel">{this.nomeNivel(Users.level_user)}</td>
+                            </tr>
+                        );
+                    }
+                })}
                 </tbody>
             </table>
             </div>

@@ -22,7 +22,21 @@ class LineTable extends Component {
             Defeitos: []
         },
 
-        SelectedOption: ''
+        SelectedOption: '',
+        SelectedOptionCaract: '',
+        SelectedOptionDefeitos: '',
+        SelectedOptionCores: '',
+
+        Iten: {
+            amount: '',
+            unity: '',
+            value_unity: '',
+            value_total: '',
+            piece: '',
+            colors: [],
+            defects: [],
+            characteristic: [],
+        }
     }
     componentDidMount(){
         var Pecas;
@@ -81,7 +95,18 @@ class LineTable extends Component {
         this.setState({SelectedOption}, () => {
             this.mudaTexto();
         });
-
+    }
+    handleChangeCor = SelectedOptionCores =>{
+        this.setState({SelectedOptionCores})
+            // ,
+            //             Iten: {Colors : SelectedOptionCores.map(Cor => Cor.)}})
+                            // typeof SelectedOptionCores == Array ? SelectedOptionCores.map(cor => cor) : SelectedOptionCores[0]}}, ()=>{console.log(SelectedOptionCores)});
+    }
+    handleChangeCaract = SelectedOptionCaract =>{
+        this.setState({SelectedOptionCaract});
+    }
+    handleChangeDefeito = SelectedOptionDefeitos =>{
+        this.setState({SelectedOptionDefeitos});
     }
     mudaTexto = () => {
         document.querySelector("#id-" + this.state.id).querySelector("#unidade").innerHTML = this.state.SelectedOption == null ? " " : this.state.SelectedOption.value.unity;
@@ -96,6 +121,7 @@ class LineTable extends Component {
             <tr id={"id-" + this.state.id}>
                 <td><img src={icon_close} id="sellTableClose" onClick={() => {
                     document.querySelector('#id-'+this.state.id).parentNode.removeChild(document.querySelector('#id-'+this.state.id));
+                    this.props.tiraPreco((this.state.SelectedOption == '' || this.state.SelectedOption.value.value == '') ? 0 : this.state.SelectedOption.value.value);
                 }}/></td>
                 <td>
                     <Select 
@@ -104,9 +130,9 @@ class LineTable extends Component {
                         value={this.state.SelectedOption} 
                     />
                 </td>
-                <td><Select isMulti components={animatedComponents} closeMenuOnSelect={false} options={this.state.Option.Cores}/></td>
-                <td><Select isMulti components={animatedComponents} closeMenuOnSelect={false} options={this.state.Option.Caract}/></td>
-                <td><Select isMulti components={animatedComponents} closeMenuOnSelect={false} options={this.state.Option.Defeitos}/></td>                        
+                <td><Select isMulti components={animatedComponents} closeMenuOnSelect={false} options={this.state.Option.Cores} onChange={this.handleChangeCor} value={this.state.SelectedOptionCores} /></td>
+                <td><Select isMulti components={animatedComponents} closeMenuOnSelect={false} options={this.state.Option.Caract} onChange={this.handleChangeCaract} value={this.state.SelectedOptionCaract} /></td>
+                <td><Select isMulti components={animatedComponents} closeMenuOnSelect={false} options={this.state.Option.Defeitos} onChange={this.handleChangeDefeito} value={this.state.SelectedOptionDefeitos} /></td>                        
                 <td></td>
                 <td><input type="number" defaultValue="1" min="1" id="numberQTD" onChange={this.mudaTexto}/></td>
                 <td id="unidade"></td>

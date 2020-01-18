@@ -1,31 +1,52 @@
 import React, { Component } from 'react';
 import Header from '../public/header';
-import axios from 'axios';
 import img_placeholder from '../public/placeholder-img.jpg';
 import './Users.css';
 
 import TableUsers from './tableUsers';
 import FormUser from './formUser';
 
+const Connection = require('../public/connection');
+
 class index extends Component{
     constructor (props){
         super(props);
         this.state = {
-            Message: ""
+            Message: "",
+            Pesquisa: ''
         };
         
         this.deleteUser = this.deleteUser.bind(this);
-    }
-    
+    }    
     deleteUser = () =>{
         if(sessionStorage.getItem("Selecionado") != ' ')
         {
-            axios.delete('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado") ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+            Connection.deleteUser(sessionStorage.getItem("Selecionado"))
             sessionStorage.removeItem('Selecionado');
         }else{
             this.setState({Message: "Você não tem permissão"});
         }
     }
+    edituser = () =>{
+        Connection.getUser(sessionStorage.getItem("Selecionado")).then(res =>{
+            sessionStorage.setItem("action", 2);
+            console.log(res);
+            document.querySelector('#cad-container').style.display = "flex";
+            document.querySelector('#form-name').value = res.name_user;
+            document.querySelector('#form-password').value = "";
+            document.querySelector('#form-email').value = res.email;
+            document.querySelector("#form-select").value = res.level_user;
+        });
+    }
+
+    _setPesquisa = async (val) =>{
+        this.Pesquisa.setPesquisa(val)
+    }
+
+    _componentAtualizou = () =>{
+        this.Pesquisa.componentAtualizou();
+    }
+
     verificaNivel(){
         sessionStorage.removeItem("Selecionado");
         var retorno = ' ';
@@ -54,7 +75,20 @@ class index extends Component{
                         <p>Lista de Usuários</p>
                         <div id="search">
                             <img src={img_placeholder} alt=" "></img>
-                            <input type="text" placeholder="Procurar" name="search" id="search-user" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
+                            <input 
+                                type="text"    
+                                placeholder="Procurar" 
+                                name="search" id="search-user" 
+                                onChange={(e)=>{
+                                    if(e.target.value === "")
+                                        setInterval(this._setPesquisa(e.target.value.toLowerCase()))
+                                    else
+                                        clearInterval();
+                                        this._setPesquisa(e.target.value.toLowerCase())
+                                }}
+                                onLoad={()=>{
+                                    setInterval(this._setPesquisa(""))
+                                }} />
                         </div>
                         
                         <button id="btn-find">Localizar</button>
@@ -77,22 +111,11 @@ class index extends Component{
 
                         <button 
                             id="btn-edit" 
-                            onClick={() =>{
-                                axios.get('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado"),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then( res =>{
-                                    sessionStorage.setItem("action", 2);
-                                    console.log(res.data.result[0]);
-                                    document.querySelector('#cad-container').style.display = "flex";
-                                    document.querySelector('#form-name').value = res.data.result[0].name_user;
-                                    document.querySelector('#form-password').value = "";
-                                    document.querySelector('#form-email').value = res.data.result[0].email;
-                                    document.querySelector("#form-select").value = res.data.result[0].level_user;
-                                });
-                            }
-                        }>Editar</button>
+                            onClick={this.edituser}>Editar</button>
                     </div>
                 </div>
                 
-                <TableUsers></TableUsers>
+                <TableUsers ref={(component) => {this.Pesquisa = component}} />
                 
                 <FormUser></FormUser>
             </>;
@@ -110,5 +133,6 @@ class index extends Component{
         );
     }
 }
+
 
 export default index;

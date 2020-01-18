@@ -1,6 +1,7 @@
 import React from 'react';
-import axios from  'axios';
 import './formUser.css';
+
+const Connection = require('../public/connection');
 
 class formUser extends React.Component{
     closeForm(){
@@ -48,10 +49,10 @@ class formUser extends React.Component{
                                 "level": parseInt(document.querySelector('#form-select').value)
                             };
                         if(sessionStorage.getItem('action') == 1){
-                            axios.post('http://localhost:3000/user/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                            Connection.postUser(data);
                         }
                         else if(sessionStorage.getItem('action') == 2){
-                            axios.put('http://localhost:3000/user/'+sessionStorage.getItem("Selecionado"), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                            Connection.putUser(sessionStorage.getItem("Selecionado"), data);
                         }
 
                         sessionStorage.removeItem("action");

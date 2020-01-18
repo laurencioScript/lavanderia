@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
 import { SliderPicker } from 'react-color';
 
 import Header from '../public/header';
-import Bolinha from './bolinha';
+import Bolinha from '../public/bolinha';
 import img_placeholder from '../public/placeholder-img.jpg';
 import icon_paleta from '../public/icons/icon_paleta2.png';
 
 import './colors.css';
-import { isObject } from 'util';
+
+const Connection = require('../public/connection');
 
 class index extends Component{
     state ={
@@ -18,8 +18,8 @@ class index extends Component{
         Cores: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/color',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Cores = res.data.result;
+        Connection.getColors().then(res => {
+            var Cores = res;
             this.setState({Cores});
         });
         this.verificaNivel();
@@ -28,8 +28,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/color',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Cores = res.data.result;
+        Connection.getColors().then(res => {
+            var Cores = res;
             this.setState({Cores});
         });
     }
@@ -122,7 +122,8 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado') , {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                    Connection.deleteColor(sessionStorage.getItem('Selecionado'));
+                                    // Axios.delete('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado') , {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
                                 }}
                             >Excluir</button>
                         </div>
@@ -169,10 +170,15 @@ class index extends Component{
                                         "hexadecimal": this.state.Cor
                                     };
                                     if(this.state.createState && !document.querySelector("#color-name").disabled)
-                                        {Axios.post('http://localhost:3000/color/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
-                                        console.log(document.querySelector("#color-name").disabled);}
+                                        {
+                                            Connection.postColor(data);
+                                            // Axios.post('http://localhost:3000/color/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                            console.log(document.querySelector("#color-name").disabled);}
                                     else if(this.state.editState && !document.querySelector("#color-name").disabled)
-                                        {Axios.put('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
+                                        {
+                                            Connection.putColor(sessionStorage.getItem('Selecionado'), data);
+                                            // Axios.put('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
+                                        }
                                 }}
                             />
                             <div id='color-picker'>

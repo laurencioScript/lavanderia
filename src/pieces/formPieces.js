@@ -1,9 +1,20 @@
 import React, {Component} from 'react';
 
 import './formPieces.css';
-import Axios from 'axios';
+
+const Connection = require('../public/connection');
  
 class formPieces extends Component{
+    state = {
+        Unidade: []
+    }
+
+    componentDidMount(){
+        Connection.getUnitys().then(res => {
+            this.setState({Unidade: res.map(map => { return map.unity_name })})
+        })
+    }
+
     closeForm(){
         document.querySelector('#formPieces-container').style.display = "none";
     }
@@ -25,10 +36,13 @@ class formPieces extends Component{
                     <div id='formPieces-segunda_linha'>
                         <div>
                             <p>Unidade</p>
-                            <input
+                            <select id="pieces-unit">{
+                                this.state.Unidade.map(unity =>  <option value={unity}>{unity}</option> )
+                            }</select>
+                            {/* <input
                                 type="text"
                                 id='pieces-unit'
-                                />
+                                /> */}
                         </div>
                         <div>
                             <p>Valor $</p>
@@ -44,10 +58,10 @@ class formPieces extends Component{
                                 "value" : parseInt(document.querySelector('#pieces-value').value)
                             };
                             if(sessionStorage.getItem('action') == 1){
-                                Axios.post('http://localhost:3000/piece/register', data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                Connection.postPiece(data);
                             }
                             else if(sessionStorage.getItem('action') == 2){
-                                Axios.put('http://localhost:3000/piece/'+sessionStorage.getItem("Selecionado"), data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                Connection.putPiece(sessionStorage.getItem("Selecionado"), data);
                             }
     
                             sessionStorage.removeItem("action");

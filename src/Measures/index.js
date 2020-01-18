@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
 
 import Header from '../public/header';
 import img_placeholder from '../public/placeholder-img.jpg';
 
 import './measures.css';
+
+const Connection = require('../public/connection');
 
 class index extends Component{
     state ={
@@ -13,8 +14,8 @@ class index extends Component{
         Medidas: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/unity' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Medidas = res.data.result;
+        Connection.getUnitys().then(res => {
+            var Medidas = res;
             this.setState({Medidas});
         });
         this.verificaNivel();
@@ -23,8 +24,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/unity' ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Medidas = res.data.result;
+        Connection.getUnitys().then(res => {
+            var Medidas = res;
             this.setState({Medidas});
         });
     }
@@ -107,7 +108,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/unity/' + sessionStorage.getItem('Selecionado') ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                    Connection.deleteUnity(sessionStorage.getItem('Selecionado'))
                                 }}
                             >Excluir</button>
                         </div>
@@ -149,10 +150,14 @@ class index extends Component{
                                         "name": document.getElementById('measure-name').value
                                     };
                                     if(this.state.createState && !document.querySelector("#measure-name").disabled)
-                                        {Axios.post('http://localhost:3000/unity/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
-                                        console.log(document.querySelector("#measure-name").disabled);}
+                                        {
+                                            Connection.postUnity(data);
+                                            console.log(document.querySelector("#measure-name").disabled);
+                                        }
                                     else if(this.state.editState && !document.querySelector("#measure-name").disabled)
-                                        {Axios.put('http://localhost:3000/unity/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
+                                        {
+                                            Connection.putUnity(sessionStorage.getItem('Selecionado'), data);
+                                        }
                                 }}
                             />
                         </div>

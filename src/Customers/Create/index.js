@@ -1,22 +1,42 @@
 import React, { Component } from 'react';
 import Header from '../../public/header';
 import { Link } from 'react-router-dom';
-import InputMask from 'react-input-mask';
 import MaskedInput from 'react-text-mask';
-
-import Axios from 'axios';
+import { CirclePicker } from 'react-color';
 
 import './create.css';
 import Cor from './Cor';
 
+const Connection = require('../../public/connection');
+
 class index extends Component{
     state = {
         telefone: '',
-        celular:''
+        celular:'',
+        colors: [],
+        Cor: ''
     }
 
-    createClient(){
+    componentDidMount(){
+        Connection.getColors().then(res =>{
+            this.setState({ colors: res.map(map=>{ return map.hexadecimal}) });
+        })
+    }
+
+    mudaCor = (color) =>{
+        var param;
+
+        if(color.hex === undefined)
+            param = ({Cor: color});
+        else 
+            param = ({Cor: color.hex});
+        
+        this.setState(param);
+    }
+
+    createClient = () =>{
         var contato;
+        var cor = this.state.Cor;
         if(document.querySelector("#telefone_input").value == ''){
             contato = [document.querySelector("#celular_input").value.replace(/\D/g, "")];
         }else if(document.querySelector("#celular_input").value == ''){
@@ -24,7 +44,6 @@ class index extends Component{
         }else{
             contato = [document.querySelector("#telefone_input").value.replace(/\D/g, ""), document.querySelector("#celular_input").value.replace(/\D/g, "")];
         }
-        console.log(contato)
         var data = {
             "info":{
                 "cpf_cnpj": document.querySelector("#cnpj_input").value == '' ? document.querySelector("#cpf_input").value : document.querySelector("#cnpj_input").value ,
@@ -32,8 +51,8 @@ class index extends Component{
                 "name_client": document.querySelector("#name_input").value,
                 "corporate_name": document.querySelector("#razao_input").value,
                 "email": document.querySelector("#email_input").value,
-                "observation_description": document.querySelector("#observacao_input").value,
-                "observation_color": '#ffffff',
+                "observation_description": document.querySelector("#observacao_input").value == '' ? " " : document.querySelector("#observacao_input").value,
+                "observation_color": cor,
                 "contact": contato
             },"end":{
                 "address_client": document.querySelector("#logra_input").value,                
@@ -46,7 +65,7 @@ class index extends Component{
             }
         }
 
-        Axios.post('http://localhost:3000/client/register', data, {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(()=>{
+        Connection.postCustomer(data).then(()=>{
                 document.querySelector("#cnpj_input").value = '';
                 document.querySelector("#name_input").value = '';
                 document.querySelector("#razao_input").value = '';
@@ -128,7 +147,11 @@ class index extends Component{
 
                             <div id="number">
                                 <p class="title">Número</p>
-                                <input type="text" id='numero_input'/>
+                                <MaskedInput 
+                                    mask={[ /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/ ]}
+                                    guide={false}
+                                    id="numero_input"
+                                />
                             </div>
                             <div id="complement">
                                 <p class="title">Complemento</p>
@@ -255,6 +278,16 @@ class index extends Component{
                                     }}
                                 />
 
+                                <div id="color">
+                                    <p class="title">Cor</p>
+
+                                    <CirclePicker 
+                                        colors={this.state.colors}
+                                        circleSize={50}
+                                        onChange={this.mudaCor}
+                                    />
+                                </div>
+
                             </div>
 
                             <div id="cellphone">
@@ -272,16 +305,12 @@ class index extends Component{
 
                             <div id="note">
                                 <p class="title">Observação</p>
-                                <input type="text" id='observacao_input' />
+                                <textarea type="text" id='observacao_input' />
                             </div>
                         </div>
 
                             <div id="final">                                
-                                <div id="color">
-                                    <p class="title">Cor</p>
-                                    <Cor cor="#05d9f7"/>
-                                </div>
-                                
+                                                               
                                 <input 
                                     type="button" 
                                     value="Salvar"

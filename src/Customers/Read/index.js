@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import Header from '../../public/header';
-import { Link, Redirect } from 'react-router-dom';
-
-import Axios from 'axios';
+import { Link } from 'react-router-dom';
+import Bolinha from '../../public/bolinha';
+import Cor from '../Create/Cor';
 
 import './read.css';
+
+const Connection = require('../../public/connection');
 
 class index extends Component{
     state = {
@@ -12,11 +14,15 @@ class index extends Component{
     }
 
     componentDidMount(){
-        Axios.get("http://localhost:3000/client/" + sessionStorage.getItem('Selecionado'), {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res =>{
-            this.setState({Clientes: res.data.result[0]});
+        Connection.getCustomer(sessionStorage.getItem('Selecionado')).then(res =>{
+            this.setState({Clientes: res});
 
-            // sessionStorage.removeItem("Selecionado");
+            this._setColor();
         })
+    }
+
+    _setColor = () =>{
+        this.Cor.setColor(this.state.Clientes.observation_color);
     }
 
     render(){
@@ -32,23 +38,20 @@ class index extends Component{
                     </div>
 
                     <div id="buttons">
-                        <Link to='/update' >
-                            <button 
-                                id="btn-edit" 
-                                onClick={() => {sessionStorage.setItem("Selecionado", this.state.Clientes.id_client)}}
-                            >Editar</button>
-                        </Link>
+                        <button 
+                            id="btn-edit" 
+                            onClick={() => {sessionStorage.setItem("Selecionado", this.state.Clientes.id_client); this.props.history.push('/update')}}
+                        >Editar</button>
 
-                        <Link to='/clientes' >
-                            <button 
-                                id="btn-create" 
-                            >Listar</button>
-                        </Link>
+                        <button 
+                            id="btn-create" 
+                            onClick={() =>{ this.props.history.push('/clientes')}}
+                        >Listar</button>
                         
                         <button 
                             id="btn-delete" 
                             onClick={() => {
-                                Axios.delete('http://localhost:3000/client/' + sessionStorage.getItem("Selecionado"), {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(this.props.history.push('/Clientes'));}}
+                                Connection.deleteCustomer(sessionStorage.getItem("Selecionado")).then(this.props.history.push('/Clientes'));}}
                         >Excluir</button>
                     </div>
                 </div>
@@ -57,81 +60,81 @@ class index extends Component{
                     <div id="customer-content">
                         <div id="first-line">
                             <div id="name">
-                                <p class="title">Nome</p>
+                                <p className="title">Nome</p>
                                 <p>{this.state.Clientes.name_client}</p>
                             </div>
                             <div id="corporateName">
-                                <p class="title">Razão Social</p>
+                                <p className="title">Razão Social</p>
                                 <p>{this.state.Clientes.corporate_name}</p>
                             </div>
                             <div id="CNPJ">
-                                <p class="title">CNPJ</p>
+                                <p className="title">CNPJ</p>
                                 <p>{this.state.Clientes.corporate_name == '' ? '' : this.state.Clientes.cpf_cnpj}</p>
                             </div>
                         </div>
                         
                         <div id="secondLine">
                             <div id="CPF">
-                                <p class="title">CPF</p>
+                                <p className="title">CPF</p>
                                 <p>{this.state.Clientes.corporate_name != '' ? '' : this.state.Clientes.cpf_cnpj}</p>
                             </div>
 
                             <div id="publicPlace">
-                                <p class="title">Logradouro</p>
+                                <p className="title">Logradouro</p>
                                 <p>{this.state.Clientes.address_client}</p>
                             </div>
 
                             <div id="number">
-                                <p class="title">Número</p>
+                                <p className="title">Número</p>
                                 <p>{this.state.Clientes.phone_number}</p>
                             </div>
                             <div id="complement">
-                                <p class="title">Complemento</p>
+                                <p className="title">Complemento</p>
                                 <p>{this.state.Clientes.complement}</p>
                             </div>
                         </div>
                         
                         <div id="third-line">
                             <div id="neighborhood">
-                                <p class="title">Bairro</p>
+                                <p className="title">Bairro</p>
                                 <p>{this.state.Clientes.neighborhood}</p>
                             </div>
 
                             <div id="city">
-                                <p class="title">Cidade</p>
+                                <p className="title">Cidade</p>
                                 <p>{this.state.Clientes.city}</p>
                             </div>
 
                             <div id="state">
-                                <p class="title">Estado</p>
+                                <p className="title">Estado</p>
                                 <p>{this.state.Clientes.state_city}</p>
                             </div>
 
                             <div id="eMail">
-                                <p class="title">E-mail</p>
+                                <p className="title">E-mail</p>
                                 <p>{this.state.Clientes.email}</p>
                             </div>
                         </div>
                         
                         <div id="fourthy-line">
                             <div id="phone">
-                                <p class="title">Telefone</p>
+                                <p className="title">Telefone</p>
                                 <p>{this.state.Clientes.contact}</p>                            
                             </div>
 
                             <div id="cellphone">
-                                <p class="title">Celular</p>
+                                <p className="title">Celular</p>
                                 <p>{this.state.Clientes.contact}</p>
                             </div>
 
                             <div id="note">
-                                <p class="title">Observação</p>
+                                <p className="title">Observação</p>
                                 <p>{this.state.Clientes.observation_description}</p>
                             </div>
 
                             <div id="color">
-                                <p class="title">Cor</p>
-                                <p>{this.state.Clientes.observation_color}</p>
+                                <p className="title">Cor</p>
+                                <Cor ref={(component) => { this.Cor = component}} />
                             </div>
                         </div>
                     </div>

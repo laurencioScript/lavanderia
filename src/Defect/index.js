@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
 
 import Header from '../public/header';
 import img_placeholder from '../public/placeholder-img.jpg';
 
 import './defects.css';
+
+const Connection = require('../public/connection');
 
 class index extends Component{
     state ={
@@ -13,11 +14,9 @@ class index extends Component{
         Defeitos: []
     }
     componentDidMount(){
-        Axios.get('http://localhost:3000/defect',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Defeitos = res.data.result;
+        Connection.getDefects().then(res => {
+            var Defeitos = res;
             this.setState({Defeitos});
-
-            console.log(Defeitos);
         });
         this.verificaNivel();
 
@@ -25,8 +24,8 @@ class index extends Component{
     }
 
     componentDidUpdate(){
-        Axios.get('http://localhost:3000/defect',{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}}).then(res => {
-            var Defeitos = res.data.result;
+        Connection.getDefects().then(res => {
+            var Defeitos = res;
             this.setState({Defeitos});
         });
 
@@ -113,7 +112,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Axios.delete('http://localhost:3000/defect/' + sessionStorage.getItem('Selecionado') ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                    Connection.deleteDefect(sessionStorage.getItem('Selecionado'));
                                 }}
                             >Excluir</button>
                         </div>
@@ -155,10 +154,14 @@ class index extends Component{
                                         "name": document.getElementById('defect-name').value
                                     };
                                     if(this.state.createState && !document.querySelector("#defect-name").disabled)
-                                        {Axios.post('http://localhost:3000/defect/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
-                                        console.log(document.querySelector("#defect-name").disabled);}
+                                        {   
+                                            Connection.postDefect(data);
+                                            console.log(document.querySelector("#defect-name").disabled);
+                                        }
                                     else if(this.state.editState && !document.querySelector("#defect-name").disabled)
-                                        {Axios.put('http://localhost:3000/defect/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})}
+                                        {
+                                            Connection.putDefect(sessionStorage.getItem('Selecionado'), data);
+                                        }
                                 }}
                             />
                         </div>
