@@ -11,6 +11,17 @@ import img_placeholder from '../public/placeholder-img.jpg';
 const Connection = require('../public/connection');
 
 class pieces extends Component{
+    constructor (props){
+        super(props);
+        this.state = {
+            Pesquisa: ""
+        }
+    }
+
+    _setPesquisa = async (val) =>{
+        this.Pesquisa.setPesquisa(val);
+    }
+
     render(){
         return(
             <>
@@ -29,7 +40,13 @@ class pieces extends Component{
                         <p>Lista de Peças</p>
                         <div id="search">
                             <img src={img_placeholder} alt=" "></img>
-                            <input type="text" placeholder="Procurar" name="search" id="search-piece" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
+                            <input 
+                                type="text"    
+                                placeholder="Procurar" 
+                                name="search" id="search-pieces" 
+                                onChange={(e)=>{
+                                    this._setPesquisa(e.target.value.toLowerCase())
+                                }} />
                         </div>
                         
                         <button id="btn-find">Localizar</button>
@@ -68,7 +85,7 @@ class pieces extends Component{
                     </div>
                 </div>
 
-                <TablePieces/>
+                <TablePieces ref={(component) => {this.Pesquisa = component}}/>
                 <FormPieces />
                 <PiecesReadjustment />
             </>

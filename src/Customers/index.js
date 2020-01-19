@@ -12,19 +12,41 @@ const Connection = require('../public/connection');
 
 class index extends Component{
     state = {
-        Clientes: []
+        Clientes: [],
+        Conteudo: [],
+        Atauliza: true
     }
 
     componentDidMount(){
         Connection.getCustomers().then(res =>{
-            this.setState({Clientes: res});
+            this.setState({Clientes: res, Conteudo: res});
             sessionStorage.removeItem("Selecionado");
         })
     }
     componentDidUpdate(){
-        Connection.getCustomers().then(res=> {
-            this.setState({Clientes: res})
-        })
+        if(this.state.Atualiza)
+           {this.componenAtualiza();}
+    }
+    componenAtualiza(){
+        Connection.getCustomers().then(res => {
+            var Clientes = res;
+            this.setState({Clientes, Conteudo: Clientes});
+        });
+    }
+    pesquisa = async (val) => {
+        val === "" 
+        ? this.setState({Atualiza: true, Conteudo: await Connection.getCustomers() })
+        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+    }
+
+    retornaPesquisa = (val) =>{
+        var data = this.state.Clientes.map(res => {
+            return  res.name_client.toLowerCase().search(val) !== -1  ||
+                    res.cpf_cnpj.toLowerCase().search(val) !== -1
+                    ? res : undefined;
+        });
+
+        return data
     }
 
     render(){
@@ -47,7 +69,13 @@ class index extends Component{
                             <p>Lista de Clientes</p>
                             <div id="search">
                                 <img src={img_placeholder} alt=" "></img>
-                                <input type="text" placeholder="Procurar" name="search" id="search-piece" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
+                                <input 
+                                    type="text"    
+                                    placeholder="Procurar" 
+                                    name="search" id="search-measures" 
+                                    onChange={(e)=>{
+                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                }} />
                             </div>
                             
                             <button id="btn-find">Localizar</button>
@@ -70,55 +98,58 @@ class index extends Component{
                                 <tr>
                                     <td>Nome</td>
                                     <td>Telefone</td>
-                                    <td>CPF</td>
+                                    <td>CPF/CNPJ</td>
                                     <td>Ações</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.Clientes.map(Cliente =>
-                                    <tr>
-                                        <td>{Cliente.name_client}</td>
-                                        <td>{Cliente.contact.map(numero => {
-                                            var num = '(' + numero.substr(0, 2) + ') ' + numero.substr(2);
-                                            Cliente.contact.length >= 2 ? num += '  |  ' : num = num;
-                                            
-                                            return num;
-                                            })}</td>
-                                        <td>{Cliente.cpf_cnpj}</td>
-                                        <td id='list-customers-buttons'>
-                                            {/* <Link to='/update' > */}
-                                                <button 
-                                                    id="btn-edit"
-                                                    onClick={() =>{
-                                                        console.log(Cliente.id_client);
-                                                        sessionStorage.setItem("Selecionado", Cliente.id_client);
-                                                        this.props.history.push('/update');
-                                                    }}
-                                                >Editar</button>
-                                            {/* </Link> */}
-                                            
-                                            {/* <Link to='/read'> */}
-                                                <button 
-                                                    id="btn-create"
-                                                    onClick={() =>{
-                                                        console.log(Cliente.id_client);
-                                                        sessionStorage.setItem("Selecionado", Cliente.id_client);
-                                                        this.props.history.push('/read');
-                                                    }}
-                                                >Listar </button>
-                                            {/* </Link> */}
+                                {this.state.Conteudo.map(Cliente =>{
+                                    if(Cliente !== undefined)
+                                        return(
+                                            <tr>
+                                                <td>{Cliente.name_client}</td>
+                                                <td>{Cliente.contact.map(numero => {
+                                                    var num = '(' + numero.substr(0, 2) + ') ' + numero.substr(2);
+                                                    Cliente.contact.length >= 2 ? num += '  |  ' : num = num;
+                                                    
+                                                    return num;
+                                                    })}</td>
+                                                <td>{Cliente.cpf_cnpj}</td>
+                                                <td id='list-customers-buttons'>
+                                                    {/* <Link to='/update' > */}
+                                                        <button 
+                                                            id="btn-edit"
+                                                            onClick={() =>{
+                                                                console.log(Cliente.id_client);
+                                                                sessionStorage.setItem("Selecionado", Cliente.id_client);
+                                                                this.props.history.push('/update');
+                                                            }}
+                                                        >Editar</button>
+                                                    {/* </Link> */}
+                                                    
+                                                    {/* <Link to='/read'> */}
+                                                        <button 
+                                                            id="btn-create"
+                                                            onClick={() =>{
+                                                                console.log(Cliente.id_client);
+                                                                sessionStorage.setItem("Selecionado", Cliente.id_client);
+                                                                this.props.history.push('/read');
+                                                            }}
+                                                        >Listar </button>
+                                                    {/* </Link> */}
 
-                                            <button 
-                                                id="btn-delete"
-                                                onClick={() =>{
-                                                    Connection.deleteCustomer(Cliente.id_client);
-                                                    console.log("DELETEI")
-                                                    console.log(Cliente.id_client)
-                                                }}
-                                            >Excluir</button>
-                                        </td>
-                                    </tr>
-                                )}
+                                                    <button 
+                                                        id="btn-delete"
+                                                        onClick={() =>{
+                                                            Connection.deleteCustomer(Cliente.id_client);
+                                                            console.log("DELETEI")
+                                                            console.log(Cliente.id_client)
+                                                        }}
+                                                    >Excluir</button>
+                                                </td>
+                                            </tr> 
+                                        )
+                                })}
                             </tbody>
                         </table>
                     </div>

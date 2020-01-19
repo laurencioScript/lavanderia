@@ -11,24 +11,46 @@ class index extends Component{
     state ={
         createState: false,
         editState: false,
-        Medidas: []
+        Medidas: [],
+        Conteudo: [],
+        Pesquisa: '',
+        Atualiza: true
     }
     componentDidMount(){
         Connection.getUnitys().then(res => {
             var Medidas = res;
-            this.setState({Medidas});
+            this.setState({Medidas, Conteudo: Medidas});
         });
         this.verificaNivel();
 
         sessionStorage.removeItem("Selecionado");
     }
-
     componentDidUpdate(){
+        if(this.state.Atualiza)
+           {this.componenAtualiza();}
+    }
+    componenAtualiza(){
         Connection.getUnitys().then(res => {
             var Medidas = res;
-            this.setState({Medidas});
+            this.setState({Medidas, Conteudo: Medidas});
         });
     }
+    pesquisa = async (val) => {
+        val === "" 
+        ? this.setState({Atualiza: true, Conteudo: await Connection.getUnitys() })
+        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+    }
+
+    retornaPesquisa = (val) =>{
+        var data = this.state.Medidas.map(res => {
+            return  res.unity_name.toLowerCase().search(val) !== -1 
+                    ? res : undefined;
+        });
+
+        return data
+    }
+
+
 
     verificaNivel(){
         if(sessionStorage.getItem('nivel') == 'Atendente')
@@ -57,7 +79,6 @@ class index extends Component{
     }
     verificaLista = (linha) =>{
         this.limpaLista();
-        // linha.classList.toggle("selecionado");
         try{
             document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
         }catch(e){
@@ -81,7 +102,13 @@ class index extends Component{
                             <p>Lista de Medidas</p>
                             <div id="search">
                                 <img src={img_placeholder} alt=" "></img>
-                                <input type="text" placeholder="Procurar" name="search" id="search-piece" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
+                                <input 
+                                    type="text"    
+                                    placeholder="Procurar" 
+                                    name="search" id="search-measures" 
+                                    onChange={(e)=>{
+                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                }} />
                             </div>
                             
                             <button id="btn-find">Localizar</button>
@@ -118,17 +145,21 @@ class index extends Component{
                         <div id='measures-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Medidas.map(Medidas => 
-                                        <tr id={Medidas.id_unity}
-                                            onClick={() =>{
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Medidas.id_unity ? " " : Medidas.id_unity);
-                                                this.verificaLista(document.getElementById(Medidas.id_unity));
-                                                this.state.createState || this.state.editState ? document.querySelector("#measure-name").value = Medidas.unity_name : document.querySelector("#measure-name").value = null;
-                                            }}    
-                                        >
-                                            <td>{Medidas.unity_name}</td>
-                                        </tr>
-                                    )}</tbody>
+                                    this.state.Conteudo.map(Medidas =>{ 
+                                        if(Medidas !== undefined){
+                                            return(
+                                                <tr id={Medidas.id_unity}
+                                                    onClick={() =>{
+                                                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Medidas.id_unity ? " " : Medidas.id_unity);
+                                                        this.verificaLista(document.getElementById(Medidas.id_unity));
+                                                        this.state.createState || this.state.editState ? document.querySelector("#measure-name").value = Medidas.unity_name : document.querySelector("#measure-name").value = null;
+                                                    }}>
+                                                    <td>{Medidas.unity_name}</td>
+                                                </tr>
+                                            )
+                                        }
+                                    })}
+                                </tbody>
                             </table>
                         </div>
 

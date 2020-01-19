@@ -15,7 +15,9 @@ class index extends Component{
         createState: false,
         editState: false,
         Cor: "",
-        Cores: []
+        Cores: [],
+        Conteudo: [],
+        Atualiza: true
     }
     componentDidMount(){
         Connection.getColors().then(res => {
@@ -28,10 +30,29 @@ class index extends Component{
     }
 
     componentDidUpdate(){
+        if(this.state.Atualiza)
+           {this.componenAtualiza();}
+    }
+    componenAtualiza(){
         Connection.getColors().then(res => {
             var Cores = res;
-            this.setState({Cores});
+            this.setState({Cores, Conteudo: Cores});
         });
+    }
+    pesquisa = async (val) => {
+        val === "" 
+        ? this.setState({Atualiza: true, Conteudo: await Connection.getColors() })
+        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+    }
+
+    retornaPesquisa = (val) =>{
+        var data = this.state.Cores.map(res => {
+            return  res.color_name.toLowerCase().search(val) !== -1 ||
+                    res.hexadecimal.toLowerCase().search(val) !== -1 
+                    ? res : undefined;
+        });
+
+        return data
     }
 
     verificaNivel(){
@@ -95,7 +116,13 @@ class index extends Component{
                             <p>Lista de Cores</p>
                             <div id="search">
                                 <img src={img_placeholder} alt=" "></img>
-                                <input type="text" placeholder="Procurar" name="search" id="search-piece" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
+                                <input 
+                                    type="text"    
+                                    placeholder="Procurar" 
+                                    name="search" id="search-color" 
+                                    onChange={(e)=>{
+                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                }} />
                             </div>
                             
                             <button id="btn-find">Localizar</button>
@@ -133,7 +160,9 @@ class index extends Component{
                         <div id='colors-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Cores.map(Colors => 
+                                    this.state.Conteudo.map(Colors => {
+                                        if(Colors !== undefined)
+                                        return (
                                         <tr id={Colors.id_color}
                                             onClick={() =>{
                                                 var cor = Colors.hexadecimal;
@@ -145,8 +174,8 @@ class index extends Component{
                                             }}
                                         >   
                                             <td><div id='nome'>{Colors.color_name}</div> <Bolinha cor={Colors.hexadecimal} /></td>
-                                        </tr>
-                                    )}
+                                        </tr>)
+                                    })}
                                     </tbody>
                             </table>
                         </div>

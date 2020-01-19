@@ -4,7 +4,7 @@ import './tableUsers.css';
 
 const Connection = require('../public/connection');
 
-class tableUsers extends Component{   
+class tableUsers extends Component{ 
 
     state = {
         Users: [],
@@ -13,6 +13,7 @@ class tableUsers extends Component{
         Pesquisa: "",
         Atualiza: true
     }
+
     componentDidMount(){
         localStorage.clear();
 
@@ -21,11 +22,17 @@ class tableUsers extends Component{
             this.setState({Users,
             Conteudo: res});
         });
+        
     }
-    conponentAtualiza(){
+    componentDidUpdate(){
+        if(this.state.Atualiza)
+            this.componentAtualiza();
+    }
+    componentAtualiza(){
         Connection.getUsers().then(res => {
             var Users = res;
-            this.setState({Users});
+            this.setState({Users,
+            Conteudo: Users});
         });
     }
 
@@ -60,8 +67,8 @@ class tableUsers extends Component{
 
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Conteudo: await Connection.getUsers()})
-        : this.setState({Conteudo: this.retornaPesquisa(val)});
+        ? this.setState({Conteudo: await Connection.getUsers(), Atualiza: true})
+        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
     }
 
     retornaPesquisa = val =>{
@@ -90,7 +97,7 @@ class tableUsers extends Component{
                         <th>Nível</th>
                     </tr>
                 </thead>
-                <tbody id="corpo_tabela" >{
+                <tbody id="corpo_tabela">{
                 this.validaConteudo().map(Users => {
                     if(Users !== undefined){
                         return (

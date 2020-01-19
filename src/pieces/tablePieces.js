@@ -4,19 +4,45 @@ const Connection = require('../public/connection');
 
 class tablePieces extends Component{
     state = {
-        Pieces: []
+        Pieces: [],
+        Conteudo: [],
+        Pesquisa: "",
+        Atualiza: true
     }
      componentDidMount(){
          Connection.getPieces().then(res => {
-            this.setState({Pieces: res});
+            this.setState({Pieces: res, Conteudo: res});
         });
     }
     componentDidUpdate(){
-        localStorage.clear();
-
+        if(this.state.Atualiza)
+            this.componentAtualiza();
+    }
+    componentAtualiza(){
         Connection.getPieces().then(res => {
-            this.setState({Pieces: res});
+            this.setState({Pieces: res, Conteudo: res});
+        });        
+    }
+
+    setPesquisa = async (Pesquisa) =>{
+        await this.pesquisa(Pesquisa).then(()=>{
+        })
+    }
+
+    pesquisa = async (val) => {
+        val === "" 
+        ? this.setState({Conteudo: await Connection.getPieces(), Atualiza: true})
+        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+    }
+
+    retornaPesquisa = val =>{
+        var data = this.state.Pieces.map(res => {
+            return  res.piece_name.toLowerCase().search(val) !== -1 ||
+                    res.unity.toLowerCase().search(val) !== -1 
+                    ? res : undefined;
         });
+
+        return data
     }
 
     limpaLista = () =>{
@@ -49,16 +75,19 @@ class tablePieces extends Component{
                     </tr>
                 </thead>
                 <tbody id="corpo_tabela">{
-                this.state.Pieces.map(Pieces => 
-                    <tr onClick={() => {
-                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Pieces.id_piece ? null : Pieces.id_piece);
-                        this.verificaLista(document.getElementById(Pieces.id_piece));                        
-                    }} id={Pieces.id_piece}>
-                        <td id="pices-name">{Pieces.piece_name}</td>
-                        <td id="pices-email">{Pieces.unity}</td>
-                        <td id="pieces-nivel">{"R$ " + Pieces.value}</td>
-                    </tr>
-                )}
+                this.state.Conteudo.map(Pieces => {
+                    if(Pieces !== undefined){
+                        return(
+                        <tr onClick={() => {
+                            sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Pieces.id_piece ? null : Pieces.id_piece);
+                            this.verificaLista(document.getElementById(Pieces.id_piece));                        
+                        }} id={Pieces.id_piece}>
+                            <td id="pices-name">{Pieces.piece_name}</td>
+                            <td id="pices-email">{Pieces.unity}</td>
+                            <td id="pieces-nivel">{"R$ " + Pieces.value}</td>
+                        </tr>)
+                    }
+                })}
                 </tbody>
                 </table>
             </>

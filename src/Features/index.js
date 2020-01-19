@@ -12,7 +12,9 @@ class index extends Component{
     state ={
         createState: false,
         editState: false,
-        Caract: []
+        Caract: [],
+        Conteudo: [],
+        Atualiza: true
     }
     componentDidMount(){
         Connection.getCharacteristics().then(res => {
@@ -25,11 +27,33 @@ class index extends Component{
     }
 
     componentDidUpdate(){
+        if(this.state.Atualiza)
+           {this.componenAtualiza();}
+    }
+    componenAtualiza(){
         Connection.getCharacteristics().then(res => {
             var Caract = res;
-            this.setState({Caract});
+            this.setState({Caract, Conteudo: Caract});
         });
     }
+    pesquisa = async (val) => {
+        val === "" 
+        ? this.setState({Atualiza: true, Conteudo: await Connection.getCharacteristics() })
+        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+    }
+
+    retornaPesquisa = (val) =>{
+        var data = this.state.Caract.map(res => {
+            return  res.characteristic_name.toLowerCase().search(val) !== -1 
+                    ? res : undefined;
+        });
+
+        return data
+    }
+    
+
+
+
 
     verificaNivel(){
         if(sessionStorage.getItem('nivel') == 'Atendente')
@@ -82,7 +106,13 @@ class index extends Component{
                             <p>Lista de Caracteristicas</p>
                             <div id="search">
                                 <img src={img_placeholder} alt=" "></img>
-                                <input type="text" placeholder="Procurar" name="search" id="search-piece" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
+                                <input 
+                                    type="text"    
+                                    placeholder="Procurar" 
+                                    name="search" id="search-Features" 
+                                    onChange={(e)=>{
+                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                }} />
                             </div>
                             
                             <button id="btn-find">Localizar</button>
@@ -120,7 +150,9 @@ class index extends Component{
                         <div id='features-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Caract.map(Caract => 
+                                    this.state.Conteudo.map(Caract => {
+                                        if(Caract !== undefined)
+                                        return (
                                         <tr id={Caract.id_characteristic}
                                             onClick={() =>{
                                                 sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Caract.id_characteristic ? " " : Caract.id_characteristic);
@@ -129,8 +161,8 @@ class index extends Component{
                                             }}    
                                         >
                                             <td>{Caract.characteristic_name}</td>
-                                        </tr>
-                                    )}</tbody>
+                                        </tr>)
+                                    })}</tbody>
                             </table>
                         </div>
 

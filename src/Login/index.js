@@ -23,6 +23,7 @@ class Index extends React.Component{
         };
 
         Connection.getLogin(data).then(response =>{
+            console.log(response);
             var nivel = null;
             switch(response.level_user){
                 case 1: {nivel = "Mestre"; break;}

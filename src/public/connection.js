@@ -173,7 +173,8 @@ const getCustomer = async (id) =>{
     return response;
 }
 const postCustomer = async (data) =>{
-    Axios.post(url + 'Client/register/', data, token);
+    Axios.post(url + 'Client/register/', data, token)    
+        .catch(res => {console.log(res.response.data); console.log(res)});
 }
 const putCustomer = async (id, data) =>{
     Axios.put(url + 'Client/' + id, data, token);

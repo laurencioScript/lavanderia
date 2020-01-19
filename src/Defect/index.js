@@ -11,12 +11,14 @@ class index extends Component{
     state ={
         createState: false,
         editState: false,
-        Defeitos: []
+        Defeitos: [],
+        Conteudo:[],
+        Atualiza: true
     }
     componentDidMount(){
         Connection.getDefects().then(res => {
             var Defeitos = res;
-            this.setState({Defeitos});
+            this.setState({Defeitos, Conteudo: res});
         });
         this.verificaNivel();
 
@@ -24,14 +26,30 @@ class index extends Component{
     }
 
     componentDidUpdate(){
+        if(this.state.Atualiza)
+           {this.componenAtualiza();}
+    }
+
+    componenAtualiza(){
         Connection.getDefects().then(res => {
             var Defeitos = res;
-            this.setState({Defeitos});
+            this.setState({Defeitos, Conteudo: res});
+        });
+        this.verificaLista();
+    }
+    pesquisa = async (val) => {
+        val === "" 
+        ? this.setState({Atualiza: true, Conteudo: await Connection.getUnitys() })
+        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+    }
+
+    retornaPesquisa = (val) =>{
+        var data = this.state.Defeitos.map(res => {
+            return  res.defect_name.toLowerCase().search(val) !== -1 
+                    ? res : undefined;
         });
 
-
-        
-        this.verificaLista();
+        return data
     }
 
     verificaNivel(){
@@ -61,7 +79,6 @@ class index extends Component{
     }
     verificaLista = (linha) =>{
         this.limpaLista();
-        // linha.classList.toggle("selecionado");
         try{
             document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
         }catch(e){
@@ -85,7 +102,13 @@ class index extends Component{
                             <p>Lista de Defeitos</p>
                             <div id="search">
                                 <img src={img_placeholder} alt=" "></img>
-                                <input type="text" placeholder="Procurar" name="search" id="search-piece" onChange={()=>{sessionStorage.setItem("pesquisa", document.getElementById('search-user').value)}}/>
+                                <input 
+                                    type="text"    
+                                    placeholder="Procurar" 
+                                    name="search" id="search-defect" 
+                                    onChange={(e)=>{
+                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                }} />
                             </div>
                             
                             <button id="btn-find">Localizar</button>
@@ -122,7 +145,9 @@ class index extends Component{
                         <div id='defects-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Defeitos.map(Defeitos => 
+                                    this.state.Conteudo.map(Defeitos => {
+                                        if(Defeitos !== undefined)
+                                        return(
                                         <tr id={Defeitos.id_defect}
                                             onClick={() =>{
                                                 sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Defeitos.id_defect ? " " : Defeitos.id_defect);
@@ -131,8 +156,8 @@ class index extends Component{
                                             }}    
                                         >
                                             <td>{Defeitos.defect_name}</td>
-                                        </tr>
-                                    )}</tbody>
+                                        </tr>)
+                                    })}</tbody>
                             </table>
                         </div>
 

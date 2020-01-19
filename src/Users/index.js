@@ -43,10 +43,6 @@ class index extends Component{
         this.Pesquisa.setPesquisa(val)
     }
 
-    _componentAtualizou = () =>{
-        this.Pesquisa.componentAtualizou();
-    }
-
     verificaNivel(){
         sessionStorage.removeItem("Selecionado");
         var retorno = ' ';
