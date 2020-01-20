@@ -26,45 +26,33 @@ const percentMask = createNumberMask({
 })
 
 class Pagamento extends Component {
-    constructor(props){
-        super(props)
+    state = {
+        precoTotal: this.props.precoTotal,
+        precoPagar: 0,
+        pago: 0,
+        troco: 0,
+        valorDesconto: 0,
 
-        this.state = {
-            precoTotal: sessionStorage.getItem("precoTotal"),
-            pago: 0,
-            troco: 0,
-            valorDesconto: 0,
-            pagamento: {
-                cheque: 0,
-                credito: 0,
-                debito: 0,
-                dinheiro: 0,
-                desconto: 0
-            }
-        }
+            cheque: 0,
+            credito: 0,
+            debito: 0,
+            dinheiro: 0,
+            desconto: 0
     }
-
     componentDidUpdate(){
         var desconto = parseFloat(document.querySelector('#porcentoDesconto').value.replace(/[%]+/g,''));
         // this.setState({valorDesconto: this.props.precoTotal * (desconto/100)})
-        document.querySelector('#valorDesconto').value = "R$ " + this.props.precoTotal * (desconto / 100);
-           
+        document.querySelector('#valorDesconto').value = "R$ " + this.props.precoTotal * (desconto / 100);           
     }
     
-    chamaPreco(){
-        // setInterval(()=>{
-        //     console.log(sessionStorage.getItem('precoTotal'))
-        //     document.querySelector('#ValorTotalPagamento').value = 'Valor Total: R$ ' + sessionStorage.getItem('precoTotal');
-        // }, 500)
-        
+    atualizaTotal = (val) =>{
+        this.setState({precoTotal: val});
     }
+
     atualizaPago(){
-        this.setState({pago: 
-            isNaN(this.state.pagamento.debito ) ? 0 : this.state.pagamento.debito +
-            isNaN(this.state.pagamento.credito) ? 0 : this.state.pagamento.credito +
-            isNaN(this.state.pagamento.cheque) ? 0 : this.state.pagamento.cheque +
-            isNaN(this.state.pagamento.dinheiro) ? 0 : this.state.pagamento.dinheiro +
-            isNaN(this.state.pagamento.desconto) ? 0 : this.state.pagamento.desconto })
+        this.setState({pago: this.state.debito + this.state.credito + this.state.cheque + this.state.dinheiro } ,
+            ()=>{this.setState({troco: this.state.pago - this.props.precoTotal,
+                                precoPagar: (this.props.precoTotal - this.state.valorDesconto)}, ()=>{console.log("TROCO: " + this.state.troco)}  )});
     }
     setDesconto(valorDesconto)
     {
@@ -88,9 +76,12 @@ class Pagamento extends Component {
                                 id='pagoCheque'
                                 mask={amountMask}
                                 placeholder="R$ 00,00"
-                                onChange={()=>{
-                                    // this.setState({pagamento: {cheque: parseFloat(document.querySelector("#pagoCheque").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
-                                    this.atualizaPago()
+                                onChange={(e)=>{
+                                    this.setState({cheque: parseFloat(e.target.value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}, 
+                                        ()=>{
+                                            this.atualizaPago()
+                                        })
+                                    
                                 }}
                             />
                         </div>
@@ -101,9 +92,12 @@ class Pagamento extends Component {
                                 id='pagoCredito'
                                 mask={amountMask}
                                 placeholder="R$ 00,00"
-                                onChange={()=>{
-                                    // this.setState({pagamento: {credito: parseFloat(document.querySelector("#pagoCredito").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
-                                    this.atualizaPago()
+                                onChange={(e)=>{
+                                    this.setState({credito: parseFloat(e.target.value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}, 
+                                        ()=>{
+                                            this.atualizaPago()
+                                        })
+                                    
                                 }}
                             />
                         </div>
@@ -114,11 +108,12 @@ class Pagamento extends Component {
                                 id='pagoDebito'
                                 mask={amountMask}
                                 placeholder="R$ 00,00"
-                                onChange={()=>{
-                                    // console.log(parseFloat(document.querySelector("#pagoDebito").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.')));
-                                    // this.setState({pagamento: {debito: parseFloat(document.querySelector("#pagoDebito").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
-                                    // console.log("state: " + this.state.pagamento.debito)
-                                    this.atualizaPago()
+                                onChange={(e)=>{
+                                    this.setState({debito: parseFloat(e.target.value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}, 
+                                        ()=>{
+                                            this.atualizaPago()
+                                        })
+                                    
                                 }}
                             />
                         </div>
@@ -129,9 +124,12 @@ class Pagamento extends Component {
                                 id='pagoDinhe'
                                 mask={amountMask}
                                 placeholder="R$ 00,00"
-                                onChange={()=>{
-                                    // this.setState({pagamento: {dinheiro: parseFloat(document.querySelector("#pagoDinhe").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}});
-                                    this.atualizaPago();
+                                onChange={(e)=>{
+                                    this.setState({dinheiro: parseFloat(e.target.value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.'))}, 
+                                        ()=>{
+                                            this.atualizaPago()
+                                        })
+                                    
                                 }}
                             />
                         </div>
@@ -149,7 +147,8 @@ class Pagamento extends Component {
                                     var desconto = parseFloat(document.querySelector('#porcentoDesconto').value.replace(/[%]+/g,''));
                                     document.querySelector('#valorDesconto').value = "R$ " + this.props.precoTotal * (desconto / 100);
 
-                                    // this.setDesconto(this.props.precoTotal * (desconto / 100));
+                                    this.setDesconto(this.props.precoTotal * (desconto / 100));
+                                    this.atualizaPago();
                                 }}
                             />
 
@@ -164,9 +163,9 @@ class Pagamento extends Component {
                     
                     
                     <div>
-                        <p>Valor a Receber: R$ {this.props.precoTotal}</p>
-                        <p>Total Pago: R${this.state.pago}</p>
-                        <p>Troco: R${this.state.troco}</p>
+                        <p>Valor a Receber: R$ {isNaN(this.state.precoPagar) ? 0 : this.state.precoPagar}</p>
+                        <p>Total Pago: R${isNaN(this.state.pago) ? 0 : this.state.pago}</p>
+                        <p>Troco: R${this.state.troco < 0 || isNaN(this.state.troco) ? 0 : this.state.troco}</p>
                     </div>
 
 
@@ -178,28 +177,17 @@ class Pagamento extends Component {
                     type="button"
                     value="SALVAR"
                     onClick={ () =>{
-                        this.setState({
-                            pagamento: {
-                                debito: parseFloat(document.querySelector("#pagoDebito").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.')),
-                                credito: parseFloat(document.querySelector("#pagoCredito").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.')),
-                                cheque: parseFloat(document.querySelector("#pagoCheque").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.')),
-                                dinheiro: parseFloat(document.querySelector("#pagoDinhe").value.replace(/[R$ ]+/g,'').replace(/[.]+/g,'').replace(/[,]+/g,'.')),
-                                desconto: document.querySelector('#porcentoDesconto').value
-                            }
-                        }, ()=> { 
                             var pagamento = {
-                                debito: isNaN(this.state.pagamento.debito ) ? 0 : this.state.pagamento.debito,
-                                credito: isNaN(this.state.pagamento.credito) ? 0 : this.state.pagamento.credito,
-                                cheque: isNaN(this.state.pagamento.cheque) ? 0 : this.state.pagamento.cheque,
-                                dinheiro: isNaN(this.state.pagamento.dinheiro) ? 0 : this.state.pagamento.dinheiro,
-                                desconto: isNaN(this.state.pagamento.desconto) ? 0 : this.state.pagamento.desconto,
-                                totalPago: 0 
-                            }
-                            pagamento.totalPago = pagamento.debito + pagamento.credito + pagamento.cheque + pagamento.dinheiro;
-                            this.setState({pago: pagamento.totalPago,
-                                            troco: pagamento.dinheiro - this.props.precoTotal});
+                                debito: this.state.debito,
+                                credito: this.state.credito,
+                                cheque: this.state.cheque,
+                                dinheiro: this.state.dinheiro,
+                                desconto: this.state.desconto,
+                                totalPago: this.state.pago,
+                                precoTotal: this.state.precoTotal
+                            };
+                            console.log("PROP PRECO: " + this.props.precoTotal)
                             this.props.mudaPagamento(pagamento);
-                        })
                     }}
                 />
                 

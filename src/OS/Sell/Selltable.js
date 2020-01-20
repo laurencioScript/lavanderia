@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+// import Update from 'react-addons-update';
+
 
 import './SellTable.css';
 import LineTable from './LineTable';
+
 
 class Selltable extends Component {
 
@@ -10,10 +13,13 @@ class Selltable extends Component {
 
         this.state = {
             itens: [{Linha: 1}],
-            precoT: 0
+            precoT: 0,
+
+            linhaTabela: [{}],
         }
         this.mudaPreco = this.mudaPreco.bind(this)
         this.tiraPreco = this.tiraPreco.bind(this)
+        this.mudaIten = this.mudaIten.bind(this)
     }
     componentDidUpdate(){
         let precos = document.querySelectorAll("#prec_total");
@@ -26,23 +32,30 @@ class Selltable extends Component {
         valores.map(preco =>{
             precoTotal += parseFloat(preco.preco);
         });
-        // document.querySelector("#ValorTotal").innerHTML = "Valor Total: R$ " + precoTotal;
         
         sessionStorage.setItem("precoTotal", precoTotal);
+    }
+    mudaIten(id, iten){
+        this.state.linhaTabela[id-1] = iten;
+        this._pegaItens();
+    }
+    removeIten(id){
+        this.state.linhaTabela.splice(id)
+        this._pegaItens();
+    }
+
+    _pegaItens(){
+        this.props.pegaItens(this.state.linhaTabela);
     }
 
     mudaPreco(preco){
         this.setState({precoT: parseFloat(this.state.precoT) + parseFloat(preco)}, () => {
-            // console.log(this.state.precoT);
-
             this.props.mudaPreco(this.state.precoT);
         });
 
     }
     tiraPreco(preco){
         this.setState({precoT: parseFloat(this.state.precoT) - parseFloat(preco)}, () => {
-            // console.log(this.state.precoT);
-
             this.props.mudaPreco(this.state.precoT);
         });
     }
@@ -68,7 +81,7 @@ class Selltable extends Component {
 
                     <tbody id="itenTbody">{
                         this.state.itens.map(itens =>
-                        <LineTable iten={itens.Linha} mudaPreco={this.mudaPreco} tiraPreco={this.tiraPreco}/>
+                        <LineTable iten={itens.Linha} mudaPreco={this.mudaPreco} tiraPreco={this.tiraPreco} mudaIten={this.mudaIten} removeIten={this.removeIten}/>
                     )}                       
                     </tbody>
                     

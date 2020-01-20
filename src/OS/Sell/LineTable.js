@@ -27,7 +27,7 @@ class LineTable extends Component {
         SelectedOptionDefeitos: '',
         SelectedOptionCores: '',
 
-        Iten: {
+        
             amount: '',
             unity: '',
             value_unity: '',
@@ -36,7 +36,8 @@ class LineTable extends Component {
             colors: [],
             defects: [],
             characteristic: [],
-        }
+
+            Iten:{}
     }
     componentDidMount(){
         var Pecas;
@@ -91,22 +92,40 @@ class LineTable extends Component {
         this.setState({Option})
     }
     
+    async setIten(){
+        this.setState({Iten:{
+                                amount: this.state.amount,
+                                unity: this.state.unity,
+                                value_unity: this.state.value_unity,
+                                value_total: this.state.value_total,
+                                piece: this.state.piece,
+                                colors: this.state.colors,
+                                defects: this.state.defects,
+                                characteristic: this.state.characteristic,
+        }}, ()=>{this.props.mudaIten(this.state.id, this.state.Iten)})
+    }
     handleChange = SelectedOption =>{
         this.setState({SelectedOption}, () => {
             this.mudaTexto();
         });
     }
     handleChangeCor = SelectedOptionCores =>{
-        this.setState({SelectedOptionCores})
-            // ,
-            //             Iten: {Colors : SelectedOptionCores.map(Cor => Cor.)}})
-                            // typeof SelectedOptionCores == Array ? SelectedOptionCores.map(cor => cor) : SelectedOptionCores[0]}}, ()=>{console.log(SelectedOptionCores)});
+        this.setState({SelectedOptionCores}, ()=>{
+            this.setState({ colors: this.state.SelectedOptionCores.map(color => color.value.color_name)
+            }, ()=>{this.setIten()})
+        })
     }
     handleChangeCaract = SelectedOptionCaract =>{
-        this.setState({SelectedOptionCaract});
+        this.setState({SelectedOptionCaract}, ()=>{
+            this.setState({ characteristic: this.state.SelectedOptionCaract.map(caract => caract.value.characteristic_name)
+            }, ()=>{this.setIten()})
+        });
     }
     handleChangeDefeito = SelectedOptionDefeitos =>{
-        this.setState({SelectedOptionDefeitos});
+        this.setState({SelectedOptionDefeitos}, ()=>{
+            this.setState({ defects: this.state.SelectedOptionDefeitos.map(defeito => defeito.value.defect_name)
+            }, ()=>{ this.setIten()})
+        });
     }
     mudaTexto = () => {
         document.querySelector("#id-" + this.state.id).querySelector("#unidade").innerHTML = this.state.SelectedOption == null ? " " : this.state.SelectedOption.value.unity;
@@ -114,6 +133,14 @@ class LineTable extends Component {
         document.querySelector("#id-" + this.state.id).querySelector("#prec_total").innerHTML = this.state.SelectedOption  == null ? "R$ --" : "R$ " + this.state.SelectedOption.value.value * document.querySelector("#id-" + this.state.id).querySelector("#numberQTD").value;       
         
         this.props.mudaPreco(this.state.SelectedOption.value.value)
+
+        this.setState({     amount: document.querySelector("#id-" + this.state.id).querySelector("#numberQTD").value,
+                            unity: this.state.SelectedOption.value.unity,
+                            piece: this.state.SelectedOption.value.piece_name,
+                            value_unity: this.state.SelectedOption.value.value,
+                            value_total: this.state.SelectedOption.value.value * document.querySelector("#id-" + this.state.id).querySelector("#numberQTD").value
+         },     ()=>{this.setIten()})
+
     }
 
     render() {
@@ -122,6 +149,7 @@ class LineTable extends Component {
                 <td><img src={icon_close} id="sellTableClose" onClick={() => {
                     document.querySelector('#id-'+this.state.id).parentNode.removeChild(document.querySelector('#id-'+this.state.id));
                     this.props.tiraPreco((this.state.SelectedOption == '' || this.state.SelectedOption.value.value == '') ? 0 : this.state.SelectedOption.value.value);
+                    this.props.removeIten(this.state.id-1);
                 }}/></td>
                 <td>
                     <Select 

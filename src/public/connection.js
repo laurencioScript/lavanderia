@@ -185,6 +185,32 @@ const deleteCustomer = (id) =>{
 
 
 
+//OS-Service
+const getServices = async () =>{
+    const response = Axios.get(url + 'Service', token).then(res =>{
+        return res.data.result;
+    });
+    return response;
+}
+const getService = async (id) =>{
+    const response = Axios.get(url + 'Service/' + id, token).then(res =>{
+        return res.data.result[0];
+    });
+    return response;
+}
+const postService = async (data) =>{
+    Axios.post(url + 'Service/register/', data, token)    
+        .catch(res => {console.log(res.response.data); console.log(res)});
+}
+const putService = async (id, data) =>{
+    Axios.put(url + 'Service/' + id, data, token);
+}
+const deleteService = (id) =>{
+    Axios.delete(url + 'Service/' + id, token);
+}
+
+
+
 module.exports = {
     getLogin,getUser,getUsers,postUser,putUser,deleteUser, 
     getColors,getColor,postColor,putColor,deleteColor,
@@ -193,4 +219,5 @@ module.exports = {
     getUnitys,getUnity,postUnity,putUnity,deleteUnity,
     getPieces,getPiece,postPiece,putPiece,deletePiece,
     getCustomers,getCustomer,postCustomer,putCustomer,deleteCustomer,
+    getServices,getService,postService,putService,deleteService,
 };
