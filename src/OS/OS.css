@@ -70,19 +70,58 @@
     height: 80px;
 }
 
-#osRealizarVenda{
+#containerVendas{
     display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     
+}
 
+#osRealizarVenda{
+    border-radius: 5px;
+    background-color: #2ecc38;
     width: 200px;
     height: 80px;
-
     font-size: 20px;
     font-weight: bold;
     color: white;
-    
     border: none;
-    border-radius: 10px;
-
-    background-color: #2ecc38;
+    cursor: pointer;
 }
+
+#btnRealizarVenda {
+    align-self: center;
+}
+
+
+
+#btnRealizarVenda button{
+    border-radius: 5px;
+    background-color: #2ecc38;
+    width: 200px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+
+#btnVoltar{
+    align-self: flex-start;
+    margin: 15px 15px;
+}
+
+#btnVoltar button{
+    border-radius: 15px;
+    background-color: burlywood;
+    width: 80px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+

@@ -6,19 +6,22 @@ import icon_lista from '../public/icons/icon_lista.png';
 import OsResumeTable from './OsResumeTable';
 
 import './OS.css';
-import { Link } from 'react-router-dom';
+import { Link,Redirect } from 'react-router-dom';
 import Receber from './Receber';
 import Pagamento from './Pagamento';
 
 class index extends Component{
+    
+   
     render(){
         return(
-            <>
+            <div id="containerVendas">
+                
                 <Header name="Resumo de Vendas" />
 
-                <div id="volta">
-                    <p>↪ Voltar</p>
-                </div>
+                <Link id="btnVoltar" to="/Menu"> 
+                    <button type="button" >Voltar</button>
+                </Link> 
 
                 <div id="icon-page">
                     {/* CARROUSEL */}
@@ -56,20 +59,18 @@ class index extends Component{
 
                 <OsResumeTable />
                 
-                <div id='realizarVenda' >
-                    <Link to="/Venda">
-                        <input 
-                            type="button"
-                            value="REALIZAR VENDA"
-                            id="osRealizarVenda"/>
-                    </Link>
-                </div>
+              
+                <Link id="btnRealizarVenda" to="/Venda"> 
+                    <button  type="button" >REALIZAR VENDA</button>
+                </Link> 
+
+               
 
                 <Receber />
 
                 <Pagamento />
                 
-            </>
+            </div>
         )
     }
 }
