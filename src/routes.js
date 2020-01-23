@@ -1,29 +1,17 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-
-import Login from './Login';
-import Menu from './index/Index';
-import Users from './Users';
-import Pieces from './pieces';
-import Medidas from './Measures';
-import Cores from './Colors';
-import Defeitos from './Defect';
-import Caract from './Features';
-import Clientes from './Customers';
-import OS from './OS';
-import Relatorios from './report';
-
-import read from './Customers/Read';
-import create from './Customers/Create';
-import update from './Customers/Update';
-import sell from './OS/Sell';
-
-const localAuthentication = () =>{
-    var retorno = false;
-    retorno = sessionStorage.getItem("email") == null ? false : true;
-
-    return retorno;
-};
+import {localAuthentication} from './auth';
+import ScreensHome from './Home/screens/home';
+import ScreensMenu from './Menu/screens/Menu';
+import ScreensUser from './User/screens/User';
+import ScreensPiece from './Pieces/screens/Piece';
+import ScreensColor from './Colors/screens/color';
+import ScreensDefeito from './Defect/screens/defect';
+import ScreensCharact from './Characteristic/screens/index';
+import ScreensClientes from './Client/screens/client';
+import ScreensOrdemServi from './ServiceOrder/screens/index';
+import ScreensRelatorios from './Reports/screens/report';
+// import ScreensUnity from './Unity/screens/';
 
 const PrivateRoute = ({ component: Component , ...rest }) =>(
     <Route {...rest} render={props =>(
@@ -38,23 +26,17 @@ const PrivateRoute = ({ component: Component , ...rest }) =>(
 const Routes = ()=> (
     <BrowserRouter>
         <Switch>
-            <Route exact path='/' component={Login} />
-
-            <PrivateRoute path='/read' component={read} />
-            <PrivateRoute path='/create' component={create} />
-            <PrivateRoute path="/update" component={update} />
-            <PrivateRoute path="/Venda" component={sell} />
-
-            <PrivateRoute path='/Menu' component={Menu}/>
-            <PrivateRoute path='/Usuarios' component={Users}/>
-            <PrivateRoute path='/Pecas' component={Pieces}/>
-            <PrivateRoute path='/Medidas' component={Medidas}/>
-            <PrivateRoute path='/Cores' component={Cores}/>
-            <PrivateRoute path='/Defeitos' component={Defeitos}/>
-            <PrivateRoute path='/Caracteristicas' component={Caract}/>
-            <PrivateRoute path='/Clientes' component={Clientes}/>
-            <PrivateRoute path='/OS' component={OS}/>
-            <PrivateRoute path='/Relatorios' component={Relatorios}/>
+            <Route exact path='/' component={ScreensHome} />
+            <PrivateRoute path='/Menu' component={ScreensMenu}/>
+            <PrivateRoute path='/Usuarios' component={ScreensUser}/>
+            <PrivateRoute path='/Pecas' component={ScreensPiece}/>
+            <PrivateRoute path='/Cores' component={ScreensColor}/>
+            <PrivateRoute path='/Defeitos' component={ScreensDefeito}/>
+            <PrivateRoute path='/Caracteristicas' component={ScreensCharact}/>
+            <PrivateRoute path='/Clientes' component={ScreensClientes}/>
+            <PrivateRoute path='/Vendas' component={ScreensOrdemServi}/>
+            <PrivateRoute path='/Relatorios' component={ScreensRelatorios}/>
+            {/* <PrivateRoute path='/Medidas' component={Medidas}/> */}
         </Switch>
     </BrowserRouter>
 );

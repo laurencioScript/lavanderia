@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import './Menu.css';
+import './../screens/Menu.css';
 import { Link } from 'react-router-dom';
 
-import img_placeholder from '../public/placeholder-img.jpg';
+import img_placeholder from './../../public/placeholder-img.jpg';
 
-import icon_os from '../public/icons/icon_os.png';
-import icon_relatorio from '../public/icons/icon_relatorio.png';
-import icon_camisa from '../public/icons/icon_camisa.png';
-import icon_regua from '../public/icons/icon_regua.png';
-import icon_defeito from '../public/icons/icon_defeito.png';
-import icon_paleta from '../public/icons/icon_paleta.png';
-import icon_user from '../public/icons/icon_user.png';
+import icon_os from './../../public/icons/icon_os.png';
+import icon_relatorio from './../../public/icons/icon_relatorio.png';
+import icon_camisa from './../../public/icons/icon_camisa.png';
+import icon_regua from './../../public/icons/icon_regua.png';
+import icon_defeito from './../../public/icons/icon_defeito.png';
+import icon_paleta from './../../public/icons/icon_paleta.png';
+import icon_user from './../../public/icons/icon_user.png';
 
 class Menu extends Component{
     render() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Header from '../public/header';
-import Menu from './Menu'
+import Header from './../../public/header';
+import Menu from '../components/Menu'
 
 class Index extends Component{
     render() {
