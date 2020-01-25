@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import Header from '../public/header';
-// import img_caracteristicas from '../public/icons/icon_caract.png';
+// import img_caracteristicas from '../../public/icons/icon_caract.png';
 import img_placeholder from '../public/placeholder-img.jpg';
 
 import './features.css';

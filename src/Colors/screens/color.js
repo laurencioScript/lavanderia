@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import { SliderPicker } from 'react-color';
 
 import Header from '../public/header';
-import Bolinha from '../public/bolinha';
-import img_placeholder from '../public/placeholder-img.jpg';
-import icon_paleta from '../public/icons/icon_paleta2.png';
+import Bolinha from '../../public/bolinha';
+import img_placeholder from '../../public/placeholder-img.jpg';
+import icon_paleta from '../../public/icons/icon_paleta2.png';
 
 import './colors.css';
 

@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import Header from '../public/header';
-import img_placeholder from '../public/placeholder-img.jpg';
+import Header from '../../public/header';
+import img_placeholder from '../../public/placeholder-img.jpg';
 import './Users.css';
 
 import TableUsers from './tableUsers';
 import FormUser from './formUser';
 
-const Connection = require('../public/connection');
+import {getUser, getUsers, deleteUser, postUser, putUser} from './../UserService';
 
-class index extends Component{
+class User extends Component{
+    
     constructor (props){
         super(props);
         this.state = {
@@ -16,19 +17,23 @@ class index extends Component{
             Pesquisa: ''
         };
         
-        this.deleteUser = this.deleteUser.bind(this);
-    }    
-    deleteUser = () =>{
+        this.delete = this.delete.bind(this);
+    }   
+    
+    
+    delete = () =>{
         if(sessionStorage.getItem("Selecionado") != ' ')
         {
-            Connection.deleteUser(sessionStorage.getItem("Selecionado"))
+            deleteUser(sessionStorage.getItem("Selecionado"))
             sessionStorage.removeItem('Selecionado');
         }else{
             this.setState({Message: "Você não tem permissão"});
         }
     }
-    edituser = () =>{
-        Connection.getUser(sessionStorage.getItem("Selecionado")).then(res =>{
+
+
+    update = () =>{
+            getUser(sessionStorage.getItem("Selecionado")).then(res =>{
             sessionStorage.setItem("action", 2);
             console.log(res);
             document.querySelector('#cad-container').style.display = "flex";
@@ -131,4 +136,4 @@ class index extends Component{
 }
 
 
-export default index;
+export default User;

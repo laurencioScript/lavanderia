@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './tableUsers.css';
 
-const Connection = require('../public/connection');
+import {getUser, getUsers, deleteUser, postUser, putUser} from './../UserService';
 
 class tableUsers extends Component{ 
 
@@ -17,7 +17,7 @@ class tableUsers extends Component{
     componentDidMount(){
         localStorage.clear();
 
-        Connection.getUsers().then(res => {
+        getUsers().then(res => {
             var Users = res;
             this.setState({Users,
             Conteudo: res});
@@ -29,7 +29,7 @@ class tableUsers extends Component{
             this.componentAtualiza();
     }
     componentAtualiza(){
-        Connection.getUsers().then(res => {
+        getUsers().then(res => {
             var Users = res;
             this.setState({Users,
             Conteudo: Users});
@@ -67,7 +67,7 @@ class tableUsers extends Component{
 
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Conteudo: await Connection.getUsers(), Atualiza: true})
+        ? this.setState({Conteudo: await getUsers(), Atualiza: true})
         : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
     }
 

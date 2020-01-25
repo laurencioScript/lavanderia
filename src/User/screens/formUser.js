@@ -1,7 +1,7 @@
 import React from 'react';
 import './formUser.css';
 
-const Connection = require('../public/connection');
+import {getUser, getUsers, deleteUser, postUser, putUser} from './../UserService';
 
 class formUser extends React.Component{
     closeForm(){
@@ -49,10 +49,10 @@ class formUser extends React.Component{
                                 "level": parseInt(document.querySelector('#form-select').value)
                             };
                         if(sessionStorage.getItem('action') == 1){
-                            Connection.postUser(data);
+                            postUser(data);
                         }
                         else if(sessionStorage.getItem('action') == 2){
-                            Connection.putUser(sessionStorage.getItem("Selecionado"), data);
+                            putUser(sessionStorage.getItem("Selecionado"), data);
                         }
 
                         sessionStorage.removeItem("action");
