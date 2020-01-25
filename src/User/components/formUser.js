@@ -1,7 +1,7 @@
 import React from 'react';
 import './formUser.css';
 
-import {getUser, getUsers, deleteUser, postUser, putUser} from './../UserService';
+import {getUser, getUsers, deleteUser, postUser, putUser} from '../UserService';
 
 class formUser extends React.Component{
     closeForm(){

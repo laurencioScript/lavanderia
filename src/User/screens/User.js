@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import Header from '../../public/header';
 import img_placeholder from '../../public/placeholder-img.jpg';
 import './Users.css';
+import { Link } from 'react-router-dom';
 
-import TableUsers from './tableUsers';
-import FormUser from './formUser';
+import TableUsers from './../components/tableUsers';
+import FormUser from './../components/formUser';
 
 import {getUser, getUsers, deleteUser, postUser, putUser} from './../UserService';
 
@@ -19,7 +20,6 @@ class User extends Component{
         
         this.delete = this.delete.bind(this);
     }   
-    
     
     delete = () =>{
         if(sessionStorage.getItem("Selecionado") != ' ')
@@ -48,24 +48,15 @@ class User extends Component{
         this.Pesquisa.setPesquisa(val)
     }
 
-    verificaNivel(){
-        sessionStorage.removeItem("Selecionado");
-        var retorno = ' ';
-        if(sessionStorage.getItem("nivel") == 'Atendente'){
-            console.log("Você não tem nivél de acesso necessario");
-            retorno = 
-            <> 
-                <div id="reclusion">
-                    <h1>Você não tem direito de acesso a está pagina</h1>
-                </div>
-            </>;
-        }
-        else{
-            retorno = 
+
+    render(){
+        return(
             <>
-                <div id="volta">
-                    <p>↪ Voltar</p>
-                </div>
+                <Header name="Usuários"/>
+                
+                <Link id="btnVoltar" to="/Menu"> 
+                    <button type="button" >Voltar</button>
+                </Link> 
 
                 <div id="icon-page">
                     <img src={img_placeholder} alt=" "></img>
@@ -104,32 +95,17 @@ class User extends Component{
                                 document.querySelector('#form-email').value = "";
                                 document.querySelector("#form-select").value = "";
                             }
-                        }>+ Criar</button>
-                        <button 
-                            id="btn-delete" 
-                            onClick={this.deleteUser}
-                        >Excluir</button>
+                        }>Criar</button>
 
-                        <button 
-                            id="btn-edit" 
-                            onClick={this.edituser}>Editar</button>
+                        <button id="btn-delete" onClick={this.delete} >Excluir</button>
+
+                        <button id="btn-edit" onClick={this.update}>Editar</button>
                     </div>
                 </div>
                 
                 <TableUsers ref={(component) => {this.Pesquisa = component}} />
                 
                 <FormUser></FormUser>
-            </>;
-        }
-
-        return retorno;
-    }
-
-    render(){
-        return(
-            <>
-                <Header name="Usuários"/>
-                {this.verificaNivel()}
             </>
         );
     }
