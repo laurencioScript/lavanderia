@@ -1,28 +1,29 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import './formPieces.css';
 
-const Connection = require('../public/connection');
- 
-class formPieces extends Component{
+import { deletePiece, getPiece, getPieces, postPiece, putPiece } from './../PiecesService';
+import { getUnitys, } from './../../Unity/UnityService';
+
+class formPieces extends Component {
     state = {
         Unidade: []
     }
 
-    componentDidMount(){
-        Connection.getUnitys().then(res => {
-            this.setState({Unidade: res.map(map => { return map.unity_name })})
+    componentDidMount() {
+        getUnitys().then(res => { 
+            this.setState({ Unidade: res.map(map => { return map.unity_name }) })
         })
     }
 
-    closeForm(){
+    closeForm() {
         document.querySelector('#formPieces-container').style.display = "none";
     }
-    
-    render(){
-        return(
+
+    render() {
+        return (
             <div id="formPieces-container">
-                <input type='button' value="X" id='btn_fechar' onClick={this.closeForm}/>
+                <input type='button' value="X" id='btn_fechar' onClick={this.closeForm} />
                 <div id="formPieces-content">
                     <div id='formPieces-primeira_linha'>
                         <div>
@@ -37,7 +38,7 @@ class formPieces extends Component{
                         <div>
                             <p>Unidade</p>
                             <select id="pieces-unit">{
-                                this.state.Unidade.map(unity =>  <option value={unity}>{unity}</option> )
+                                this.state.Unidade.map(unity => <option value={unity}>{unity}</option>)
                             }</select>
                             {/* <input
                                 type="text"
@@ -51,19 +52,19 @@ class formPieces extends Component{
                                 id='pieces-value'
                             />
                         </div>
-                        <input type="button" id='btn_create_pieces' value='Salvar' onClick={() =>{
+                        <input type="button" id='btn_create_pieces' value='Salvar' onClick={() => {
                             var data = {
-                                "name" : document.querySelector('#pieces-name').value,
-                                "unity" : document.querySelector('#pieces-unit').value,
-                                "value" : parseInt(document.querySelector('#pieces-value').value)
+                                "name": document.querySelector('#pieces-name').value,
+                                "unity": document.querySelector('#pieces-unit').value,
+                                "value": parseInt(document.querySelector('#pieces-value').value)
                             };
-                            if(sessionStorage.getItem('action') == 1){
-                                Connection.postPiece(data);
+                            if (sessionStorage.getItem('action') == 1) {
+                                postPiece(data);
                             }
-                            else if(sessionStorage.getItem('action') == 2){
-                                Connection.putPiece(sessionStorage.getItem("Selecionado"), data);
+                            else if (sessionStorage.getItem('action') == 2) {
+                                putPiece(sessionStorage.getItem("Selecionado"), data);
                             }
-    
+
                             sessionStorage.removeItem("action");
                         }} />
                     </div>
