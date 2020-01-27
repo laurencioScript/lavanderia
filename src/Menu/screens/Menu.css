@@ -1,0 +1,110 @@
+#menu{
+  background-color: white;
+  width: 100%;
+  height: 100%;
+}
+#container-menu{
+      height: 600px;
+      width: 900px;
+      padding: 0px;
+
+      margin: 5% auto 0;
+  }
+  #content{
+      max-width: 100%;
+      max-height: 100%;
+      font-size: 60px;
+  }
+  #content img{
+    width: 100px;
+  }
+  a{
+    text-decoration: none;
+    color: white;
+  }
+  a:visited{
+    text-decoration: none;
+  }
+
+  #content > div, #content > div > a, #segunda-linha > div a{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: auto;
+  }
+  #content > div:not(#segunda-linha), #segunda-linha > div{
+    background-color: #3087f9;
+    border: #00a4d3 dotted 5px;
+    border-radius: 10px;
+
+    margin: 20px 0;
+    padding: 10px;
+
+    text-align: center;
+    align-items: center;
+  }
+
+  #content p{
+      margin-left: 10px;
+  }
+
+  #segunda-linha > div{
+    width: 50%;
+    height: 130px;
+    display: flex;
+  }
+
+  #segunda-linha > #relatorios{
+    margin-right: 10px;
+  }
+
+  #segunda-linha > #cliente{
+    margin-left: 10px;
+  }
+  
+  #controles > div{
+      font-size: 20px;
+      margin: 0px 25px;
+      font-size: 20px;
+  }
+  #controles p{
+    margin: 0px;
+  }
+
+  #footer{
+      display: grid;
+  }
+  #footer img{
+      max-width: 150px;
+  }
+  #footer > #user{
+      justify-self: start;
+      grid-column: 1;
+      grid-row: 1;
+
+      margin: auto 30px 20px;
+
+      padding: 15px;
+      background-color: #3087f9;
+
+      border: 2px solid white;
+      box-shadow: 5px 5px 10px grey;
+
+      font-size: 20px;
+  }
+  #footer > #new-user{
+      justify-self: end;
+      grid-column: 2;
+      grid-row: 1;
+
+      margin: auto 50px 0px;
+
+      text-align: center;
+      font-weight: 500;
+      font-size: 20px;
+  }
+
+  #footer a{
+    color: #11e0dd;
+    text-decoration: underline;
+  }

@@ -1,0 +1,11 @@
+#show-color{
+    height: 100px;
+    width: 100px;
+    border: none;
+    border-radius: 50%;
+
+    transition: all .2s ease-in-out;
+}
+#show-color:hover{
+    transform: scale(1.1);
+}

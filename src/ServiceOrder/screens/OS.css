@@ -1,0 +1,127 @@
+#content-OSresume{
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+
+    margin: 10px 25px;
+}
+#content-OSresume > #primeira-parte{
+    display: flex;
+    flex-direction: row;
+
+    width: 70%;
+    height: 50px;
+    /* background-color: brown; */
+}#content-OSresume > #primeira-parte > *{
+    margin: 10px 20px;
+}#content-OSresume > #primeira-parte > p{
+    margin: 15px 0;
+}#content-OSresume > #primeira-parte > select{
+    width: 20%;
+}#content-OSresume > #primeira-parte > .date{
+    width: 20% !important;
+
+    font-size: 20px;
+}#content-OSresume > #primeira-parte > input:last-child{
+    width: 125px;
+
+    font-size: 20px;
+
+    border: none;
+    border-radius: 5px;
+
+    background-color: #e5e5e5;
+}
+
+#content-OSresume > #OS_buttons > *{
+    margin: 0 25px;
+    padding: 5px 20px;
+
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+#OS_buttons > #btn-osReceber{
+    border: none;
+    background-color: #fdb457;
+    border-radius: 10px;
+}
+#OS_buttons > #btn-osPagamento{
+    border: none;
+    background-color: #2ecc38;
+    border-radius: 10px;
+}
+
+#qtd_vendas{
+    display: flex;
+    flex-direction: row;
+    margin-left: 86%;
+}#qtd_vendas > p{
+    font-size: 30px;
+
+    border: 1px solid black;
+
+    padding: 5px;
+}
+#realizarVenda{
+    margin: 5px auto;
+    width: 200px;
+    height: 80px;
+}
+
+#containerVendas{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    
+}
+
+#osRealizarVenda{
+    border-radius: 5px;
+    background-color: #2ecc38;
+    width: 200px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#btnRealizarVenda {
+    align-self: center;
+}
+
+
+
+#btnRealizarVenda button{
+    border-radius: 5px;
+    background-color: #2ecc38;
+    width: 200px;
+    height: 80px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+
+#btnVoltar{
+    align-self: flex-start;
+    margin: 15px 15px;
+}
+
+#btnVoltar button{
+    border-radius: 15px;
+    background-color: burlywood;
+    width: 80px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
