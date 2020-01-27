@@ -1,0 +1,48 @@
+#corpo_tabela > tr > td > #rounded-color{
+    margin-left: 90%;
+}
+#colors-content{
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+
+    margin-top: 10px;
+}
+#colors-content > #colors-table{
+    width: 45%;
+}
+#colors-table > table{
+    width: 100%;
+}
+#colors-content > #colors-action{
+    margin-left: 55px;
+
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+}
+#colors-action > p{
+    font-size: 25px;
+    font-weight: 500;
+}
+#colors-action > input{
+    height: 30px;
+    font-size: 25px;
+
+    margin: 10px 0;
+}
+#colors-action > #color-salvar{
+    width: 150px;
+
+    background-color: #929292;
+    color: white;
+
+    border: none;
+    border-radius: 20px;
+
+    align-self: center;
+}
+#colors-action > #color-picker{
+    margin: 30px;
+}
