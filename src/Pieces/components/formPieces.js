@@ -12,6 +12,8 @@ class formPieces extends Component {
 
     componentDidMount() {
         getUnitys().then(res => { 
+            console.log(res);
+            
             this.setState({ Unidade: res.map(map => { return map.unity_name }) })
         })
     }
@@ -38,12 +40,8 @@ class formPieces extends Component {
                         <div>
                             <p>Unidade</p>
                             <select id="pieces-unit">{
-                                this.state.Unidade.map(unity => <option value={unity}>{unity}</option>)
+                                this.state.Unidade.map(unity => <option key={unity} value={unity}>{unity}</option>)
                             }</select>
-                            {/* <input
-                                type="text"
-                                id='pieces-unit'
-                                /> */}
                         </div>
                         <div>
                             <p>Valor $</p>
