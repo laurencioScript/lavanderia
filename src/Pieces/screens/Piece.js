@@ -1,5 +1,6 @@
 // React
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 // Global & CSS
 import Header from '../../public/header';
 import img_placeholder from '../../public/placeholder-img.jpg';
@@ -29,9 +30,9 @@ class pieces extends Component {
             <>
                 <Header name="peças" />
 
-                <div id="volta">
-                    <p>↪ Voltar</p>
-                </div>
+                <Link id="btnVoltar" to="/Menu"> 
+                    <button type="button" >↪ Voltar</button>
+                </Link> 
 
                 <div id="icon-page">
                     <img src={img_placeholder} alt=" "></img>

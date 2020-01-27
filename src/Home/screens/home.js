@@ -5,7 +5,7 @@ import icon_user from '../../public/icons/icon_user.png';
 import icon_password from '../../public/icons/icon_password.png';
 import {Link} from "react-router-dom";
 
-import { getLogin } from '../HomeService';
+import {getLogin} from '../HomeService';
 
 function Index(){
     
@@ -15,22 +15,12 @@ function Index(){
 
     const login = async (e)=>{
         
-        const result = await getLogin({ email, password })
-        
-        if(result.status > 300) return
-        
-        let nivel;
-    
-        nivel = result && result.level_user == 1 ? "Mestre" : "";
-        nivel = result && result.level_user == 2 ? "Administrador" : "";
-        nivel = result && result.level_user == 3 ? "Atendente" : "";
-
-        sessionStorage.clear();
-        sessionStorage.setItem("nome", result.name_user);
-        sessionStorage.setItem("email", result.email);
-        sessionStorage.setItem("nivel", nivel);
-        sessionStorage.setItem("id", result.id_user);
-        sessionStorage.setItem("Token", result.token);
+        // validação de email e password
+        if(!email || !password)
+            return
+            
+        await getLogin({ email, password })
+      
     }
     
     

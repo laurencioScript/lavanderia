@@ -1,5 +1,6 @@
 //import Axios from 'axios';
 import CONNECT from './../config';
+import bcrypt from 'bcryptjs';
 const Axios = require('axios');
 const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}};
 
@@ -17,7 +18,22 @@ export const getLogin = async (data) =>{
     try {
         const response = await Axios(option);
         
-        return response.data.result;
+        const result =  response.data.result;
+
+        let cargo;
+        
+        cargo = result && result.level_user == 1 ? "Mestre" : cargo;
+        cargo = result && result.level_user == 2 ? "Administrador" : cargo;
+        cargo = result && result.level_user == 3 ? "Atendente" : cargo;
+
+        sessionStorage.setItem("user",JSON.stringify({
+            nome:result.name_user,
+            cargo:cargo,
+        }) );
+
+        sessionStorage.setItem("token", result.token);
+        const level = await bcrypt.hash( result.token+result.level_user, 10);
+        sessionStorage.setItem("level", level);
         
     } catch (error) {
         const { response } = error;

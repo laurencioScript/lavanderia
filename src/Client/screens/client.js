@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import Header from '../public/header';
+import Header from '../../public/header';
 
-import icon_user from '../public/icons/icon_user.png';
-import img_placeholder from '../public/placeholder-img.jpg';
+import icon_user from '../../public/icons/icon_user.png';
+import img_placeholder from '../../public/placeholder-img.jpg';
 
 
 import './customers.css';
+import { deleteCustomer, getCustomer,getCustomers,putCustomer,postCustomer} from './../ClienteService';
 
-const Connection = require('../public/connection');
 
 class index extends Component{
     state = {
@@ -18,7 +18,7 @@ class index extends Component{
     }
 
     componentDidMount(){
-        Connection.getCustomers().then(res =>{
+        getCustomers().then(res =>{
             this.setState({Clientes: res, Conteudo: res});
             sessionStorage.removeItem("Selecionado");
         })
@@ -28,14 +28,14 @@ class index extends Component{
            {this.componenAtualiza();}
     }
     componenAtualiza(){
-        Connection.getCustomers().then(res => {
+        getCustomers().then(res => {
             var Clientes = res;
             this.setState({Clientes, Conteudo: Clientes});
         });
     }
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await Connection.getCustomers() })
+        ? this.setState({Atualiza: true, Conteudo: await getCustomers() })
         : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
     }
 
@@ -141,7 +141,7 @@ class index extends Component{
                                                     <button 
                                                         id="btn-delete"
                                                         onClick={() =>{
-                                                            Connection.deleteCustomer(Cliente.id_client);
+                                                            deleteCustomer(Cliente.id_client);
                                                             console.log("DELETEI")
                                                             console.log(Cliente.id_client)
                                                         }}
