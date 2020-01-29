@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import './Pagamento.css';
+import './pagamento.css';
 
-import icon_percentage from '../public/icons/icon_percentage.png';
-import icon_cheque from '../public/icons/icon_cheque.png';
-import icon_debit from '../public/icons/icon_debit-card.png';
-import icon_money from '../public/icons/icon_money.png';
-import icon_credit from '../public/icons/icon_credit-card.png';
+import icon_percentage from '../../public/icons/icon_percentage.png';
+import icon_cheque from '../../public/icons/icon_cheque.png';
+import icon_debit from '../../public/icons/icon_debit-card.png';
+import icon_money from '../../public/icons/icon_money.png';
+import icon_credit from '../../public/icons/icon_credit-card.png';
 
 class Pagamento extends Component {
     render() {

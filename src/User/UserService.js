@@ -1,7 +1,7 @@
 //import Axios from 'axios';
 import CONNECT from './../config.js';
 const Axios = require('axios');
-const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}};
+const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("token")}};
 
 
 export const getUsers = async () =>{

@@ -18,8 +18,8 @@ class Menu extends Component{
             <div id="menu">
                 <div id='container-menu'>
                     <div id="content">
-                        <div id='OS'>
-                            <Link to='/OS'>
+                        <div id='Vendas'>
+                            <Link to='/Vendas'>
                                 <img src={icon_os} alt=" "></img>
                                 <p>Serviços</p>
                             </Link>
@@ -86,7 +86,7 @@ class Menu extends Component{
                         <p id="usuario">{sessionStorage.getItem("nome")}</p>
                     </div>
 
-                    <div id='new-user' onLoad={()=> {sessionStorage.getItem('nivel') == 'Atendente' ? document.querySelector('#new-user').style.display = 'none' : console.log("você tem nivel suficiente");}}>
+                    <div id='new-user' onLoad={()=> {return sessionStorage.getItem('nivel') == 'Atendente' ? document.querySelector('#new-user').style.display = 'none' :'' ;}}>
                         <Link to='/Usuarios'>
                             <img src={icon_user} alt=" "></img>
                             <p>Criar Novo Usuário</p>

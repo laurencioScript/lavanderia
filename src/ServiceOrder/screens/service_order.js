@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-
-import Header from '../public/header';
-
-import icon_lista from '../public/icons/icon_lista.png';
-import OsResumeTable from './OsResumeTable';
-
-import './OS.css';
 import { Link,Redirect } from 'react-router-dom';
-import Receber from './Receber';
-import Pagamento from './Pagamento';
+
+
+import Header from '../../public/header';
+import icon_lista from '../../public/icons/icon_lista.png';
+import './service_order.css';
+
+
+import OsResumeTable from '../components/tabela';
+import Receber from '../components/receber';
+import Pagamento from '../components/pagamento';
 
 class index extends Component{
     

@@ -1,5 +1,8 @@
-export const localAuthentication = () =>{
+export const localAuthentication =  (level_required) =>{
 
-    return sessionStorage.getItem("email") == null ? false : true;
-
+    const existLevel = sessionStorage.getItem("level") || null;
+    const token = sessionStorage.getItem("token") || null;
+    
+    return existLevel && existLevel <= level_required ? true : false ;
+    
 };
