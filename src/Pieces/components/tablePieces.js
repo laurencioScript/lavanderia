@@ -81,7 +81,7 @@ class tablePieces extends Component {
                                     <tr onClick={() => {
                                         sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Pieces.id_piece ? null : Pieces.id_piece);
                                         this.verificaLista(document.getElementById(Pieces.id_piece));
-                                    }} id={Pieces.id_piece}>
+                                    }} key={Pieces.id_piece} id={Pieces.id_piece}>
                                         <td id="pices-name">{Pieces.piece_name}</td>
                                         <td id="pices-email">{Pieces.unity}</td>
                                         <td id="pieces-nivel">{"R$ " + Pieces.value}</td>

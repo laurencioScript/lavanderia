@@ -41,7 +41,7 @@ class piecesReadjustment extends Component {
     montaSelect() {
         var option =
             this.state.Pecas.map(Pecas =>
-                <option value={Pecas.id_piece}>
+                <option key={Pecas.id_piece} value={Pecas.id_piece}>
                     {Pecas.piece_name}
                 </option>
             );
@@ -61,7 +61,7 @@ class piecesReadjustment extends Component {
                             onChange={() => {
                                 document.querySelector("#piecesReadjustment-select").disabled = !document.querySelector("#piecesReadjustment-select").disabled;
                             }} />
-                        <label for='todas'>Todas</label>
+                        <label forname='todas'>Todas</label>
                     </div>
 
                     <select id="piecesReadjustment-select">

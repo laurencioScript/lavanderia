@@ -1,5 +1,6 @@
 //import Axios from 'axios';
 import CONNECT from './../config';
+import bcrypt from 'bcryptjs';
 const Axios = require('axios');
 const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("token")}};
 

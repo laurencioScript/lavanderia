@@ -43,5 +43,5 @@ const Routes = () => (
             <PrivateRoute path='/Relatorios' component={ScreensRelatorios}/> */} */}
             {/* <PrivateRoute path='/Medidas' component={Medidas}/> */}
         </Switch>
-  </BrowserRouter>); 
+    </BrowserRouter>);
 export default Routes;
