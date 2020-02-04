@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
-import Header from '../public/header';
-import img_placeholder from '../public/placeholder-img.jpg';
+import Header from '../../public/header';
+import img_placeholder from '../../public/placeholder-img.jpg';
 
 import './defects.css';
 
-const Connection = require('../public/connection');
+import {getDefects, postDefect, putDefect, deleteDefect} from '../DefectService';
 
 class index extends Component{
     state ={
@@ -16,11 +16,8 @@ class index extends Component{
         Atualiza: true
     }
     componentDidMount(){
-        Connection.getDefects().then(res => {
-            var Defeitos = res;
-            this.setState({Defeitos, Conteudo: res});
-        });
-        this.verificaNivel();
+        this.componenAtualiza();
+        // this.verificaNivel();
 
         sessionStorage.removeItem("Selecionado");
     }
@@ -31,7 +28,7 @@ class index extends Component{
     }
 
     componenAtualiza(){
-        Connection.getDefects().then(res => {
+        getDefects().then(res => {
             var Defeitos = res;
             this.setState({Defeitos, Conteudo: res});
         });
@@ -39,8 +36,8 @@ class index extends Component{
     }
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await Connection.getUnitys() })
-        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+        ? this.setState({Atualiza: true, Conteudo: await getDefects() })
+        : this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
@@ -52,22 +49,22 @@ class index extends Component{
         return data
     }
 
-    verificaNivel(){
-        if(sessionStorage.getItem('nivel') == 'Atendente')
-        {   console.log("BTN DESABILITADO");
-            document.querySelector('#btn-edit').disabled = true;
-            document.querySelector("#btn-delete").disabled = true;
+    // verificaNivel(){
+    //     if(sessionStorage.getItem('nivel') == 'Atendente')
+    //     {   console.log("BTN DESABILITADO");
+    //         document.querySelector('#btn-edit').disabled = true;
+    //         document.querySelector("#btn-delete").disabled = true;
 
-            document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
-            document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
-        }else{
-            console.log("BTN HABILITADO");
-            document.querySelector("#btn-edit").disabled = false;
-            document.querySelector("#btn-delete").disabled = false;
-            document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
-            document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
-        }
-    }
+    //         document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
+    //         document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
+    //     }else{
+    //         console.log("BTN HABILITADO");
+    //         document.querySelector("#btn-edit").disabled = false;
+    //         document.querySelector("#btn-delete").disabled = false;
+    //         document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
+    //         document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
+    //     }
+    // }
     limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
@@ -135,7 +132,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Connection.deleteDefect(sessionStorage.getItem('Selecionado'));
+                                    deleteDefect(sessionStorage.getItem('Selecionado'));
                                 }}
                             >Excluir</button>
                         </div>
@@ -180,12 +177,12 @@ class index extends Component{
                                     };
                                     if(this.state.createState && !document.querySelector("#defect-name").disabled)
                                         {   
-                                            Connection.postDefect(data);
+                                            postDefect(data);
                                             console.log(document.querySelector("#defect-name").disabled);
                                         }
                                     else if(this.state.editState && !document.querySelector("#defect-name").disabled)
                                         {
-                                            Connection.putDefect(sessionStorage.getItem('Selecionado'), data);
+                                            putDefect(sessionStorage.getItem('Selecionado'), data);
                                         }
                                 }}
                             />

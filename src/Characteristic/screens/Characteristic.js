@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 
-import Header from '../public/header';
+import Header from '../../public/header';
 // import img_caracteristicas from '../../public/icons/icon_caract.png';
-import img_placeholder from '../public/placeholder-img.jpg';
+import img_placeholder from '../../public/placeholder-img.jpg';
 
 import './features.css';
 
-const Connection = require('../public/connection');
+import {getCharacteristics, postCharacteristic, putCharacteristic, deleteCharacteristic} from '../CharacService';
 
 class index extends Component{
     state ={
@@ -17,29 +17,26 @@ class index extends Component{
         Atualiza: true
     }
     componentDidMount(){
-        Connection.getCharacteristics().then(res => {
-            var Caract = res;
-            this.setState({Caract});
-        });
-        this.verificaNivel();
+        this.componenAtualiza()
+        // this.verificaNivel();
 
         sessionStorage.removeItem("Selecionado");
     }
-
     componentDidUpdate(){
         if(this.state.Atualiza)
            {this.componenAtualiza();}
     }
+
     componenAtualiza(){
-        Connection.getCharacteristics().then(res => {
+        getCharacteristics().then(res => {
             var Caract = res;
             this.setState({Caract, Conteudo: Caract});
         });
     }
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await Connection.getCharacteristics() })
-        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+        ? this.setState({Atualiza: true, Conteudo: await getCharacteristics() })
+        : this.setState({ Atualiza: false, Conteudo: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
@@ -55,22 +52,23 @@ class index extends Component{
 
 
 
-    verificaNivel(){
-        if(sessionStorage.getItem('nivel') == 'Atendente')
-        {   console.log("BTN DESABILITADO");
-            document.querySelector('#btn-edit').disabled = true;
-            document.querySelector("#btn-delete").disabled = true;
+    // verificaNivel(){
+    //     if(sessionStorage.getItem('nivel') == 'Atendente')
+    //     {   console.log("BTN DESABILITADO");
+    //         document.querySelector('#btn-edit').disabled = true;
+    //         document.querySelector("#btn-delete").disabled = true;
 
-            document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
-            document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
-        }else{
-            console.log("BTN HABILITADO");
-            document.querySelector("#btn-edit").disabled = false;
-            document.querySelector("#btn-delete").disabled = false;
-            document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
-            document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
-        }
-    }
+    //         document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
+    //         document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
+    //     }else{
+    //         console.log("BTN HABILITADO");
+    //         document.querySelector("#btn-edit").disabled = false;
+    //         document.querySelector("#btn-delete").disabled = false;
+    //         document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
+    //         document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
+    //     }
+    // }
+
     limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
@@ -82,7 +80,6 @@ class index extends Component{
     }
     verificaLista = (linha) =>{
         this.limpaLista();
-        // linha.classList.toggle("selecionado");
         try{
             document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
         }catch(e){
@@ -139,8 +136,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Connection.deleteCharacteristic(sessionStorage.getItem('Selecionado'));
-                                    // Axios.delete('http://localhost:3000/characteristic/' + sessionStorage.getItem('Selecionado'),{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
+                                    deleteCharacteristic(sessionStorage.getItem('Selecionado'));
                                 }}
                             >Excluir</button>
                         </div>
@@ -185,12 +181,12 @@ class index extends Component{
                                     };
                                     if(this.state.createState && !document.querySelector("#feature-name").disabled)
                                         {
-                                            Connection.postCharacteristic(data);
+                                            postCharacteristic(data);
                                             console.log(document.querySelector("#feature-name").disabled);
                                         }
                                     else if(this.state.editState && !document.querySelector("#feature-name").disabled)
                                         {
-                                            Connection.putCharacteristic(sessionStorage.getItem('Selecionado'), data);
+                                            putCharacteristic(sessionStorage.getItem('Selecionado'), data);
                                         }
                                 }}
                             />
