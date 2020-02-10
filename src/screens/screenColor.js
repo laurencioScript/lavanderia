@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import { SliderPicker } from 'react-color';
 
-import Header from '../../public/header';
-import Bolinha from '../../public/bolinha';
-import img_placeholder from '../../public/placeholder-img.jpg';
-import icon_paleta from '../../public/icons/icon_paleta2.png';
+import Header from '../components/header';
+import Bolinha from '../components/bolinha';
+import img_placeholder from '../public/placeholder-img.jpg';
+import icon_paleta from '../public/icons/icon_paleta2.png';
 
-import {getColors, postColor, putColor, deleteColor} from '../ColorsService';
+import CS from '../service/ColorsService';
 
-import './color.css';
+import './screenColor.css';
 
 
 class color extends Component{
@@ -32,12 +32,11 @@ class color extends Component{
            this.componenAtualiza();
     }
 
-    componenAtualiza(){
-        getColors().then(res => {
-            var Cores = res;
-            this.setState({Cores, Conteudo: Cores});
-        });
+    async componenAtualiza(){
+        let Cores = await CS.getColors()
+        this.setState({Cores, Conteudo: Cores});
     }
+    
     pesquisa = async (val) => {
         //Esta função recebe o valor digitado pelo usuário, altera o estado Atualiza, que bloqueia a atualização
         //do didUpdate e chama a função retornaPesquisa caso tenha algo digitado na barra de pesquisa e faz o setState.
@@ -45,7 +44,7 @@ class color extends Component{
         //Como a função setState por si só ser assincrona, é de extrema importancia manter esta função assincrona
         //pois assim, a atualização do que o usuário escreve se mantem atualizada corretamente.
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await getColors() })
+        ? this.setState({Atualiza: true, Conteudo: await CS.getColors() })
         : this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
     }
 
@@ -76,6 +75,7 @@ class color extends Component{
 
 
     limpaLista = () =>{
+        //Função responsavel por limpar a antiga linha selecionada da tabela
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
 
@@ -85,6 +85,7 @@ class color extends Component{
         }
     }
     verificaLista = (linha) =>{
+        //Função responsavel por fazer uma linha da tabela visivelmente selecionada
         this.limpaLista();
         try{
             document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
@@ -150,7 +151,7 @@ class color extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    deleteColor(sessionStorage.getItem('Selecionado'));
+                                    CS.deleteColor(sessionStorage.getItem('Selecionado'));
                                 }}
                             >Excluir</button>
                         </div>
@@ -200,11 +201,11 @@ class color extends Component{
                                     };
                                     if(this.state.createState && !document.querySelector("#color-name").disabled)
                                         {
-                                            postColor(data);
+                                            CS.postColor(data);
                                         }
                                     else if(this.state.editState && !document.querySelector("#color-name").disabled)
                                         {
-                                            putColor(sessionStorage.getItem('Selecionado'), data);
+                                            CS.putColor(sessionStorage.getItem('Selecionado'), data);
                                         }
                                 }}
                             />

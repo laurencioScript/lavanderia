@@ -3,9 +3,8 @@ import React, {Component} from 'react';
 import Header from '../public/header';
 import img_placeholder from '../public/placeholder-img.jpg';
 
-import './measures.css';
-
-const Connection = require('../public/connection');
+import './screenMeasures.css';
+import CS from '../service/UnityService';
 
 class index extends Component{
     state ={
@@ -17,32 +16,29 @@ class index extends Component{
         Atualiza: true
     }
     componentDidMount(){
-        Connection.getUnitys().then(res => {
-            var Medidas = res;
-            this.setState({Medidas, Conteudo: Medidas});
-        });
+        this.componenAtualiza();
         this.verificaNivel();
 
         sessionStorage.removeItem("Selecionado");
     }
     componentDidUpdate(){
         if(this.state.Atualiza)
-           {this.componenAtualiza();}
+           this.componenAtualiza();
     }
-    componenAtualiza(){
-        Connection.getUnitys().then(res => {
-            var Medidas = res;
-            this.setState({Medidas, Conteudo: Medidas});
-        });
+    async componenAtualiza(){
+        let Medidas = await CS.getUnitys()
+        this.setState({Medidas, Conteudo: Medidas})
     }
+
+
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await Connection.getUnitys() })
-        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+        ? this.setState({Atualiza: true, Conteudo: await CS.getUnitys() })
+        : this.setState({ Atualiza: false, Conteudo: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
-        var data = this.state.Medidas.map(res => {
+        let data = this.state.Medidas.map(res => {
             return  res.unity_name.toLowerCase().search(val) !== -1 
                     ? res : undefined;
         });
@@ -135,7 +131,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    Connection.deleteUnity(sessionStorage.getItem('Selecionado'))
+                                    CS.deleteUnity(sessionStorage.getItem('Selecionado'))
                                 }}
                             >Excluir</button>
                         </div>
@@ -182,12 +178,11 @@ class index extends Component{
                                     };
                                     if(this.state.createState && !document.querySelector("#measure-name").disabled)
                                         {
-                                            Connection.postUnity(data);
-                                            console.log(document.querySelector("#measure-name").disabled);
+                                            CS.postUnity(data);
                                         }
                                     else if(this.state.editState && !document.querySelector("#measure-name").disabled)
                                         {
-                                            Connection.putUnity(sessionStorage.getItem('Selecionado'), data);
+                                            CS.putUnity(sessionStorage.getItem('Selecionado'), data);
                                         }
                                 }}
                             />

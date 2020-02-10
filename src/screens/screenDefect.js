@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
-import Header from '../../public/header';
-import img_placeholder from '../../public/placeholder-img.jpg';
+import Header from '../public/header';
+import img_placeholder from '../public/placeholder-img.jpg';
 
-import './defects.css';
+import './screenDefect.css';
 
-import {getDefects, postDefect, putDefect, deleteDefect} from '../DefectService';
+import CS from '../service/DefectService';
 
 class index extends Component{
     state ={
@@ -21,27 +21,25 @@ class index extends Component{
 
         sessionStorage.removeItem("Selecionado");
     }
-
     componentDidUpdate(){
         if(this.state.Atualiza)
            {this.componenAtualiza();}
     }
 
-    componenAtualiza(){
-        getDefects().then(res => {
-            var Defeitos = res;
-            this.setState({Defeitos, Conteudo: res});
-        });
+    async componenAtualiza(){
+        let Defeitos = await CS.getDefects()
+        this.setState({Defeitos, Conteudo: Defeitos});
+
         this.verificaLista();
     }
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await getDefects() })
+        ? this.setState({Atualiza: true, Conteudo: await CS.getDefects() })
         : this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
-        var data = this.state.Defeitos.map(res => {
+        let data = this.state.Defeitos.map(res => {
             return  res.defect_name.toLowerCase().search(val) !== -1 
                     ? res : undefined;
         });
@@ -65,6 +63,7 @@ class index extends Component{
     //         document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
     //     }
     // }
+
     limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
@@ -104,7 +103,7 @@ class index extends Component{
                                     placeholder="Procurar" 
                                     name="search" id="search-defect" 
                                     onChange={(e)=>{
-                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                        this.pesquisa(e.target.value.toLowerCase())
                                 }} />
                             </div>
                             
@@ -132,7 +131,7 @@ class index extends Component{
                             <button 
                                 id="btn-delete" 
                                 onClick={() =>{
-                                    deleteDefect(sessionStorage.getItem('Selecionado'));
+                                    CS.deleteDefect(sessionStorage.getItem('Selecionado'));
                                 }}
                             >Excluir</button>
                         </div>
@@ -177,12 +176,11 @@ class index extends Component{
                                     };
                                     if(this.state.createState && !document.querySelector("#defect-name").disabled)
                                         {   
-                                            postDefect(data);
-                                            console.log(document.querySelector("#defect-name").disabled);
+                                            CS.postDefect(data);
                                         }
                                     else if(this.state.editState && !document.querySelector("#defect-name").disabled)
                                         {
-                                            putDefect(sessionStorage.getItem('Selecionado'), data);
+                                            CS.putDefect(sessionStorage.getItem('Selecionado'), data);
                                         }
                                 }}
                             />
