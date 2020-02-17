@@ -10,6 +10,16 @@ class index extends Component{
     state ={
         createState: false,
         editState: false,
+
+        EnableEdit: true,
+        EnableDelete: true,
+        EnableInput: true,
+        ClassEdit: "",
+        ClassDelete: "",
+
+        itenSelected: '',
+        MeasureName: '',
+
         Medidas: [],
         Conteudo: [],
         Pesquisa: '',
@@ -21,10 +31,7 @@ class index extends Component{
 
         sessionStorage.removeItem("Selecionado");
     }
-    componentDidUpdate(){
-        if(this.state.Atualiza)
-           this.componenAtualiza();
-    }
+
     async componenAtualiza(){
         let Medidas = await CS.getUnitys()
         this.setState({Medidas, Conteudo: Medidas})
@@ -39,31 +46,26 @@ class index extends Component{
 
     retornaPesquisa = (val) =>{
         let data = this.state.Medidas.map(res => {
-            return  res.unity_name.toLowerCase().search(val) !== -1 
-                    ? res : undefined;
+            return  res.unity_name.toLowerCase().search(val) !== -1 ? res : undefined;
         });
-
         return data
     }
 
 
 
     verificaNivel(){
-        if(sessionStorage.getItem('nivel') == 'Atendente')
-        {   console.log("BTN DESABILITADO");
-            document.querySelector('#btn-edit').disabled = true;
-            document.querySelector("#btn-delete").disabled = true;
+        if(JSON.parse(sessionStorage.getItem('user')).cargo == 'Atendente'){   
+            this.setState({EnableEdit: true, EnableDelete: true,
+                ClassDelete: "btn-delete-disabled", ClassEdit: "btn-edit-disabled"});
+            console.log("BTN DESABILITADO");
 
-            document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
-            document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
         }else{
+            this.setState({EnableEdit: false, EnableDelete: false,
+                ClassDelete: "", ClassEdit: ""});
             console.log("BTN HABILITADO");
-            document.querySelector("#btn-edit").disabled = false;
-            document.querySelector("#btn-delete").disabled = false;
-            document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
-            document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
         }
     }
+
     limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
         var linhas = tabela.getElementsByTagName("tr");
@@ -80,12 +82,42 @@ class index extends Component{
         }catch(e){
         }
     }
+
+    btnCreate = () =>{
+        this.setState({createState: ! this.state.createState});
+        this.state.createState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+        if(this.state.editState)
+            this.setState({editState: false});
+        else{}
+    }
+
+    btnEdit = () =>{
+        this.setState({editState: !this.state.editState});
+        this.state.editState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+        if(this.state.createState)
+            this.setState({createState: false}) ;
+        else{}
+    }
+
+    lineSelecting = Medidas =>{
+        this.setState({itenSelected: Medidas.id_unity, MeasureName: Medidas.unity_name});
+        if(this.state.createState || this.state.editState){
+            this.state.MeasureName = Medidas.unity_name
+        }
+        else{ this.state.MeasureName = " " }
+
+        this.verificaLista(document.getElementById(Medidas.id_unity));
+    }
+    
     render(){
         return(
             <>
                 <Header name="medidas"/>
-                <div id="volta">
-                        <p>↪ Voltar</p>
+                    <div id="volta">
+                        <a  id="btnVoltar"
+                            href="/Menu">
+                            <button>Voltar</button>
+                        </a>
                     </div>
 
                     <div id="icon-page">
@@ -93,7 +125,7 @@ class index extends Component{
                         <img src={img_placeholder} alt=" "></img>
                     </div>
 
-                    <div id="content-users" on >
+                    <div id="content-users">
                         <div id="navigation-users">
                             <p>Lista de Medidas</p>
                             <div id="search">
@@ -103,7 +135,7 @@ class index extends Component{
                                     placeholder="Procurar" 
                                     name="search" id="search-measures" 
                                     onChange={(e)=>{
-                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                        this.pesquisa(e.target.value.toLowerCase()) 
                                 }} />
                             </div>
                             
@@ -111,29 +143,21 @@ class index extends Component{
 
                             <button 
                                 id="btn-create" 
-                                onClick={() =>{
-                                    this.setState({createState: !this.state.createState});
-                                    this.state.createState == true ? document.querySelector("#measure-name").disabled = true : document.querySelector("#measure-name").disabled = false;
-                                    if(this.state.editState)
-                                        this.setState({editState: false});
-                                }}
-                            >Criar</button>
+                                onClick={this.btnCreate} >Criar</button>
+                            
                             <button 
                                 id="btn-edit"
-                                onClick={() =>{
-                                    this.setState({editState: !this.state.editState});
-                                    this.state.editState == true ? document.querySelector("#measure-name").disabled = true : document.querySelector("#measure-name").disabled = false;
-                                    if(this.state.createState)
-                                        this.setState({createState: false}) ;
-                                }}
-                            >Editar</button>
+                                className={this.state.ClassEdit}
+                                disabled={this.state.EnableEdit}
+                                onClick={this.btnEdit} >Editar</button>
 
                             <button 
                                 id="btn-delete" 
+                                className={this.state.ClassDelete}
+                                disabled={this.state.EnableDelete}
                                 onClick={() =>{
-                                    CS.deleteUnity(sessionStorage.getItem('Selecionado'))
-                                }}
-                            >Excluir</button>
+                                    CS.deleteUnity(this.state.itenSelected)
+                                }}>Excluir</button>
                         </div>
                     </div>
 
@@ -144,12 +168,10 @@ class index extends Component{
                                     this.state.Conteudo.map(Medidas =>{ 
                                         if(Medidas !== undefined){
                                             return(
-                                                <tr id={Medidas.id_unity}
-                                                    onClick={() =>{
-                                                        sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Medidas.id_unity ? " " : Medidas.id_unity);
-                                                        this.verificaLista(document.getElementById(Medidas.id_unity));
-                                                        this.state.createState || this.state.editState ? document.querySelector("#measure-name").value = Medidas.unity_name : document.querySelector("#measure-name").value = null;
-                                                    }}>
+                                                <tr key={Medidas.id_unity}
+                                                    id={Medidas.id_unity}
+                                                    onClick={()=>{this.lineSelecting(Medidas)}}
+                                                >
                                                     <td>{Medidas.unity_name}</td>
                                                 </tr>
                                             )
@@ -164,8 +186,9 @@ class index extends Component{
                             <input 
                                 type='text'
                                 id='measure-name'
-                                disabled
-
+                                disabled={this.state.EnableInput}
+                                value={this.state.MeasureName}
+                                onChange={ e=> this.setState({MeasureName: e.target.value})}
                             />
 
                             <input 
@@ -174,16 +197,13 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     var data = {
-                                        "name": document.getElementById('measure-name').value
+                                        "name": this.state.MeasureName
                                     };
-                                    if(this.state.createState && !document.querySelector("#measure-name").disabled)
-                                        {
-                                            CS.postUnity(data);
-                                        }
-                                    else if(this.state.editState && !document.querySelector("#measure-name").disabled)
-                                        {
-                                            CS.putUnity(sessionStorage.getItem('Selecionado'), data);
-                                        }
+                                    if(this.state.createState){
+                                        CS.postUnity(data);
+                                    }else if(this.state.editState){
+                                        CS.putUnity(this.state.itenSelected, data);
+                                    }
                                 }}
                             />
                         </div>

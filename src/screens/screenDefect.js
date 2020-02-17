@@ -11,58 +11,60 @@ class index extends Component{
     state ={
         createState: false,
         editState: false,
+
+        EnableEdit: false,
+        EnableDelete: false,
+        EnableInput: true,
+        ClassEdit: "",
+        ClassDelete: "",
+
+        itenSelected: '',
+        measureName: '',
+
         Defeitos: [],
         Conteudo:[],
         Atualiza: true
     }
     componentDidMount(){
         this.componenAtualiza();
-        // this.verificaNivel();
+        this.verificaNivel();
 
         sessionStorage.removeItem("Selecionado");
-    }
-    componentDidUpdate(){
-        if(this.state.Atualiza)
-           {this.componenAtualiza();}
     }
 
     async componenAtualiza(){
         let Defeitos = await CS.getDefects()
         this.setState({Defeitos, Conteudo: Defeitos});
-
-        this.verificaLista();
     }
+
     pesquisa = async (val) => {
-        val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await CS.getDefects() })
-        : this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
+        if(val === ""){
+            this.setState({Atualiza: true, Conteudo: await CS.getDefects() })
+        }else{
+            this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
+        }
     }
 
     retornaPesquisa = (val) =>{
         let data = this.state.Defeitos.map(res => {
             return  res.defect_name.toLowerCase().search(val) !== -1 
-                    ? res : undefined;
+                ? res : undefined;
         });
-
-        return data
+        return data;
     }
 
-    // verificaNivel(){
-    //     if(sessionStorage.getItem('nivel') == 'Atendente')
-    //     {   console.log("BTN DESABILITADO");
-    //         document.querySelector('#btn-edit').disabled = true;
-    //         document.querySelector("#btn-delete").disabled = true;
+    verificaNivel(){
+        if(JSON.parse(sessionStorage.getItem('user')).cargo == 'Atendente'){   
+            this.setState({EnableEdit: true, EnableDelete: true,
+                ClassDelete: "btn-delete-disabled", ClassEdit: "btn-edit-disabled"});
+            console.log("BTN DESABILITADO");
 
-    //         document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
-    //         document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
-    //     }else{
-    //         console.log("BTN HABILITADO");
-    //         document.querySelector("#btn-edit").disabled = false;
-    //         document.querySelector("#btn-delete").disabled = false;
-    //         document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
-    //         document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
-    //     }
-    // }
+        }else{
+            this.setState({EnableEdit: false, EnableDelete: false,
+                ClassDelete: "", ClassEdit: ""});
+            console.log("BTN HABILITADO");
+        }
+    }
 
     limpaLista = () =>{
         var tabela = document.getElementById("corpo_tabela");
@@ -80,12 +82,47 @@ class index extends Component{
         }catch(e){
         }
     }
+
+    btnCreate = () =>{
+        this.setState({createState: !this.state.createState});
+        this.state.createState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+        if(this.state.editState)
+            this.setState({editState: false});
+        else{}
+    }
+
+    btnEdit = () =>{
+        this.setState({editState: !this.state.editState});
+        this.state.editState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+        if(this.state.createState)
+            this.setState({createState: false}) ;
+        else{}
+    }
+
+    lineSelecting = Defeitos =>{
+        this.setState({itenSelected: Defeitos.id_defect, measureName: Defeitos.defect_name})
+        if(this.state.createState || this.state.editState){
+            this.state.measureName = Defeitos.defect_name
+        }   else{ this.state.measureName = " " }
+
+        this.verificaLista(document.getElementById(Defeitos.id_defect))
+
+        // sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Defeitos.id_defect ? " " : Defeitos.id_defect);
+        // this.verificaLista(document.getElementById(Defeitos.id_defect));
+        // this.state.createState || this.state.editState ? document.querySelector("#defect-name").value = Defeitos.defeito : document.querySelector("#defect-name").value = null;
+    }
+
+
+
     render(){
         return(
             <>
                 <Header name="defeitos"/>
-                <div id="volta">
-                        <p>↪ Voltar</p>
+                    <div id="volta">
+                        <a  id="btnVoltar"
+                            href="/Menu">
+                            <button>Voltar</button>
+                        </a>
                     </div>
 
                     <div id="icon-page">
@@ -111,29 +148,21 @@ class index extends Component{
 
                             <button 
                                 id="btn-create" 
-                                onClick={() =>{
-                                    this.setState({createState: !this.state.createState});
-                                    this.state.createState == true ? document.querySelector("#defect-name").disabled = true : document.querySelector("#defect-name").disabled = false;
-                                    if(this.state.editState)
-                                        this.setState({editState: false});
-                                }}
-                            >Criar</button>
+                                onClick={this.btnCreate} >Criar</button>
+
                             <button 
                                 id="btn-edit"
-                                onClick={() =>{
-                                    this.setState({editState: !this.state.editState});
-                                    this.state.editState == true ? document.querySelector("#defect-name").disabled = true : document.querySelector("#defect-name").disabled = false;
-                                    if(this.state.createState)
-                                        this.setState({createState: false}) ;
-                                }}
-                            >Editar</button>
+                                className={this.state.ClassEdit}
+                                disabled={this.state.EnableEdit}
+                                onClick={this.btnEdit} >Editar</button>
 
                             <button 
                                 id="btn-delete" 
+                                className={this.state.ClassDelete}
+                                disabled={this.state.EnableDelete}
                                 onClick={() =>{
-                                    CS.deleteDefect(sessionStorage.getItem('Selecionado'));
-                                }}
-                            >Excluir</button>
+                                    CS.deleteDefect(this.state.itenSelected);
+                                }}>Excluir</button>
                         </div>
                     </div>
 
@@ -145,11 +174,7 @@ class index extends Component{
                                         if(Defeitos !== undefined)
                                         return(
                                         <tr id={Defeitos.id_defect}
-                                            onClick={() =>{
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Defeitos.id_defect ? " " : Defeitos.id_defect);
-                                                this.verificaLista(document.getElementById(Defeitos.id_defect));
-                                                this.state.createState || this.state.editState ? document.querySelector("#defect-name").value = Defeitos.defeito : document.querySelector("#defect-name").value = null;
-                                            }}    
+                                            onClick={() =>{this.lineSelecting(Defeitos)}}    
                                         >
                                             <td>{Defeitos.defect_name}</td>
                                         </tr>)
@@ -162,7 +187,9 @@ class index extends Component{
                             <input 
                                 type='text'
                                 id='defect-name'
-                                disabled
+                                disabled={this.state.EnableInput}
+                                value={this.state.measureName}
+                                onChange={ e => this.setState({measureName: e.target.value})}
 
                             />
 
@@ -172,16 +199,13 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     var data = {
-                                        "name": document.getElementById('defect-name').value
+                                        "name": this.state.measureName
                                     };
-                                    if(this.state.createState && !document.querySelector("#defect-name").disabled)
-                                        {   
-                                            CS.postDefect(data);
-                                        }
-                                    else if(this.state.editState && !document.querySelector("#defect-name").disabled)
-                                        {
-                                            CS.putDefect(sessionStorage.getItem('Selecionado'), data);
-                                        }
+                                    if(this.state.createState){
+                                        CS.postDefect(data);
+                                    }else if(this.state.editState){
+                                        CS.putDefect(this.state.itenSelected, data);
+                                    }
                                 }}
                             />
                         </div>
