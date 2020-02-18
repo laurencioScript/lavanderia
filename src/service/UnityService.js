@@ -18,7 +18,7 @@ const getUnity = async (id) =>{
 
 const postUnity = async (data) =>{
     const response = await Axios.post(`${CONNECT}/Unity/register`, data, token)
-        .catch(e => { console.log(e.response)});;
+        .catch(e => { console.log(e.response)});
     return response.data.result;
 }
 
@@ -30,7 +30,7 @@ const putUnity = async (id, data) =>{
 
 const deleteUnity = async (id) =>{
     const response = await Axios.delete(`${CONNECT}/Unity/${id}`, token)
-        .catch(e => { console.log(e.response)});;
+        .catch(e => { console.log(e.response)});
     return response.data.result;
 }
 

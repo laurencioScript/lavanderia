@@ -6,7 +6,7 @@ import Bolinha from '../components/bolinha';
 import img_placeholder from '../public/placeholder-img.jpg';
 import icon_paleta from '../public/icons/icon_paleta2.png';
 
-import CS from '../service/ColorsService';
+import ConectServ from '../service/ColorsService';
 
 import './screenColor.css';
 
@@ -15,6 +15,16 @@ class color extends Component{
     state ={
         createState: false,
         editState: false,
+
+        EnableEdit: true,
+        EnableDelete: true,
+        EnableInput: true,
+        ClassEdit: "",
+        ClassDelete: "",
+
+        itenSelected: '',
+        colorName: '',
+
         Cor: "",
         Cores: [],
         Conteudo: [],
@@ -26,14 +36,8 @@ class color extends Component{
 
         sessionStorage.removeItem("Selecionado");
     }
-
-    componentDidUpdate(){
-        if(this.state.Atualiza)
-           this.componenAtualiza();
-    }
-
     async componenAtualiza(){
-        let Cores = await CS.getColors()
+        let Cores = await ConectServ.getColors()
         this.setState({Cores, Conteudo: Cores});
     }
     
@@ -44,13 +48,13 @@ class color extends Component{
         //Como a função setState por si só ser assincrona, é de extrema importancia manter esta função assincrona
         //pois assim, a atualização do que o usuário escreve se mantem atualizada corretamente.
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await CS.getColors() })
+        ? this.setState({Atualiza: true, Conteudo: await ConectServ.getColors() })
         : this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
         //Esta função recebe de pesquisa, o valor digitado pelo usuário e monta o array com os campos filtrados.
-        var data = this.state.Cores.map(res => {
+        let data = this.state.Cores.map(res => {
             return  res.color_name.toLowerCase().search(val) !== -1 ||
                     res.hexadecimal.toLowerCase().search(val) !== -1 
                     ? res : undefined;
@@ -59,28 +63,25 @@ class color extends Component{
     }
 
     verificaNivel(){
-        if(sessionStorage.getItem('nivel') == 'Atendente')
-        {   
-            document.querySelector('#btn-edit').disabled = true;
-            document.querySelector("#btn-delete").disabled = true;
-            document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
-            document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
+        if(JSON.parse(sessionStorage.getItem('user')).cargo === 'Atendente'){
+            this.setState({EnableEdit: true, EnableDelete: true,
+                ClassDelete: "btn-delete-disabled", ClassEdit: "btn-edit-disabled"});
+            console.log("BTN DESABILITADO");
         }else{
-            document.querySelector("#btn-edit").disabled = false;
-            document.querySelector("#btn-delete").disabled = false;
-            document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
-            document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
+            this.setState({EnableEdit: false, EnableDelete: false,
+                ClassDelete: "", ClassEdit: ""});
+            console.log("BTN HABILITADO");
         }
     }
 
 
     limpaLista = () =>{
         //Função responsavel por limpar a antiga linha selecionada da tabela
-        var tabela = document.getElementById("corpo_tabela");
-        var linhas = tabela.getElementsByTagName("tr");
+        let tabela = document.getElementById("corpo_tabela");
+        let linhas = tabela.getElementsByTagName("tr");
 
-        for(var i = 0; i < linhas.length; i++){
-            var a = linhas[i];
+        for(let i = 0; i < linhas.length; i++){
+            let a = linhas[i];
             a.classList.remove("selecionado");
         }
     }
@@ -88,22 +89,66 @@ class color extends Component{
         //Função responsavel por fazer uma linha da tabela visivelmente selecionada
         this.limpaLista();
         try{
-            document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
+            linha.classList.toggle("selecionado");
         }catch(e){
         }
     }
 
     mudaCor = (color) =>{
         //esta função altera o colorPicker, caso o usuário clique na linha de uma cor já cadastrada.
-        var param = color.hex === undefined ? ({Cor: color}) : ({Cor: color.hex});        
+        let param = color.hex === undefined ? ({Cor: color}) : ({Cor: color.hex})
         this.setState(param);
     }
+
+    btnCreate = () =>{
+        this.setState({createState: !this.state.createState});
+        this.state.createState ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+        
+        if(this.state.editState)
+            this.setState({editState: false});
+        else{}
+    }
+    btnEdit = () =>{
+        this.setState({editState: !this.state.editState});
+        this.state.editState ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+        if(this.state.createState)
+            this.setState({createState: false});
+        else{}
+    }
+
+    lineSelecting = Color =>{
+        this.mudaCor(Color.hexadecimal);
+
+        this.setState({itenSelected: this.state.itenSelected == Color.id_color ? " " : Color.id_color});
+        this.setState({colorName: Color.color_name});        
+
+        this.verificaLista(document.getElementById(Color.id_color));
+    }
+
+    saveEdit = () =>{
+        let data = {
+            "name": this.state.colorName,
+            "hexadecimal": this.state.Cor
+        };
+        if(this.state.createState && !this.state.EnableInput){
+            ConectServ.postColor(data);
+            console.log("create")
+        }
+        else if(this.state.editState && !this.state.EnableInput){
+            ConectServ.putColor(this.state.itenSelected, data);
+            console.log("edit")
+        }
+    }
+
     render(){
         return(
             <>
                 <Header name="cores"/>
-                <div id="volta">
-                        <p>↪ Voltar</p>
+                    <div id="volta">
+                        <a id="btnVoltar"
+                            href="/Menu">
+                            <button>Voltar</button>
+                        </a>
                     </div>
 
                     <div id="icon-page">
@@ -128,32 +173,19 @@ class color extends Component{
                             
                             <button id="btn-find">Localizar</button>
 
+                            <button id="btn-create" onClick={this.btnCreate} >Criar</button>
+
                             <button 
-                                id="btn-create" 
-                                onClick={() =>{
-                                    this.setState({createState: !this.state.createState});
-                                    this.state.createState ? document.querySelector("#color-name").disabled = true : document.querySelector("#color-name").disabled = false;
-                                    
-                                    if(this.state.editState)
-                                        this.setState({editState: false});
-                                }}
-                            >Criar</button>
-                            <button 
-                                id="btn-edit"
-                                onClick={() =>{
-                                    this.setState({editState: !this.state.editState});
-                                    this.state.editState ? document.querySelector("#color-name").disabled = true : document.querySelector("#color-name").disabled = false;
-                                    if(this.state.createState)
-                                        this.setState({createState: false}) ;
-                                }}
-                            >Editar</button>
+                                id="btn-edit" 
+                                className={this.state.ClassEdit} 
+                                disabled={this.state.EnableEdit} 
+                                onClick={this.btnEdit} >Editar</button>
 
                             <button 
                                 id="btn-delete" 
-                                onClick={() =>{
-                                    CS.deleteColor(sessionStorage.getItem('Selecionado'));
-                                }}
-                            >Excluir</button>
+                                className={this.state.ClassDelete}
+                                disabled={this.state.EnableDelete}
+                                onClick={() =>{ ConectServ.deleteColor(this.state.itenSelected); }} >Excluir</button>
                         </div>
                     </div>
 
@@ -162,20 +194,19 @@ class color extends Component{
                             <table>
                                 <tbody id="corpo_tabela">{
                                     this.state.Conteudo.map(Colors => {
-                                        if(Colors !== undefined)
-                                        return (
-                                        <tr key={Colors.id_color} id={Colors.id_color}
-                                            onClick={() =>{
-                                                var cor = Colors.hexadecimal;
-                                                this.mudaCor(cor);
-
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Colors.id_color ? " " : Colors.id_color);
-                                                this.verificaLista(document.getElementById(Colors.id_color));
-                                                this.state.editState ? document.querySelector("#color-name").value = Colors.color_name : document.querySelector("#color-name").value = null;
-                                            }}
-                                        >   
-                                            <td><div id='nome'>{Colors.color_name}</div> <Bolinha cor={Colors.hexadecimal} /></td>
-                                        </tr>)
+                                        if(Colors !== undefined){
+                                            return (
+                                                <tr key={Colors.id_color} 
+                                                    id={Colors.id_color}
+                                                    onClick={()=>{ this.lineSelecting(Colors)}}>
+                                                        
+                                                    <td>
+                                                        <div id='nome'>{Colors.color_name}</div> 
+                                                        <Bolinha cor={Colors.hexadecimal} />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
                                     })}
                                     </tbody>
                             </table>
@@ -186,7 +217,9 @@ class color extends Component{
                             <input 
                                 type='text'
                                 id='color-name'
-                                disabled
+                                disabled={this.state.EnableInput}
+                                value={this.state.colorName}
+                                onChange={ e=> this.setState({colorName: e.target.value})}
 
                             />
 
@@ -194,20 +227,7 @@ class color extends Component{
                                 type='button'
                                 id='color-salvar'
                                 value='Salvar'
-                                onClick={() =>{
-                                    var data = {
-                                        "name": document.getElementById('color-name').value,
-                                        "hexadecimal": this.state.Cor
-                                    };
-                                    if(this.state.createState && !document.querySelector("#color-name").disabled)
-                                        {
-                                            CS.postColor(data);
-                                        }
-                                    else if(this.state.editState && !document.querySelector("#color-name").disabled)
-                                        {
-                                            CS.putColor(sessionStorage.getItem('Selecionado'), data);
-                                        }
-                                }}
+                                onClick={this.saveEdit}
                             />
                             <div id='color-picker'>
                                 <SliderPicker 

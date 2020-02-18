@@ -5,7 +5,7 @@ import img_placeholder from '../public/placeholder-img.jpg';
 
 import './screenDefect.css';
 
-import CS from '../service/DefectService';
+import ConectServ from '../service/DefectService';
 
 class index extends Component{
     state ={
@@ -33,13 +33,13 @@ class index extends Component{
     }
 
     async componenAtualiza(){
-        let Defeitos = await CS.getDefects()
+        let Defeitos = await ConectServ.getDefects()
         this.setState({Defeitos, Conteudo: Defeitos});
     }
 
     pesquisa = async (val) => {
         if(val === ""){
-            this.setState({Atualiza: true, Conteudo: await CS.getDefects() })
+            this.setState({Atualiza: true, Conteudo: await ConectServ.getDefects() })
         }else{
             this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
         }
@@ -78,7 +78,7 @@ class index extends Component{
     verificaLista = (linha) =>{
         this.limpaLista();
         try{
-            document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
+            linha.classList.toggle("selecionado");
         }catch(e){
         }
     }
@@ -161,7 +161,7 @@ class index extends Component{
                                 className={this.state.ClassDelete}
                                 disabled={this.state.EnableDelete}
                                 onClick={() =>{
-                                    CS.deleteDefect(this.state.itenSelected);
+                                    ConectServ.deleteDefect(this.state.itenSelected);
                                 }}>Excluir</button>
                         </div>
                     </div>
@@ -173,7 +173,8 @@ class index extends Component{
                                     this.state.Conteudo.map(Defeitos => {
                                         if(Defeitos !== undefined)
                                         return(
-                                        <tr id={Defeitos.id_defect}
+                                        <tr key={Defeitos.id_defect}
+                                            id={Defeitos.id_defect}
                                             onClick={() =>{this.lineSelecting(Defeitos)}}    
                                         >
                                             <td>{Defeitos.defect_name}</td>
@@ -202,9 +203,9 @@ class index extends Component{
                                         "name": this.state.measureName
                                     };
                                     if(this.state.createState){
-                                        CS.postDefect(data);
+                                        ConectServ.postDefect(data);
                                     }else if(this.state.editState){
-                                        CS.putDefect(this.state.itenSelected, data);
+                                        ConectServ.putDefect(this.state.itenSelected, data);
                                     }
                                 }}
                             />

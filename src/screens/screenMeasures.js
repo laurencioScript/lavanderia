@@ -22,7 +22,6 @@ class index extends Component{
 
         Medidas: [],
         Conteudo: [],
-        Pesquisa: '',
         Atualiza: true
     }
     componentDidMount(){
@@ -54,7 +53,7 @@ class index extends Component{
 
 
     verificaNivel(){
-        if(JSON.parse(sessionStorage.getItem('user')).cargo == 'Atendente'){   
+        if(JSON.parse(sessionStorage.getItem('user')).cargo === 'Atendente'){   
             this.setState({EnableEdit: true, EnableDelete: true,
                 ClassDelete: "btn-delete-disabled", ClassEdit: "btn-edit-disabled"});
             console.log("BTN DESABILITADO");
@@ -67,25 +66,26 @@ class index extends Component{
     }
 
     limpaLista = () =>{
-        var tabela = document.getElementById("corpo_tabela");
-        var linhas = tabela.getElementsByTagName("tr");
+        let tabela = document.getElementById("corpo_tabela");
+        let linhas = tabela.getElementsByTagName("tr");
 
-        for(var i = 0; i < linhas.length; i++){
-            var a = linhas[i];
+        for(let i = 0; i < linhas.length; i++){
+            let a = linhas[i];
             a.classList.remove("selecionado");
         }
     }
     verificaLista = (linha) =>{
         this.limpaLista();
         try{
-            document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
+            linha.classList.toggle("selecionado");
         }catch(e){
         }
     }
 
     btnCreate = () =>{
         this.setState({createState: ! this.state.createState});
-        this.state.createState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+        this.state.createState ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
+
         if(this.state.editState)
             this.setState({editState: false});
         else{}
@@ -95,16 +95,13 @@ class index extends Component{
         this.setState({editState: !this.state.editState});
         this.state.editState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
         if(this.state.createState)
-            this.setState({createState: false}) ;
+            this.setState({createState: false});
         else{}
     }
 
     lineSelecting = Medidas =>{
         this.setState({itenSelected: Medidas.id_unity, MeasureName: Medidas.unity_name});
-        if(this.state.createState || this.state.editState){
-            this.state.MeasureName = Medidas.unity_name
-        }
-        else{ this.state.MeasureName = " " }
+        this.setState({MeasureName: Medidas.unity_name});
 
         this.verificaLista(document.getElementById(Medidas.id_unity));
     }
@@ -196,7 +193,7 @@ class index extends Component{
                                 id='measure-salvar'
                                 value='Salvar'
                                 onClick={() =>{
-                                    var data = {
+                                    let data = {
                                         "name": this.state.MeasureName
                                     };
                                     if(this.state.createState){
