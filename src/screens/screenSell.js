@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { Link, Redirect } from 'react-router-dom';
-import Axios from 'axios';
-
-
 import './screenSell.css';
 import icon_caixa from './../public/icons/icon_caixa.png';
 import Header from './../components/header';
 import Selltable from '../components/sellTable';
-import CADcliente from './../components/sellFastRegisterClient';
+import RegisterClient from './../components/sellFastRegisterClient';
 import Pagamento from './../components/sellPagamento';
-
-
 import ServiceClient from './../service/ClienteService';
 
 
@@ -19,13 +14,10 @@ class index extends Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
-            clientes: [],
-            OptionCliente: [],
-            SelectedOption: null,
-
-
+            viewNewClient:false,
+            optionsClientes: [],
+            cliente: null,
             pagamento: {
                 debito: 0,
                 credito: 0,
@@ -35,29 +27,57 @@ class index extends Component {
                 totalPago: 0,
                 precoTotal: 0
             },
-
             itens: [{
-                amount: null,
-                unity: null,
-                value_unity: null,
-                value_total: null,
-                piece: null,
-                color: null,
-                defect: null,
-                characteristics: [null]
-            }]
+                amount: 1,
+                unity: "",
+                value_unity: 0,
+                value_parcial: 0,
+                piece: "",
+                color: [],
+                defect: [],
+                characteristics: []
+            }],
+            clickViewPagamento: false
         }
+
+        this.loadClients();
         this.mudaPreco = this.mudaPreco.bind(this)
         this.mudaPagamento = this.mudaPagamento.bind(this)
     }
 
+    closeViewNewClient(value){ this.setState({viewNewClient:value}) }
+
+    selectCustomer = customer => { this.setState({ cliente: customer }) }
+
     mudaPreco(precoTotal) {
         this.setState({ pagamento: { precoTotal } }, () => {
-            console.log("ODIN " + this.state.pagamento.precoTotal);
+            // console.log("ODIN " + this.state.pagamento.precoTotal);
         });
     }
 
+    changeViewClick() {
+        this.setState({ clickViewPagamento: false });
+    }
+
+    updateItens(itens) {
+        this.setState({ itens })
+        console.log('Update Itens Screen ', itens);
+        this.updateTotalCost()
+    }
+
+    updateTotalCost() {
+        this.state.pagamento.precoTotal = 0;
+        for (let item of this.state.itens) {
+            this.state.pagamento.precoTotal += +item.value_parcial;
+        }
+        this.setState({
+            pagamento: this.state.pagamento
+        })
+    }
+
     mudaPagamento(pagamento) {
+        // console.log('mudaPagamento');
+
         this.setState({
             pagamento: {
                 debito: pagamento.debito,
@@ -70,101 +90,81 @@ class index extends Component {
         });
     }
 
-    jo() {
-
-        ServiceClient.getCustomers().then((res)=>{
-            let clientes = res;
-            this.setState({ clientes });
-            this.montaOption();            
-            document.querySelector("#sell-DateSell").value = this.pegaData();
-            sessionStorage.removeItem("precoTotal");
+    loadClients() {
+        ServiceClient.getCustomers().then((clientes) => {
+            let optionsClientes = []
+            clientes.map(cliente => {
+                optionsClientes.push({ value: cliente.id_client, label: cliente.name_client });
+            });
+            this.setState({ optionsClientes });
         });
-    }
-
-    handleChange = SelectedOption => {
-        this.setState({ SelectedOption }, () => console.log("Optin Selected: ", this.state.SelectedOption));
-    }
-
-    montaOption() {
-        var OptionCliente = [];
-
-        this.state.clientes.map(Cliente => {
-            OptionCliente.push({ value: Cliente.id_client, label: Cliente.name_client });
-        });
-
-        this.setState({ OptionCliente });
     }
 
     pegaData() {
         var date = new Date();
+        // console.log('pegaData');
 
         return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     }
 
+    updateClients(){
+        this.loadClients();
+    }
+
     render() {
+
         return (
             <>
                 <Header name="REALIZAR VENDA" />
-                <Link id="btnVoltar" to="/Vendas"> <input id="btnCancelarVenda" type="button" value="Cancelar" /> </Link>
 
+                <div id="icon-page"> <img src={icon_caixa} alt=" "></img> </div>
 
+                <div style={{ display: "flex", padding: "0px 100px", justifyContent: "space-around" }}>
 
+                    <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
+                        <Select options={this.state.optionsClientes} onChange={this.selectCustomer} value={this.state.cliente} />
+                    </div>
+                    
+                    <button type="button" onClick={() => {this.setState({viewNewClient:true})}} style={{ padding: "0px 15px" }}>+</button>
 
-
-                <div id="icon-page">
-                    <img src={icon_caixa} alt=" "></img>
-                </div>
-
-
-                <div id="osRV-content">
-                    <div id="primeira-parte">
-                        <Select options={this.state.OptionCliente} onChange={this.handleChange} value={this.state.SelectedOption} />
-
-                        <p>OU</p>
-
-                        <input type="button" value="Cadastrar" onClick={() => {
-                            document.querySelector("#quickCADcustomer-Container").style.display = "flex";
-                        }} />
+                    <div style={{}}>
+                        <p>Data de Pagamento</p>
+                        <input type="date" className="date" />
                     </div>
 
+                    <div style={{}}>
+                        <p>Data de Entrega</p>
+                        <input type="date" className="date" />
+                    </div>
+                </div>
 
-                    <div id="segunda-parte">
+                <Selltable updateItens={this.updateItens.bind(this)} mudaPreco={this.mudaPreco} />
+
+                <div style={{ display: "flex", "justify-content": "space-between" }}>
+
+                    <div style={{ width: "50%", padding: "20px 25px" }} >
+                        <p style={{ fontSize: "26px", marginBottom: "5px" }}>Obervação de Venda</p>
+                        <textarea style={{ width: "100%", height: "250px", padding: "15px 15px" }} placeholder="Observações" />
+                    </div>
+                    <div style={{ padding: "20px 25px", width: "50%", display: "flex", "align-items": "center", "justify-content": "center", "flex-direction": "column" }}  >
+
+                        <p style={{ marginBottom: "10px", fontSize: "26px" }}>Valor Total: R$ {this.state.pagamento.precoTotal}</p>
                         <div>
-                            <p>Data de Pagamento</p>
-                            <input id="sell-DateSell" type="date" className="date" onClick={() => {
+                            <Link style={{ display: "contents" }} to="/Vendas"> <button
+                                style={{ cursor: "pointer", padding: "10px 15px", borderRadius: "10px", fontWeight: "bold", border: "1px solid black", marginRight: "10px" }}
+                                type="button" >Cancelar</button> </Link>
 
-                            }} />
+                            <button type="button"
+                                style={{ cursor: "pointer", padding: "10px 15px", borderRadius: "10px", fontWeight: "bold", border: "1px solid black" }}
+                                onClick={() => { this.setState({ clickViewPagamento: true }) }} >Proximo</button>
                         </div>
 
-                        <div>
-                            <p>Data de Entrega</p>
-                            <input type="date" className="date" />
-                        </div>
                     </div>
                 </div>
 
-                <Selltable mudaPreco={this.mudaPreco} />
-
-                <div id="RVfinal">
-
-                    <div id="RVobservacao">
-                        <p>Obervação de Venda</p>
-                        <textarea placeholder="Observações" />
-                    </div>
-                    <div id="RVfinalizar">
-                        <p id="ValorTotal">Valor Total: R$ {this.state.pagamento.precoTotal}</p>
-
-                        <input type="button" value="Pagamento" onClick={() => {
-                            document.querySelector("#RVpagamentoContainer").style.display = "flex";
-                        }} />
-
-                        <input type="button" value="Finalizar" />
-
-                    </div>
-                </div>
-
-                <CADcliente />
-                <Pagamento precoTotal={this.state.pagamento.precoTotal} mudaPagamento={this.mudaPagamento} />
+                <RegisterClient closeViewFunction={this.closeViewNewClient.bind(this)} viewNewClient={this.state.viewNewClient} updateClients={this.updateClients.bind(this)} ></RegisterClient>
+                 
+                <Pagamento view={this.state.clickViewPagamento} pagamento={this.state.pagamento} cliente={this.state.cliente} itens={this.state.itens} changeViewClick={this.changeViewClick.bind(this)} />
 
             </>
         );

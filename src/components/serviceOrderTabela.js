@@ -1,4 +1,4 @@
-import React, { Component, useState,useEffect } from 'react';
+import React, { Component, useState,useEffect,useCallback } from 'react';
 import Axios from 'axios';
 import SerOrdService from './../service/SerOrdService';
 import Moment from 'react-moment';
@@ -6,20 +6,23 @@ import Moment from 'react-moment';
 function OsResumeTable() {
 
     const [vendas, setVendas] = useState([]);
-
-    useEffect(() => {
-        const AtualizarVendas = async () => {
-            setVendas(await SerOrdService.buscarVendas());
-        }
-        
-        AtualizarVendas();
-    }, [])
+    
+    const AtualizarVendas = useCallback(() => { 
+        return SerOrdService.buscarVendas() 
+    }, [] );
+    
+    useEffect(()=>{
+        AtualizarVendas().then(result => {
+            console.log('teste',result);
+            setVendas(result)
+        });
+    },[AtualizarVendas])
 
     // não estava esperando buscar no banco
     const carregaVendas = ()=>{
         
-        if(vendas && vendas.length < 1){
-            return
+        if(!vendas){
+            return <></>
         }
         
         return vendas.map(venda =>
@@ -111,7 +114,7 @@ function OsResumeTable() {
             </table>
 
             <div id="qtd_vendas">
-                <p>Total de Vendas: {vendas.length}</p>
+                <p>Total de Vendas: {vendas? vendas.length : 0 }</p>
             </div>
         </>
     )

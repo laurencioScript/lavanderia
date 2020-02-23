@@ -1,43 +1,26 @@
-import React, { Component } from 'react';
-
-import ReactDOM from 'react-dom';
+import React, { useState, useEffect } from 'react';
 import './sellTable.css';
 import LineTable from './SellLineTable';
+import icon_close from './../public/icons/icon_close.png';
+import Select from 'react-select';
 
 import PieceService from './../service/PiecesService';
 import ColorService from './../service/ColorsService';
 import CharacService from './../service/CharacService';
 import DefectService from './../service/DefectService';
 
-class Selltable extends Component {
 
-    constructor(props) {
-        super(props);
+function Selltable(props) {
 
-        this.state = {
-            itens: [{
-                id: 1, 
-                piece: '',
-                amount: 1,
-                unity: '',
-                value_unity: 0,
-                value_total: 0,
-                SelectedOption: '',
-                SelectedOptionCaract: '',
-                SelectedOptionDefeitos: '',
-                SelectedOptionCores: '',
-            }],
-            precoT: 0,
-            Option: {}
-        }
-        // this.mudaPreco = this.mudaPreco.bind(this)
-        // this.tiraPreco = this.tiraPreco.bind(this)
-        this.loadProperty();
-    }
+    const [itens, setItens] = useState([]);
+    const [option, setOption] = useState([]);
+    const [contItem, setContIten] = useState(1);
 
 
-    // Carrega os dados necessarios para colocar nos elementos Selects
-    loadProperty() {
+    const loadOption = () => {
+        // console.log('loadOption');
+
+        // Carrega os dados necessarios para colocar nos elementos Selects
         let Option = {
             Pecas: [],
             Cores: [],
@@ -48,122 +31,154 @@ class Selltable extends Component {
         Promise.all([PieceService.getPieces(), ColorService.getColors(), CharacService.getCharacteristics()
             , DefectService.getDefects()]).then((result) => {
                 let Pecas = result[0], Cores = result[1], Caract = result[2], Defeitos = result[3];
-
                 Pecas.map(Peca => { Option.Pecas.push({ value: Peca, label: Peca.piece_name }); });
                 Cores.map(cor => { Option.Cores.push({ value: cor, label: cor.color_name }); });
                 Caract.map(caract => { Option.Caract.push({ value: caract, label: caract.characteristic_name }); });
                 Defeitos.map(Defeitos => { Option.Defeitos.push({ value: Defeitos, label: Defeitos.defect_name }); });
 
-                this.setState({
-                    Option
-                });
+                setOption(Option);
 
             });
 
-
     }
 
-    // componentDidUpdate(){
-    //     let precos = document.querySelectorAll("#prec_total");
-    //     var valores=[];
-    //     var precoTotal = 0;
-    //     for(var a = 1; a < precos.length; a ++)
-    //     {
-    //         valores.push({preco: precos[a-1].innerText.slice(3)})
-    //     }
-    //     valores.map(preco =>{
-    //         precoTotal += parseFloat(preco.preco);
-    //     });
-    //     // document.querySelector("#ValorTotal").innerHTML = "Valor Total: R$ " + precoTotal;
-
-    //     sessionStorage.setItem("precoTotal", precoTotal);
-    // }
-
-
-
-    mudaPreco(preco) {
-        this.setState({ precoT: parseFloat(this.state.precoT) + parseFloat(preco) }, () => {
-            // console.log(this.state.precoT);
-
-            this.props.mudaPreco(this.state.precoT);
-        });
-
-    }
-
-    tiraPreco(preco) {
-        this.setState({ precoT: parseFloat(this.state.precoT) - parseFloat(preco) }, () => {
-            // console.log(this.state.precoT);
-
-            this.props.mudaPreco(this.state.precoT);
-        });
-    }
-
-    _getState(value){
-        console.log(this.state.itens);
-        
-        
-        let itensState = this.state.itens;
-
-        for (let iten of itensState) {
-            console.log(iten,value);
-            
-            iten = iten.id == value.id ? value : iten;
+    useEffect(() => {
+        if (option.length < 1) {
+            loadOption();
         }
-        
-        this.setState({itens:itensState});
+    }, [option])
+
+    const createItem = () => {
+
+        itens.push({
+            id: contItem,
+            amount: 1,
+            unity: "",
+            value_unity: 0,
+            value_parcial: 0,
+            selectedPiece: "",
+            selectedCaract: [],
+            selectedDefect: [],
+            selectedColor: []
+        })
+
+        setContIten(contItem + 1);
     }
 
-    loadLineTable() {
-        console.log('Start',this.state.itens);
-        // O componente LineTable so pode ser renderizado quando o state Option for carregado
-        if (this.state.Option.Pecas != undefined) {
+    const deleteItem = (id) => {
+        const result = itens.filter(i => i.id != id)
+        setItens(result);
+    }
 
-            return this.state.itens.map(itens =>
-                <LineTable onChange={this._getState.bind(this)} id={itens.id} option={this.state.Option} />
-            )
+    useEffect(() => {
+        console.log('Update ', itens);
+        props.updateItens(itens)
 
+    }, [itens])
+
+    const setPiece = (iten, value) => {
+        iten.value_unity = value.value.value;
+        iten.unity = value.value.unity;
+        iten.selectedPiece = value.label;
+        iten.value_parcial = iten.amount * iten.value_unity;
+        const result = itens.map(i => i.id == iten.id ? iten : i );
+        setItens(result);
+    }
+
+    const setColor = (iten, colors) => {
+
+        if(colors && !Array.isArray(colors)){
+            iten.selectedColor.push(colors.label);
         }
-
-        return <></>
+        if(Array.isArray(colors)){
+            for (let color of colors) {
+                iten.selectedColor.push(color.label);
+            }
+        }
+        const result = itens.map(i => i.id == iten.id ? iten : i );
+        setItens(result);
     }
 
-    render() {
-        return (
-            <>
-                <table className="itenTable">
-                    <thead>
-                        <tr>
-                            <td></td>
-                            <td>Peças</td>
-                            <td>Cores</td>
-                            <td>Caracteristicas</td>
-                            <td>Defeitos</td>
-                            <td>Qtd</td>
-                            <td>Unidade</td>
-                            <td>Val_Unit</td>
-                            <td>Val_Parcial</td>
-                        </tr>
-                    </thead>
-
-                    <tbody id="itenTbody">
-                        {this.loadLineTable()}
-                    </tbody>
-
-                </table>
-
-                <input
-                    id="RVadiconaLinha"
-                    type="button"
-                    value="Adicionar Item"
-                    onClick={() => {
-                        var linha = this.state.itens;
-
-                        linha.push({ Linha: this.state.itens.length + 1 });
-                        this.setState({ itens: linha });
-                    }} />
-            </>
-        );
+    const setDefect = (iten, defects) => {
+        
+        if(defects && !Array.isArray(defects)){
+            iten.selectedDefect.push(defects.label);
+        }
+        if(Array.isArray(defects)){
+            for (let def of defects) {
+                iten.selectedDefect.push(def.label);
+            }
+        }
+        const result = itens.map(i => i.id == iten.id ? iten : i );
+        setItens(result);
     }
+
+    const setAmount = (iten, e) => {
+        iten.amount = e.target.value;
+        iten.value_parcial = e.target.value * iten.value_unity;
+        const result = itens.map(i => i.id == iten.id ? iten : i );
+        setItens(result);
+    }
+
+    const setCaract = (iten, caracts) => {
+
+        if(caracts && !Array.isArray(caracts)){
+            iten.selectedCaract.push(caracts.label);
+        }
+        if(Array.isArray(caracts)){
+            for (let cart of caracts) {
+                iten.selectedCaract.push(cart.label);
+            }
+        }
+        const result = itens.map(i => i.id == iten.id ? iten : i );
+        setItens(result);
+    }
+
+    return (
+        <>
+            <table className="itenTable">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>Id</td>
+                        <td>Peças</td>
+                        <td>Cores</td>
+                        <td>Caracteristicas</td>
+                        <td>Defeitos</td>
+                        <td>Qtd</td>
+                        <td>Unidade</td>
+                        <td>Val_Unit</td>
+                        <td>Val_Parcial</td>
+                    </tr>
+                </thead>
+
+                <tbody id="itenTbody">
+                    {
+                        itens.map(iten => {
+                            return (
+                                <tr key={iten.id} >
+                                    <td> <img src={icon_close} id="sellTableClose" onClick={() => { deleteItem(iten.id) }} /> </td>
+                                    <td>{iten.id}</td>
+                                    <td><Select options={option.Pecas} onChange={(e) => { setPiece(iten, e) }} /> </td>
+                                    <td><Select isMulti options={option.Cores} onChange={(e) => { setColor(iten, e) }} /></td>
+                                    <td><Select isMulti options={option.Caract} onChange={(e) => { setCaract(iten, e) }} /></td>
+                                    <td><Select isMulti options={option.Defeitos} onChange={(e) => { setDefect(iten, e) }} /></td>
+                                    <td><input type="number" defaultValue="1" min="1" value={iten.amount} onChange={event => setAmount(iten, event)} /></td>
+                                    <td>{iten.unity}</td>
+                                    <td>R$ {iten.value_unity}</td>
+                                    <td>R$ {iten.value_parcial}</td>
+                                </tr>
+                            )
+                        })
+                    }
+                </tbody>
+
+            </table>
+
+            <input id="RVadiconaLinha" type="button" value="Adicionar Item" onClick={createItem} />
+        </>
+    );
+
 }
 
 export default Selltable;

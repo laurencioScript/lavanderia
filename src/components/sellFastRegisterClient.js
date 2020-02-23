@@ -1,259 +1,134 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import MaskedInput from 'react-text-mask'
 
 
+import Select from 'react-select';
 import './sellFastRegisterClient.css';
-import icon_close from './../public/icons/icon_close.png';
 import ClienteService from './../service/ClienteService';
 
 
-class CADcliente extends Component {
-    state = {
-        cpf_cnpj: '',
-        type_client: 'j',
-        name_client: '',
-        corporate_name: '',
-        email: '',
-        observation_description: '',
-        observation_color: '#FFFFFF',
-            telefone: '',
-            celular: '',
+function RegisterClient(props) {
 
-        address_client: "", 
-        number: "", 
-        complement: "", 
-        neighborhood: "", 
-        city: "", 
-        state_city: "", 
-        cep: ""
+    const [cliente, setCliente] = useState({
+            info:{
+                cpf_cnpj:"",
+                type_client:"",
+                name_client:"",
+                corporate_name:"",
+                email:"",
+                observation_description:"",
+                observation_color:"",
+                contact:[]
+            },
+           end:{
+               address_client:"",
+               number:"",
+               complement:"",
+               neighborhood:"",
+               city:"",
+               state_city:"",
+               cep:""
+           }
+        }
+    );
+
+    const [typeClient, setTypeClient] = useState([{value:"Pessoa Fisica",label:"Pessoa Fisica"},{value:"Pessoa Juridica",label:"Pessoa Juridica"}]);
+    const [selectedClient, setSelectedClient] = useState("");
+    const [viewClienteEnable, setViewClienteEnable] = useState(false);
+    const [inputContatos, setInputContatos] = useState("");
+    
+
+    useEffect(()=>{ setViewClienteEnable(props.viewNewClient); },[props])
+
+    const setContatos = ()=>{
+        cliente.info.contact.push(inputContatos);
+        setCliente(cliente);
+        setInputContatos("");
     }
-    render() {
-        return (
-            <div id="quickCADcustomer-Container">
-                <p>Cadastro Rápido de Clientes</p>
-                <img src={icon_close} onClick={()=>{
-                    document.querySelector("#quickCADcustomer-Container").style.display = "none";
-                }}/>
 
-                <div id="primeiraLinha">
-                    <div>
-                        <p>Nome</p>
-                        <input type="text" onChange={(e)=>{this.setState({name_client: e.target.value})}}/>
-                    </div>
-                    <div>
-                        <p>CNPJ</p>
-                        <MaskedInput
-                            mask={[/[1-9]/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/ , '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
-                            guide={false}
-                            keepCharPositions={true}
-                            id='cnpj_input'
-                            onChange={(e)=>{this.setState({cpf_cnpj: e.target.value})}}
-                        />
-                    </div>
-                    <div>
-                        <p>Razão Social</p>
-                        <input type="text" onChange={(e)=>{this.setState({corporate_name: e.target.value})}}/>
-                    </div>
-                    <div>
-                        <p>E-mail</p>
-                        <input type="text" onChange={(e)=>{this.setState({email: e.target.value})}}/>
-                    </div>
-                </div>
+    const changeTypeClient = (selectedType)=>{
+        setSelectedClient(selectedType);
+        cliente.info.type_client = selectedType == "Pessoa Fisica" ? "F" : "J";
+        setCliente(cliente);
+    }
 
-                <div id="segundaLinha">
-                    <div>
-                        <p>CEP</p>
-                        <MaskedInput
-                            mask={ [/[0-9]/, /[0-9]/, '.', /[0-9]/, /[0-9]/, /[0-9]/, '-', /[0-9]/, /[0-9]/, /[0-9]/]}
-                            guide={false}
-                            onChange={(e)=>{this.setState({cep: e.target.value})}}
-                        />
-                    </div>
-                    <div>
-                        <p>Endereço</p>
-                        <input type="text" onChange={(e)=>{this.setState({address_client: e.target.value}, ()=>{console.log(this.state.address_client)})}}/>
-                    </div>
-                    <div>
-                        <p>Número</p>
-                        <MaskedInput 
-                            mask={[ /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/ ]}
-                            guide={false}
-                            id="number"
-                            onChange={(e)=>{this.setState({number: e.target.value})}}
-                        />
-                    </div>
-                    <div>
-                        <p>Complemento</p>
-                        <input type="text" onChange={(e)=>{this.setState({complement: e.target.value})}}/>
-                    </div>
-                </div>
-
-                <div id="terceiraLinha">
-                    <div>
-                        <p>Bairro</p>
-                        <input type="text" onChange={(e)=>{this.setState({neighborhood: e.target.value})}}/>
-                    </div>
-                    <div>
-                        <p>Cidade</p>
-                        <input type="text" onChange={(e)=>{this.setState({city: e.target.value})}}/>
-                    </div>
-                    <div>
-                        <p>Estado</p>
-                        <select onChange={(e)=>{this.setState({state_city: e.target.value})}}>
-                            <option value="alagoas">
-                                AL
-                            </option>
-                            <option value="acre">
-                                AC
-                            </option>
-                            <option value="amapá">
-                                AP
-                            </option>
-                            <option value="amazonas">
-                                AM
-                            </option>
-                            <option value="bahia">
-                                BA
-                            </option>
-                            <option value="ceará">
-                                CE
-                            </option>
-                            <option value="distrito federal">
-                                DF
-                            </option>
-                            <option value="espírito santo">
-                                ES
-                            </option>
-                            <option value="goiás">
-                                GO
-                            </option>
-                            <option value="maranhã">
-                                MA
-                            </option>
-                            <option value="mato grosso">
-                                MT
-                            </option>
-                            <option value="mato grosso do sul">
-                                MS
-                            </option>
-                            <option value="minas gerais">
-                                MG
-                            </option>
-                            <option value="pará">
-                                PA
-                            </option>
-                            <option value="paraíba">
-                                PB
-                            </option>
-                            <option value="paraná">
-                                PR
-                            </option>
-                            <option value="pernanbuco">
-                                PE
-                            </option>
-                            <option value="piauí">
-                                PI
-                            </option>
-                            <option value="rio de janeiro">
-                                RJ
-                            </option>
-                            <option value="rio grande do norte">
-                                RN
-                            </option>
-                            <option value="rio grande do sul">
-                                RS
-                            </option>
-                            <option value="rondônia">
-                                RO
-                            </option>
-                            <option value="roraima">
-                                RR
-                            </option>
-                            <option value="santa catarina">
-                                SC
-                            </option>
-                            <option value="são paulo">
-                                SP
-                            </option>
-                            <option value="sergipe">
-                                SE
-                            </option>
-                            <option value="tocantins">
-                                TO
-                            </option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="quartaLinha">
-                    <div>
-                        <p>Telefone</p>
-                        <MaskedInput
-                            mask={['(', /[1-9]/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-                            guide={false}
-                            keepCharPositions={true}
-                            id='telefone_input'
-                            onChange={(e)=>{this.setState({telefone: e.target.value})}}
-                        />
-                    </div>
-                    <div>
-                        <p>Celular</p>
-                        <MaskedInput
-                            mask={['(', /[1-9]/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-                            guide={false}
-                            keepCharPositions={true}
-                            id='celular_input'
-                            onChange={(e)=>{this.setState({celular: e.target.value})}}
-                        />
-                    </div>
-                </div>
+    return (
+        <div  id="quickCADcustomer-Container" hidden={!viewClienteEnable}  >
             
-                <div id="quintaLinha">
-                    <div>
-                        <p>Obervação</p>
-                        <textarea onChange={(e)=>{this.setState({observation_description: e.target.value})}}/>
-                    </div>
-                    <div>
-                        <p>COR AQUI</p>
-
-                        <input type="button" value="Salvar"
-                        
-                            onClick={()=>{
-                                var data = {
-                                        "info":{
-                                            "cpf_cnpj": this.state.cpf_cnpj,
-                                            "type_client": this.state.type_client,
-                                            "name_client": this.state.name_client,
-                                            "corporate_name": this.state.corporate_name,
-                                            "email": this.state.email,
-                                            "observation_description": this.state.observation_description,
-                                            "observation_color": "#FFFFFF",
-                                            "contact": [
-                                                this.state.telefone.replace(/\D/g, ""),
-                                                this.state.celular.replace(/\D/g, "")
-                                            ]
-
-                                        },"end":{
-                                            "address_client": this.state.address_client,
-                                            "number": this.state.number,
-                                            "complement": this.state.complement,
-                                            "neighborhood": this.state.neighborhood,
-                                            "city": this.state.city,
-                                            "state_city": this.state.state_city,
-                                            "cep": this.state.cep.replace(/\D/g, ""),
-                                        }
-                                };
-
-                                console.log(data)
-
-                                ClienteService.postCustomer(data);
-
-                            }}/>
-                    </div>
+            <div style={{display:"flex",alignItems: "center",justifyContent:"space-around", paddingBottom: "35px"}}>
+                <h2>Cadastro Rápido de Clientes</h2> 
+                <div style={{width:"40%"}}>
+                    <Select  options={typeClient} onChange={(selectedType)=>{changeTypeClient(selectedType) } }  placeholder={"Tipo de Pessoa"} />           
                 </div>
             </div>
-        );
-    }
+
+            <div style={{display:"flex"}}>
+                <div style={{padding:"15px 15px"}}>
+                    <p>Nome</p>
+                    <input type="text" onChange={(e)=>{ cliente.info.name_client = e.target.value; setCliente(cliente)}}/>
+                </div>
+
+                <div style={{padding:"15px 15px"}} hidden={!selectedClient}>
+                    <p>{selectedClient && selectedClient.value == "Pessoa Juridica" ? "CNPJ" :"CPF"}</p>
+                    <MaskedInput
+                        mask={[/[1-9]/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/ , '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
+                        guide={false}
+                        keepCharPositions={true}
+                        id='cnpj_input'
+                        onChange={(e)=>{cliente.info.cpf_cnpj = e.target.value; setCliente(cliente)}}
+                    />
+                </div>
+
+                <div style={{padding:"15px 15px"}} hidden={!(selectedClient && selectedClient.value == "Pessoa Juridica")}>
+                    <p>Razão Social</p>
+                    <input type="text" onChange={(e)=>{cliente.info.corporate_name = e.target.value; setCliente(cliente)}}/>
+                </div>
+                
+            </div>
+            
+
+            <div style={{display:"flex"}}>
+
+                <div style={{padding:"15px 15px"}}>
+                    <p>Contato</p>
+                    <MaskedInput
+                        mask={['(', /[1-9]/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                        guide={false}
+                        keepCharPositions={true}
+                        id='celular_input'
+                        onChange={(e)=>{setInputContatos(e.target.value)}}
+                        value={inputContatos}
+                    />
+                    <button onClick={()=>{setContatos()}}>Add</button>
+                </div>
+
+                <div style={{padding:"15px 15px",width:"50%"}}>
+                    <p>Contatos</p>
+                    <label>{JSON.stringify(cliente.info.contact)}</label>
+                </div>
+            </div>
+
+            <div>
+                <div style={{padding:"15px 15px",width:"100%"}}>
+                    <p>E-mail</p>
+                    <input type="text" onChange={(e)=>{cliente.info.email = e.target.value; setCliente(cliente)}}></input>
+                </div>
+            </div>
+        
+            <div>
+                <div style={{padding:"15px 15px",width:"100%"}}>
+                    <p>Obervação</p>
+                    <textarea style={{width:"50%"}} onChange={(e)=>{cliente.info.observation_description = e.target.value; setCliente(cliente)}}/>
+                </div>
+            </div>
+
+            <div style={{display:"flex",justifyContent:"flex-end"}}>
+                <button type="button" style={{backgroundColor:"red",color:"white",marginRight:"10px"}}  onClick={()=>{setViewClienteEnable(false);props.closeViewFunction(false)} }>Cancelar</button>
+                <button type="button" onClick={()=>{console.log(cliente);ClienteService.postCustomer(cliente);props.updateClients();setViewClienteEnable(false);props.closeViewFunction(false)   }}>Salvar</button>
+            </div>
+        </div>
+    );
+    
 }
 
-export default CADcliente;
+export default RegisterClient;
