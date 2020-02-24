@@ -19,8 +19,25 @@ const buscarVendas = async (filter) =>{
    
 }
 
+const realizarVendas = async (data) =>{
+    
+    try {
+        
+        const response = await Axios.post(`${CONNECT}/service/register`,data, token)
+        
+        return response;
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
+
+   
+}
+
 export default SerOrdService = {
-    buscarVendas
+    buscarVendas,
+    realizarVendas
 }
 
 

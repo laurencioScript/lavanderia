@@ -50,16 +50,16 @@ function Selltable(props) {
 
     const createItem = () => {
 
-        itens.push({
+      itens.push({
             id: contItem,
             amount: 1,
             unity: "",
             value_unity: 0,
-            value_parcial: 0,
-            selectedPiece: "",
-            selectedCaract: [],
-            selectedDefect: [],
-            selectedColor: []
+            value_total: 0,
+            piece: "",
+            characteristics: [],
+            defects: [],
+            colors: []
         })
 
         setContIten(contItem + 1);
@@ -71,16 +71,14 @@ function Selltable(props) {
     }
 
     useEffect(() => {
-        console.log('Update ', itens);
         props.updateItens(itens)
-
     }, [itens])
 
     const setPiece = (iten, value) => {
         iten.value_unity = value.value.value;
         iten.unity = value.value.unity;
-        iten.selectedPiece = value.label;
-        iten.value_parcial = iten.amount * iten.value_unity;
+        iten.piece = value.label;
+        iten.value_total = iten.amount * iten.value_unity;
         const result = itens.map(i => i.id == iten.id ? iten : i );
         setItens(result);
     }
@@ -88,11 +86,11 @@ function Selltable(props) {
     const setColor = (iten, colors) => {
 
         if(colors && !Array.isArray(colors)){
-            iten.selectedColor.push(colors.label);
+            iten.colors.push(colors.label);
         }
         if(Array.isArray(colors)){
             for (let color of colors) {
-                iten.selectedColor.push(color.label);
+                iten.colors.push(color.label);
             }
         }
         const result = itens.map(i => i.id == iten.id ? iten : i );
@@ -102,11 +100,11 @@ function Selltable(props) {
     const setDefect = (iten, defects) => {
         
         if(defects && !Array.isArray(defects)){
-            iten.selectedDefect.push(defects.label);
+            iten.defects.push(defects.label);
         }
         if(Array.isArray(defects)){
             for (let def of defects) {
-                iten.selectedDefect.push(def.label);
+                iten.defects.push(def.label);
             }
         }
         const result = itens.map(i => i.id == iten.id ? iten : i );
@@ -115,7 +113,7 @@ function Selltable(props) {
 
     const setAmount = (iten, e) => {
         iten.amount = e.target.value;
-        iten.value_parcial = e.target.value * iten.value_unity;
+        iten.value_total = e.target.value * iten.value_unity;
         const result = itens.map(i => i.id == iten.id ? iten : i );
         setItens(result);
     }
@@ -123,11 +121,11 @@ function Selltable(props) {
     const setCaract = (iten, caracts) => {
 
         if(caracts && !Array.isArray(caracts)){
-            iten.selectedCaract.push(caracts.label);
+            iten.characteristics.push(caracts.label);
         }
         if(Array.isArray(caracts)){
             for (let cart of caracts) {
-                iten.selectedCaract.push(cart.label);
+                iten.characteristics.push(cart.label);
             }
         }
         const result = itens.map(i => i.id == iten.id ? iten : i );
@@ -163,10 +161,10 @@ function Selltable(props) {
                                     <td><Select isMulti options={option.Cores} onChange={(e) => { setColor(iten, e) }} /></td>
                                     <td><Select isMulti options={option.Caract} onChange={(e) => { setCaract(iten, e) }} /></td>
                                     <td><Select isMulti options={option.Defeitos} onChange={(e) => { setDefect(iten, e) }} /></td>
-                                    <td><input type="number" defaultValue="1" min="1" value={iten.amount} onChange={event => setAmount(iten, event)} /></td>
+                                    <td><input type="number"  min="1" value={iten.amount} onChange={event => setAmount(iten, event)} /></td>
                                     <td>{iten.unity}</td>
                                     <td>R$ {iten.value_unity}</td>
-                                    <td>R$ {iten.value_parcial}</td>
+                                    <td>R$ {iten.value_total}</td>
                                 </tr>
                             )
                         })

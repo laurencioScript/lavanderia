@@ -10,25 +10,21 @@ import ClienteService from './../service/ClienteService';
 function RegisterClient(props) {
 
     const [cliente, setCliente] = useState({
-            info:{
-                cpf_cnpj:"",
-                type_client:"",
-                name_client:"",
-                corporate_name:"",
-                email:"",
-                observation_description:"",
-                observation_color:"",
-                contact:[]
-            },
-           end:{
-               address_client:"",
-               number:"",
-               complement:"",
-               neighborhood:"",
-               city:"",
-               state_city:"",
-               cep:""
-           }
+            cpf_cnpj:"",
+            type_client:"",
+            name_client:"",
+            corporate_name:"",
+            email:"",
+            observation_description:"",
+            observation_color:"",
+            contact:[],
+            address_client:"",
+            number:"",
+            complement:"",
+            neighborhood:"",
+            city:"",
+            state_city:"",
+            cep:""
         }
     );
 
@@ -41,15 +37,21 @@ function RegisterClient(props) {
     useEffect(()=>{ setViewClienteEnable(props.viewNewClient); },[props])
 
     const setContatos = ()=>{
-        cliente.info.contact.push(inputContatos);
+        cliente.contact.push(inputContatos);
         setCliente(cliente);
         setInputContatos("");
     }
 
     const changeTypeClient = (selectedType)=>{
         setSelectedClient(selectedType);
-        cliente.info.type_client = selectedType == "Pessoa Fisica" ? "F" : "J";
+        cliente.type_client = selectedType == "Pessoa Fisica" ? "F" : "J";
         setCliente(cliente);
+    }
+
+    const saveClient = ()=>{
+        ClienteService.postCustomer(cliente);
+        props.updateClients();setViewClienteEnable(false);
+        props.closeViewFunction(false);
     }
 
     return (
@@ -65,7 +67,7 @@ function RegisterClient(props) {
             <div style={{display:"flex"}}>
                 <div style={{padding:"15px 15px"}}>
                     <p>Nome</p>
-                    <input type="text" onChange={(e)=>{ cliente.info.name_client = e.target.value; setCliente(cliente)}}/>
+                    <input type="text" onChange={(e)=>{ cliente.name_client = e.target.value; setCliente(cliente)}}/>
                 </div>
 
                 <div style={{padding:"15px 15px"}} hidden={!selectedClient}>
@@ -75,7 +77,7 @@ function RegisterClient(props) {
                         guide={false}
                         keepCharPositions={true}
                         id='cnpj_input'
-                        onChange={(e)=>{cliente.info.cpf_cnpj = e.target.value; setCliente(cliente)}}
+                        onChange={(e)=>{cliente.cpf_cnpj = e.target.value; setCliente(cliente)}}
                     />
                 </div>
 
@@ -104,27 +106,27 @@ function RegisterClient(props) {
 
                 <div style={{padding:"15px 15px",width:"50%"}}>
                     <p>Contatos</p>
-                    <label>{JSON.stringify(cliente.info.contact)}</label>
+                    <label>{JSON.stringify(cliente.contact)}</label>
                 </div>
             </div>
 
             <div>
                 <div style={{padding:"15px 15px",width:"100%"}}>
                     <p>E-mail</p>
-                    <input type="text" onChange={(e)=>{cliente.info.email = e.target.value; setCliente(cliente)}}></input>
+                    <input type="text" onChange={(e)=>{cliente.email = e.target.value; setCliente(cliente)}}></input>
                 </div>
             </div>
         
             <div>
                 <div style={{padding:"15px 15px",width:"100%"}}>
                     <p>Obervação</p>
-                    <textarea style={{width:"50%"}} onChange={(e)=>{cliente.info.observation_description = e.target.value; setCliente(cliente)}}/>
+                    <textarea style={{width:"50%"}} onChange={(e)=>{cliente.observation_description = e.target.value; setCliente(cliente)}}/>
                 </div>
             </div>
 
             <div style={{display:"flex",justifyContent:"flex-end"}}>
                 <button type="button" style={{backgroundColor:"red",color:"white",marginRight:"10px"}}  onClick={()=>{setViewClienteEnable(false);props.closeViewFunction(false)} }>Cancelar</button>
-                <button type="button" onClick={()=>{console.log(cliente);ClienteService.postCustomer(cliente);props.updateClients();setViewClienteEnable(false);props.closeViewFunction(false)   }}>Salvar</button>
+                <button type="button" onClick={()=>{  saveClient()   }}>Salvar</button>
             </div>
         </div>
     );
