@@ -12,44 +12,43 @@ class index extends Component{
         createState: false,
         editState: false,
 
-        EnableEdit: false,
-        EnableDelete: false,
-        EnableInput: true,
-        ClassEdit: "",
-        ClassDelete: "",
+        disableEdit: false,
+        disableDelete: false,
+        classEdit: "",
+        classDelete: "",
 
-        itenSelected: '',
-        measureName: '',
+        defectInputName: '',
 
-        Defeitos: [],
-        Conteudo:[],
-        Atualiza: true
+        itenSelected: {
+            itenID: '',
+            itenName: '',
+        },
+
+        contentBase: [],
+        content: [],
     }
     componentDidMount(){
-        this.componenAtualiza();
+        this.componentAtualiza();
         this.verificaNivel();
-
-        sessionStorage.removeItem("Selecionado");
     }
 
-    async componenAtualiza(){
-        let Defeitos = await ConectServ.getDefects()
-        this.setState({Defeitos, Conteudo: Defeitos});
+    async componentAtualiza(){
+        let content = await ConectServ.getDefects()
+        this.setState({contentBase: content, content});
     }
 
     pesquisa = async (val) => {
         if(val === ""){
-            this.setState({Atualiza: true, Conteudo: await ConectServ.getDefects() })
+            this.componentAtualiza()
         }else{
-            this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
+            this.setState({content: this.retornaPesquisa(val)});
         }
     }
 
     retornaPesquisa = (val) =>{
-        let data = this.state.Defeitos.map(res => {
-            return  res.defect_name.toLowerCase().search(val) !== -1 
-                ? res : undefined;
-        });
+        let data = this.state.contentBase.filter(res => {
+            return  res.defect_name.toLowerCase().search(val) !== -1 ? res : undefined;});
+
         return data;
     }
 
@@ -66,50 +65,17 @@ class index extends Component{
         }
     }
 
-    limpaLista = () =>{
-        var tabela = document.getElementById("corpo_tabela");
-        var linhas = tabela.getElementsByTagName("tr");
-
-        for(var i = 0; i < linhas.length; i++){
-            var a = linhas[i];
-            a.classList.remove("selecionado");
-        }
-    }
-    verificaLista = (linha) =>{
-        this.limpaLista();
-        try{
-            linha.classList.toggle("selecionado");
-        }catch(e){
-        }
-    }
-
     btnCreate = () =>{
-        this.setState({createState: !this.state.createState});
-        this.state.createState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
-        if(this.state.editState)
-            this.setState({editState: false});
-        else{}
+        this.setState({createState: !this.state.createState, editState: false});
     }
 
     btnEdit = () =>{
-        this.setState({editState: !this.state.editState});
-        this.state.editState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
-        if(this.state.createState)
-            this.setState({createState: false}) ;
-        else{}
+        this.setState({editState: !this.state.editState, createState: false});
     }
 
     lineSelecting = Defeitos =>{
-        this.setState({itenSelected: Defeitos.id_defect, measureName: Defeitos.defect_name})
-        if(this.state.createState || this.state.editState){
-            this.state.measureName = Defeitos.defect_name
-        }   else{ this.state.measureName = " " }
-
-        this.verificaLista(document.getElementById(Defeitos.id_defect))
-
-        // sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Defeitos.id_defect ? " " : Defeitos.id_defect);
-        // this.verificaLista(document.getElementById(Defeitos.id_defect));
-        // this.state.createState || this.state.editState ? document.querySelector("#defect-name").value = Defeitos.defeito : document.querySelector("#defect-name").value = null;
+        this.setState({itenSelected: {itenID: Defeitos.id_defect, itenName: Defeitos.defect_name},
+            defectInputName: Defeitos.defect_name });
     }
 
 
@@ -170,16 +136,17 @@ class index extends Component{
                         <div id='defects-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Conteudo.map(Defeitos => {
-                                        if(Defeitos !== undefined)
+                                    this.state.content.map(Defeitos => {
                                         return(
-                                        <tr key={Defeitos.id_defect}
-                                            id={Defeitos.id_defect}
-                                            onClick={() =>{this.lineSelecting(Defeitos)}}    
-                                        >
-                                            <td>{Defeitos.defect_name}</td>
-                                        </tr>)
-                                    })}</tbody>
+                                            <tr key={Defeitos.id_defect}
+                                                onClick={() =>{this.lineSelecting(Defeitos)}}  
+                                                className={this.state.itenSelected.itenID === Defeitos.id_defect ? 'selecionado' : ''}  
+                                            >
+                                                <td>{Defeitos.defect_name}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
                             </table>
                         </div>
 
@@ -188,9 +155,9 @@ class index extends Component{
                             <input 
                                 type='text'
                                 id='defect-name'
-                                disabled={this.state.EnableInput}
-                                value={this.state.measureName}
-                                onChange={ e => this.setState({measureName: e.target.value})}
+                                disabled={this.state.createState || this.state.editState ? false : true}
+                                value={this.state.defectInputName}
+                                onChange={ e => this.setState({defectInputName: e.target.value})}
 
                             />
 
@@ -200,12 +167,12 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     var data = {
-                                        "name": this.state.measureName
+                                        "name": this.state.defectInputName
                                     };
                                     if(this.state.createState){
                                         ConectServ.postDefect(data);
                                     }else if(this.state.editState){
-                                        ConectServ.putDefect(this.state.itenSelected, data);
+                                        ConectServ.putDefect(this.state.itenSelected.itenID, data);
                                     }
                                 }}
                             />

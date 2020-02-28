@@ -1,109 +1,94 @@
 import React, {Component} from 'react';
 
-import Header from '../public/header';
-import img_placeholder from '../public/placeholder-img.jpg';
-
 import './screenMeasures.css';
-import CS from '../service/UnityService';
+import img_placeholder from '../public/placeholder-img.jpg';
+import Header from '../public/header';
+import ConectServ from '../service/UnityService';
+
 
 class index extends Component{
     state ={
+        // Através destes estados, sabe-se qual botão (Criar ou Editar) está selecionado.
         createState: false,
         editState: false,
 
-        EnableEdit: true,
-        EnableDelete: true,
-        EnableInput: true,
-        ClassEdit: "",
-        ClassDelete: "",
+        // Através destes estados, Os botões editar e deletar são bloqueados, para caso o usuário não tenha acesso a eles.
+        disableEdit: true,
+        disableDelete: true,
+        classEdit: "",
+        classDelete: "",
 
-        itenSelected: '',
-        MeasureName: '',
+        // Aqui é armazenado o valor que o usuário digita em "Nome da Unidade"
+        measureInputName: "",
 
-        Medidas: [],
-        Conteudo: [],
-        Atualiza: true
+        // A linha selecionada é armazenada aqui.
+        itenSelected: {
+            itenID: '',
+            itenName: ''
+        },
+
+        // Content é a base, onde é armazenado o JSON que vem do back-end
+        contentBase: [],
+        content: []
     }
+
     componentDidMount(){
-        this.componenAtualiza();
+        // Antes do componente inicializar, é feita a preparação do mesmo.
+        this.componentAtualiza();
         this.verificaNivel();
-
-        sessionStorage.removeItem("Selecionado");
     }
 
-    async componenAtualiza(){
-        let Medidas = await CS.getUnitys()
-        this.setState({Medidas, Conteudo: Medidas})
+    async componentAtualiza(){
+        // é feita a requisição das unidades para o back-end
+        let content = await ConectServ.getUnitys()
+        this.setState({contentBase: content, content});
     }
 
 
     pesquisa = async (val) => {
+        // Verifica se o valor do input de pesquisa não está vazio, caso não esteja, ele atualiza o state com as medidas de acordo com a pesquisa.
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await CS.getUnitys() })
-        : this.setState({ Atualiza: false, Conteudo: this.retornaPesquisa(val)});
+        ? this.componentAtualiza()
+        : this.setState({content: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
-        let data = this.state.Medidas.map(res => {
-            return  res.unity_name.toLowerCase().search(val) !== -1 ? res : undefined;
-        });
+        // É feito o filtro dentro do state Content removendo o que não conten nada relacionado ao que o usuario pesquisou
+        let data = this.state.contentBase.filter(res =>{ 
+            return res.unity_name.toLowerCase().search(val) !== -1 ? res : undefined });
+
         return data
     }
 
 
 
     verificaNivel(){
+        // Verifica o cargo do usuário e bloqueia os botões (EDIT e DELETE), caso o mesmo não tenha xp o suficiente.
         if(JSON.parse(sessionStorage.getItem('user')).cargo === 'Atendente'){   
-            this.setState({EnableEdit: true, EnableDelete: true,
-                ClassDelete: "btn-delete-disabled", ClassEdit: "btn-edit-disabled"});
+            this.setState({disableEdit: true, disableDelete: true,
+                classDelete: "btn-delete-disabled", classEdit: "btn-edit-disabled"});
             console.log("BTN DESABILITADO");
-
         }else{
-            this.setState({EnableEdit: false, EnableDelete: false,
-                ClassDelete: "", ClassEdit: ""});
+            this.setState({disableEdit: false, disableDelete: false,
+                classDelete: "", classEdit: ""});
             console.log("BTN HABILITADO");
         }
     }
 
-    limpaLista = () =>{
-        let tabela = document.getElementById("corpo_tabela");
-        let linhas = tabela.getElementsByTagName("tr");
-
-        for(let i = 0; i < linhas.length; i++){
-            let a = linhas[i];
-            a.classList.remove("selecionado");
-        }
-    }
-    verificaLista = (linha) =>{
-        this.limpaLista();
-        try{
-            linha.classList.toggle("selecionado");
-        }catch(e){
-        }
-    }
-
     btnCreate = () =>{
-        this.setState({createState: ! this.state.createState});
-        this.state.createState ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
-
-        if(this.state.editState)
-            this.setState({editState: false});
-        else{}
+        // Altera os states determinando que o btn CREATE está ativo
+        this.setState({createState: !this.state.createState, editState: false});
     }
-
+    
     btnEdit = () =>{
-        this.setState({editState: !this.state.editState});
-        this.state.editState == true ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
-        if(this.state.createState)
-            this.setState({createState: false});
-        else{}
+        // Altera os states determinando que o btn EDIT está ativo
+        this.setState({editState: !this.state.editState, createState: false});
     }
 
     lineSelecting = Medidas =>{
-        this.setState({itenSelected: Medidas.id_unity, MeasureName: Medidas.unity_name});
-        this.setState({MeasureName: Medidas.unity_name});
-
-        this.verificaLista(document.getElementById(Medidas.id_unity));
+        // Salva o valor da medida selecionada e altera o valor do input de nome.
+        this.setState({itenSelected: {itenID: Medidas.id_unity, itenName: Medidas.unity_name},
+                        measureInputName: Medidas.unity_name });
     }
     
     render(){
@@ -144,16 +129,16 @@ class index extends Component{
                             
                             <button 
                                 id="btn-edit"
-                                className={this.state.ClassEdit}
-                                disabled={this.state.EnableEdit}
+                                className={this.state.classEdit}
+                                disabled={this.state.disableEdit}
                                 onClick={this.btnEdit} >Editar</button>
 
                             <button 
                                 id="btn-delete" 
-                                className={this.state.ClassDelete}
-                                disabled={this.state.EnableDelete}
+                                className={this.state.classDelete}
+                                disabled={this.state.disableDelete}
                                 onClick={() =>{
-                                    CS.deleteUnity(this.state.itenSelected)
+                                    ConectServ.deleteUnity(this.state.itenSelected.itenID)
                                 }}>Excluir</button>
                         </div>
                     </div>
@@ -162,17 +147,15 @@ class index extends Component{
                         <div id='measures-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Conteudo.map(Medidas =>{ 
-                                        if(Medidas !== undefined){
-                                            return(
-                                                <tr key={Medidas.id_unity}
-                                                    id={Medidas.id_unity}
-                                                    onClick={()=>{this.lineSelecting(Medidas)}}
-                                                >
-                                                    <td>{Medidas.unity_name}</td>
-                                                </tr>
-                                            )
-                                        }
+                                    this.state.content.map(Medidas =>{
+                                        return(
+                                            <tr key={Medidas.id_unity}
+                                                onClick={()=>{this.lineSelecting(Medidas)}}
+                                                className={this.state.itenSelected.itenID === Medidas.id_unity ? "selecionado" : ""}
+                                            >
+                                                <td>{Medidas.unity_name}</td>
+                                            </tr>
+                                        )
                                     })}
                                 </tbody>
                             </table>
@@ -183,9 +166,11 @@ class index extends Component{
                             <input 
                                 type='text'
                                 id='measure-name'
-                                disabled={this.state.EnableInput}
-                                value={this.state.MeasureName}
-                                onChange={ e=> this.setState({MeasureName: e.target.value})}
+                                disabled={this.state.createState || this.state.editState ? false : true}
+                                value={this.state.measureInputName}
+                                onChange={ e => {
+                                    this.setState({measureInputName: e.target.value})
+                                }}
                             />
 
                             <input 
@@ -194,12 +179,12 @@ class index extends Component{
                                 value='Salvar'
                                 onClick={() =>{
                                     let data = {
-                                        "name": this.state.MeasureName
+                                        "name": this.state.measureInputName
                                     };
                                     if(this.state.createState){
-                                        CS.postUnity(data);
+                                        ConectServ.postUnity(data);
                                     }else if(this.state.editState){
-                                        CS.putUnity(this.state.itenSelected, data);
+                                        ConectServ.putUnity(this.state.itenSelected.itenID, data);
                                     }
                                 }}
                             />

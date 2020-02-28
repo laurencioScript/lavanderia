@@ -16,29 +16,33 @@ class color extends Component{
         createState: false,
         editState: false,
 
-        EnableEdit: true,
-        EnableDelete: true,
-        EnableInput: true,
-        ClassEdit: "",
-        ClassDelete: "",
+        disableEdit: true,
+        disableDelete: true,
+        classEdit: "",
+        classDelete: "",
 
-        itenSelected: '',
-        colorName: '',
+        colorInputName: '',
+        colorInputHexa: "",
 
-        Cor: "",
-        Cores: [],
-        Conteudo: [],
-        Atualiza: true
+        itenSelected: {
+            itenId: '',
+            itenName: '',
+        },
+
+        cores: [],
+
+        contentBase: [],
+        content: []
     }
     componentDidMount(){
-        this.componenAtualiza();
+        this.componentAtualiza();
         this.verificaNivel();
-
-        sessionStorage.removeItem("Selecionado");
     }
-    async componenAtualiza(){
-        let Cores = await ConectServ.getColors()
-        this.setState({Cores, Conteudo: Cores});
+    async componentAtualiza(){
+        let content = await ConectServ.getColors();
+        
+        this.setState({content, Cores: content});
+        this.setState({content, contentBase: content});
     }
     
     pesquisa = async (val) => {
@@ -48,18 +52,21 @@ class color extends Component{
         //Como a função setState por si só ser assincrona, é de extrema importancia manter esta função assincrona
         //pois assim, a atualização do que o usuário escreve se mantem atualizada corretamente.
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await ConectServ.getColors() })
-        : this.setState({Atualiza: false, Conteudo: this.retornaPesquisa(val)});
+        ? this.componentAtualiza()
+        : this.setState({content: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
         //Esta função recebe de pesquisa, o valor digitado pelo usuário e monta o array com os campos filtrados.
-        let data = this.state.Cores.map(res => {
-            return  res.color_name.toLowerCase().search(val) !== -1 ||
-                    res.hexadecimal.toLowerCase().search(val) !== -1 
-                    ? res : undefined;
+        let data = this.state.contentBase.filter(res => {
+            if(res.color_name.toLowerCase().search(val) !== -1 || res.hexadecimal.toLowerCase().search(val) !== -1 ){
+                return res;
+            }else{
+                return undefined;
+            }
         });
-        return data
+
+        return data;
     }
 
     verificaNivel(){
@@ -73,62 +80,30 @@ class color extends Component{
             console.log("BTN HABILITADO");
         }
     }
-
-
-    limpaLista = () =>{
-        //Função responsavel por limpar a antiga linha selecionada da tabela
-        let tabela = document.getElementById("corpo_tabela");
-        let linhas = tabela.getElementsByTagName("tr");
-
-        for(let i = 0; i < linhas.length; i++){
-            let a = linhas[i];
-            a.classList.remove("selecionado");
-        }
-    }
-    verificaLista = (linha) =>{
-        //Função responsavel por fazer uma linha da tabela visivelmente selecionada
-        this.limpaLista();
-        try{
-            linha.classList.toggle("selecionado");
-        }catch(e){
-        }
-    }
-
     mudaCor = (color) =>{
         //esta função altera o colorPicker, caso o usuário clique na linha de uma cor já cadastrada.
-        let param = color.hex === undefined ? ({Cor: color}) : ({Cor: color.hex})
+        let param = color.hex === undefined ? ({colorInputHexa: color}) : ({colorInputHexa: color.hex})
         this.setState(param);
     }
 
     btnCreate = () =>{
-        this.setState({createState: !this.state.createState});
-        this.state.createState ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
-        
-        if(this.state.editState)
-            this.setState({editState: false});
-        else{}
+        this.setState({createState: !this.state.createState, editState: false});
     }
     btnEdit = () =>{
-        this.setState({editState: !this.state.editState});
-        this.state.editState ? this.setState({EnableInput: true}) : this.setState({EnableInput: false});
-        if(this.state.createState)
-            this.setState({createState: false});
-        else{}
+        this.setState({editState: !this.state.editState, createState: false});
     }
 
     lineSelecting = Color =>{
         this.mudaCor(Color.hexadecimal);
 
-        this.setState({itenSelected: this.state.itenSelected == Color.id_color ? " " : Color.id_color});
-        this.setState({colorName: Color.color_name});        
-
-        this.verificaLista(document.getElementById(Color.id_color));
+        this.setState({itenSelected: {itenID: Color.id_color, itenName: Color.color_name},
+            measureInputName: Color.color_name });
     }
 
     saveEdit = () =>{
         let data = {
-            "name": this.state.colorName,
-            "hexadecimal": this.state.Cor
+            "name": this.state.colorInputName,
+            "hexadecimal": this.state.colorInputName
         };
         if(this.state.createState && !this.state.EnableInput){
             ConectServ.postColor(data);
@@ -193,20 +168,18 @@ class color extends Component{
                         <div id='colors-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Conteudo.map(Colors => {
-                                        if(Colors !== undefined){
-                                            return (
-                                                <tr key={Colors.id_color} 
-                                                    id={Colors.id_color}
-                                                    onClick={()=>{ this.lineSelecting(Colors)}}>
-                                                        
-                                                    <td>
-                                                        <div id='nome'>{Colors.color_name}</div> 
-                                                        <Bolinha cor={Colors.hexadecimal} />
-                                                    </td>
-                                                </tr>
-                                            )
-                                        }
+                                    this.state.content.map(Colors => {
+                                        return (
+                                            <tr key={Colors.id_color} 
+                                                onClick={()=>{ this.lineSelecting(Colors)}}
+                                                className={this.state.itenSelected.itenID === Colors.id_color ? "selecionado" : ""}
+                                            >                                                    
+                                                <td>
+                                                    <div id='nome'>{Colors.color_name}</div> 
+                                                    <Bolinha cor={Colors.hexadecimal} />
+                                                </td>
+                                            </tr>
+                                        )
                                     })}
                                     </tbody>
                             </table>
@@ -217,9 +190,9 @@ class color extends Component{
                             <input 
                                 type='text'
                                 id='color-name'
-                                disabled={this.state.EnableInput}
-                                value={this.state.colorName}
-                                onChange={ e=> this.setState({colorName: e.target.value})}
+                                disabled={this.state.createState || this.state.editState ? false : true}
+                                value={this.state.colorInputName}
+                                onChange={ e=> this.setState({colorInputName: e.target.value})}
 
                             />
 
@@ -231,10 +204,10 @@ class color extends Component{
                             />
                             <div id='color-picker'>
                                 <SliderPicker 
-                                    color={this.state.Cor}
+                                    color={this.state.colorInputHexa}
                                     onChangeComplete={this.mudaCor}/>
                                 
-                                <p>{this.state.Cor}</p>
+                                <p>{this.state.colorInputHexa}</p>
                             </div>
                         </div>
                     </div>

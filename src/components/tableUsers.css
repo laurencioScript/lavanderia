@@ -31,5 +31,5 @@ table > tbody > tr:hover td:not(th){
 }
 
 table tr.selecionado td{
-    background-color: #5f9ea0;
+    background-color: #5f9ea0 !important;
 }
