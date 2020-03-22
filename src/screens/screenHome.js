@@ -28,9 +28,9 @@ function Index() {
             else{
                 let cargo;
                 
-                cargo = result && result.level_user == 1 ? "Mestre" : cargo;
-                cargo = result && result.level_user == 2 ? "Administrador" : cargo;
-                cargo = result && result.level_user == 3 ? "Atendente" : cargo;
+                cargo = result && result.level_user === 1 ? "Mestre" : cargo;
+                cargo = result && result.level_user === 2 ? "Administrador" : cargo;
+                cargo = result && result.level_user === 3 ? "Atendente" : cargo;
 
                 sessionStorage.setItem("user",JSON.stringify({
                     nome:result.name_user,
