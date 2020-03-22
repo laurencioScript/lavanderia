@@ -27,6 +27,14 @@ class index extends Component{
             itenName: ''
         },
 
+        // Para a mudança das cores do button de save, aqui são armazenados os valores hexadeciamis para criar, editar e deletar, respectivamente.
+        saveColors:[
+            "#929292",
+            "#06ce11",
+            "#f4eb49"
+        ],
+        saveButtonColor: "0",
+
         // Content é a base, onde é armazenado o JSON que vem do back-end
         contentBase: [],
         content: []
@@ -78,11 +86,13 @@ class index extends Component{
     btnCreate = () =>{
         // Altera os states determinando que o btn CREATE está ativo
         this.setState({createState: !this.state.createState, editState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "1" ? "0" : "1"});
     }
     
     btnEdit = () =>{
         // Altera os states determinando que o btn EDIT está ativo
         this.setState({editState: !this.state.editState, createState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "2" ? "0" : "2"});
     }
 
     lineSelecting = Medidas =>{
@@ -91,6 +101,19 @@ class index extends Component{
                         measureInputName: Medidas.unity_name });
     }
     
+    saveEdit = async () =>{
+        let data = {
+            "name": this.state.measureInputName
+        };
+        if(this.state.createState){
+            await ConectServ.postUnity(data);
+        }else if(this.state.editState){
+            await ConectServ.putUnity(this.state.itenSelected.itenID, data);
+        }
+
+        this.componentAtualiza();
+    }
+
     render(){
         return(
             <>
@@ -177,16 +200,8 @@ class index extends Component{
                                 type='button'
                                 id='measure-salvar'
                                 value='Salvar'
-                                onClick={() =>{
-                                    let data = {
-                                        "name": this.state.measureInputName
-                                    };
-                                    if(this.state.createState){
-                                        ConectServ.postUnity(data);
-                                    }else if(this.state.editState){
-                                        ConectServ.putUnity(this.state.itenSelected.itenID, data);
-                                    }
-                                }}
+                                style={{backgroundColor: this.state.saveColors[this.state.saveButtonColor] }}
+                                onClick={this.saveEdit}
                             />
                         </div>
                     </div>

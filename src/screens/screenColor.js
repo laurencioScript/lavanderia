@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import { SliderPicker } from 'react-color';
 
+import './screenColor.css';
+import img_placeholder from '../public/placeholder-img.jpg';
 import Header from '../components/header';
 import Bolinha from '../components/bolinha';
-import img_placeholder from '../public/placeholder-img.jpg';
 import icon_paleta from '../public/icons/icon_paleta2.png';
 
 import ConectServ from '../service/ColorsService';
-
-import './screenColor.css';
 
 
 class color extends Component{
@@ -26,10 +25,15 @@ class color extends Component{
 
         itenSelected: {
             itenId: '',
-            itenName: '',
+            itenName: ''
         },
 
-        cores: [],
+        saveColors:[
+            "#929292",
+            "#06ce11",
+            "#f4eb49"
+        ],
+        saveButtonColor: "0",
 
         contentBase: [],
         content: []
@@ -41,23 +45,16 @@ class color extends Component{
     async componentAtualiza(){
         let content = await ConectServ.getColors();
         
-        this.setState({content, Cores: content});
         this.setState({content, contentBase: content});
     }
     
     pesquisa = async (val) => {
-        //Esta função recebe o valor digitado pelo usuário, altera o estado Atualiza, que bloqueia a atualização
-        //do didUpdate e chama a função retornaPesquisa caso tenha algo digitado na barra de pesquisa e faz o setState.
-
-        //Como a função setState por si só ser assincrona, é de extrema importancia manter esta função assincrona
-        //pois assim, a atualização do que o usuário escreve se mantem atualizada corretamente.
         val === "" 
         ? this.componentAtualiza()
         : this.setState({content: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
-        //Esta função recebe de pesquisa, o valor digitado pelo usuário e monta o array com os campos filtrados.
         let data = this.state.contentBase.filter(res => {
             if(res.color_name.toLowerCase().search(val) !== -1 || res.hexadecimal.toLowerCase().search(val) !== -1 ){
                 return res;
@@ -88,8 +85,10 @@ class color extends Component{
 
     btnCreate = () =>{
         this.setState({createState: !this.state.createState, editState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "1" ? "0" : "1"});
     }
     btnEdit = () =>{
+        this.setState({saveButtonColor: this.state.saveButtonColor === "2" ? "0" : "2"});
         this.setState({editState: !this.state.editState, createState: false});
     }
 
@@ -97,22 +96,24 @@ class color extends Component{
         this.mudaCor(Color.hexadecimal);
 
         this.setState({itenSelected: {itenID: Color.id_color, itenName: Color.color_name},
-            measureInputName: Color.color_name });
+            colorInputName: Color.color_name });
     }
 
-    saveEdit = () =>{
+    saveEdit = async () =>{
         let data = {
             "name": this.state.colorInputName,
-            "hexadecimal": this.state.colorInputName
+            "hexadecimal": this.state.colorInputHexa
         };
         if(this.state.createState && !this.state.EnableInput){
-            ConectServ.postColor(data);
+            await ConectServ.postColor(data);
             console.log("create")
         }
         else if(this.state.editState && !this.state.EnableInput){
-            ConectServ.putColor(this.state.itenSelected, data);
+            await ConectServ.putColor(this.state.itenSelected, data);
             console.log("edit")
         }
+
+        this.componentAtualiza();
     }
 
     render(){
@@ -200,6 +201,7 @@ class color extends Component{
                                 type='button'
                                 id='color-salvar'
                                 value='Salvar'
+                                style={{backgroundColor: this.state.saveColors[this.state.saveButtonColor] }}
                                 onClick={this.saveEdit}
                             />
                             <div id='color-picker'>

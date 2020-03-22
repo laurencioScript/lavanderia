@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 
-import Header from '../public/header';
-import img_placeholder from '../public/placeholder-img.jpg';
-
 import './screenDefect.css';
+import img_placeholder from '../public/placeholder-img.jpg';
+import Header from '../public/header';
 
 import ConectServ from '../service/DefectService';
 
@@ -23,6 +22,13 @@ class index extends Component{
             itenID: '',
             itenName: '',
         },
+
+        saveColors:[
+            "#929292",
+            "#06ce11",
+            "#f4eb49"
+        ],
+        saveButtonColor: "0",
 
         contentBase: [],
         content: [],
@@ -67,10 +73,12 @@ class index extends Component{
 
     btnCreate = () =>{
         this.setState({createState: !this.state.createState, editState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "1" ? "0" : "1"});
     }
-
+    
     btnEdit = () =>{
         this.setState({editState: !this.state.editState, createState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "2" ? "0" : "2"});
     }
 
     lineSelecting = Defeitos =>{
@@ -78,7 +86,18 @@ class index extends Component{
             defectInputName: Defeitos.defect_name });
     }
 
+    saveEdit = async () =>{
+        var data = {
+            "name": this.state.defectInputName
+        };
+        if(this.state.createState){
+            await ConectServ.postDefect(data);
+        }else if(this.state.editState){
+            await ConectServ.putDefect(this.state.itenSelected.itenID, data);
+        }
 
+        this.componentAtualiza();
+    }
 
     render(){
         return(
@@ -165,16 +184,8 @@ class index extends Component{
                                 type='button'
                                 id='defect-salvar'
                                 value='Salvar'
-                                onClick={() =>{
-                                    var data = {
-                                        "name": this.state.defectInputName
-                                    };
-                                    if(this.state.createState){
-                                        ConectServ.postDefect(data);
-                                    }else if(this.state.editState){
-                                        ConectServ.putDefect(this.state.itenSelected.itenID, data);
-                                    }
-                                }}
+                                style={{backgroundColor: this.state.saveColors[this.state.saveButtonColor] }}
+                                onClick={this.saveEdit}
                             />
                         </div>
                     </div>
