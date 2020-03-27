@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import './screenMenu.css';
+import SideBar from './../public/sideBar';
+
 import Header from './../components/header';
 import img_placeholder from './../public/placeholder-img.jpg';
 import icon_os from './../public/icons/icon_os.png';
@@ -15,8 +17,11 @@ import icon_user from './../public/icons/icon_user.png';
 class Index extends Component{
     render() {
         return(
-            <div id='todo'>
-                <Header name="Menu"></Header>
+            <>
+                <SideBar />
+
+
+                {/* <Header name="Menu"></Header>
                 
 
                 <div id="menu">
@@ -97,8 +102,8 @@ class Index extends Component{
                         </Link>
                     </div>
                 </div>
-            </div>
-            </div>
+            </div> */}
+            </>
         )
     };
 }
