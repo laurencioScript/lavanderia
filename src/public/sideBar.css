@@ -35,9 +35,9 @@
 
     max-width: 80px;
 }
-#sideBar > div:hover{
+/* #sideBar > div:hover{
     background-color: #394456;
-}
+} */
 #sideBar > div > p, #sideBar > div > div > p{
     /* Texto dos itens */
     font-size: 25px;

@@ -18,8 +18,7 @@ class Index extends Component{
     render() {
         return(
             <>
-                <SideBar />
-
+                <SideBar>
 
                 {/* <Header name="Menu"></Header>
                 
@@ -103,6 +102,8 @@ class Index extends Component{
                     </div>
                 </div>
             </div> */}
+
+                </SideBar>
             </>
         )
     };
