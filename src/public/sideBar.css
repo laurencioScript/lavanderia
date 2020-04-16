@@ -4,6 +4,7 @@
     color: white;
 
     max-width: 80px;
+    width: 100%;
     max-height: 100%;
     min-height: 100%;
     /* padding-top: 20px; */
@@ -52,4 +53,15 @@
     /* icones */
     max-width: 50px;
     width: 100%;
+}
+
+/* Faz a animação para que a SideBar fique invisvel antes de a outra sobrepor */
+.sidebarClose{
+    animation: sideBarCloseAnimation forwards;
+    animation-duration: 0.5s;
+}
+
+@keyframes sideBarCloseAnimation{
+    from{opacity: 1;}
+    to{opacity: 0; display: none;}
 }

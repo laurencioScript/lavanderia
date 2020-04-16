@@ -19,15 +19,17 @@ function SideBar(){
     const [menuOpen, setMenuOpen] = useState(false);
     const [userName, setUserName] = useState(JSON.parse(sessionStorage.getItem('user')).nome );
     const [userOcupation, setUserOcupation] = useState(JSON.parse(sessionStorage.getItem('user')).cargo );
+    const [sideBarAnimation, setSideBarAnimation] = useState("");
 
     const openMenu = () =>{
         setMenuOpen(true);
+        setSideBarAnimation("sidebarClose");
     }
     const closeMenu = () =>{
         setMenuOpen(false);
+        setSideBarAnimation("");
     }
     const isMenuOpen = state =>{
-        console.log(state.isOpen);
         setMenuOpen(state.isOpen);
     }
     return (
@@ -112,7 +114,7 @@ function SideBar(){
         </div>
 
         
-        <div id='sideBar' onMouseOver={openMenu}>
+        <div id="sideBar" className={sideBarAnimation + " no-select"} onMouseOver={openMenu}>
             <div id="user">
                 <img src={icon_user} alt="icone de usuário" />
             </div>
