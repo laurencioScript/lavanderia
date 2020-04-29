@@ -1,117 +1,138 @@
 import React, {Component} from 'react';
 import { SliderPicker } from 'react-color';
 
-import Header from '../public/header';
-import Bolinha from '../../public/bolinha';
-import img_placeholder from '../../public/placeholder-img.jpg';
-import icon_paleta from '../../public/icons/icon_paleta2.png';
+import './screenColor.css';
+import img_placeholder from '../public/placeholder-img.jpg';
+import Header from '../components/header';
+import Bolinha from '../components/bolinha';
+import icon_paleta from '../public/icons/icon_paleta2.png';
 
-import './colors.css';
+import ConectServ from '../service/ColorsService';
 
-const Connection = require('../public/connection');
 
-class index extends Component{
+class color extends Component{
     state ={
         createState: false,
         editState: false,
-        Cor: "",
-        Cores: [],
-        Conteudo: [],
-        Atualiza: true
+
+        disableEdit: true,
+        disableDelete: true,
+        classEdit: "",
+        classDelete: "",
+
+        colorInputName: '',
+        colorInputHexa: "",
+
+        itenSelected: {
+            itenId: '',
+            itenName: ''
+        },
+
+        saveColors:[
+            "#929292",
+            "#06ce11",
+            "#f4eb49"
+        ],
+        saveButtonColor: "0",
+
+        contentBase: [],
+        content: []
     }
     componentDidMount(){
-        Connection.getColors().then(res => {
-            var Cores = res;
-            this.setState({Cores});
-        });
+        this.componentAtualiza();
         this.verificaNivel();
-
-        sessionStorage.removeItem("Selecionado");
     }
-
-    componentDidUpdate(){
-        if(this.state.Atualiza)
-           {this.componenAtualiza();}
+    async componentAtualiza(){
+        let content = await ConectServ.getColors();
+        
+        this.setState({content, contentBase: content});
     }
-    componenAtualiza(){
-        Connection.getColors().then(res => {
-            var Cores = res;
-            this.setState({Cores, Conteudo: Cores});
-        });
-    }
+    
     pesquisa = async (val) => {
         val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await Connection.getColors() })
-        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+        ? this.componentAtualiza()
+        : this.setState({content: this.retornaPesquisa(val)});
     }
 
     retornaPesquisa = (val) =>{
-        var data = this.state.Cores.map(res => {
-            return  res.color_name.toLowerCase().search(val) !== -1 ||
-                    res.hexadecimal.toLowerCase().search(val) !== -1 
-                    ? res : undefined;
+        let data = this.state.contentBase.filter(res => {
+            if(res.color_name.toLowerCase().search(val) !== -1 || res.hexadecimal.toLowerCase().search(val) !== -1 ){
+                return res;
+            }else{
+                return undefined;
+            }
         });
 
-        return data
+        return data;
     }
 
     verificaNivel(){
-        if(sessionStorage.getItem('nivel') == 'Atendente')
-        {   console.log("BTN DESABILITADO");
-            document.querySelector('#btn-edit').disabled = true;
-            document.querySelector("#btn-delete").disabled = true;
-
-            document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
-            document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
+        if(JSON.parse(sessionStorage.getItem('user')).cargo === 'Atendente'){
+            this.setState({EnableEdit: true, EnableDelete: true,
+                ClassDelete: "btn-delete-disabled", ClassEdit: "btn-edit-disabled"});
+            console.log("BTN DESABILITADO");
         }else{
+            this.setState({EnableEdit: false, EnableDelete: false,
+                ClassDelete: "", ClassEdit: ""});
             console.log("BTN HABILITADO");
-            document.querySelector("#btn-edit").disabled = false;
-            document.querySelector("#btn-delete").disabled = false;
-            document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
-            document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
-        }
-    }
-    limpaLista = () =>{
-        var tabela = document.getElementById("corpo_tabela");
-        var linhas = tabela.getElementsByTagName("tr");
-
-        for(var i = 0; i < linhas.length; i++){
-            var a = linhas[i];
-            a.classList.remove("selecionado");
-        }
-    }
-    verificaLista = (linha) =>{
-        this.limpaLista();
-        // linha.classList.toggle("selecionado");
-        try{
-            document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
-        }catch(e){
         }
     }
     mudaCor = (color) =>{
-        var param;
-
-        if(color.hex === undefined)
-            param = ({Cor: color});
-        else 
-            param = ({Cor: color.hex});
-        
+        //esta função altera o colorPicker, caso o usuário clique na linha de uma cor já cadastrada.
+        let param = color.hex === undefined ? ({colorInputHexa: color}) : ({colorInputHexa: color.hex})
         this.setState(param);
     }
+
+    btnCreate = () =>{
+        this.setState({createState: !this.state.createState, editState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "1" ? "0" : "1"});
+    }
+    btnEdit = () =>{
+        this.setState({saveButtonColor: this.state.saveButtonColor === "2" ? "0" : "2"});
+        this.setState({editState: !this.state.editState, createState: false});
+    }
+
+    lineSelecting = Color =>{
+        this.mudaCor(Color.hexadecimal);
+
+        this.setState({itenSelected: {itenID: Color.id_color, itenName: Color.color_name},
+            colorInputName: Color.color_name });
+    }
+
+    saveEdit = async () =>{
+        let data = {
+            "name": this.state.colorInputName,
+            "hexadecimal": this.state.colorInputHexa
+        };
+        if(this.state.createState && !this.state.EnableInput){
+            await ConectServ.postColor(data);
+            console.log("create")
+        }
+        else if(this.state.editState && !this.state.EnableInput){
+            await ConectServ.putColor(this.state.itenSelected, data);
+            console.log("edit")
+        }
+
+        this.componentAtualiza();
+    }
+
     render(){
         return(
             <>
                 <Header name="cores"/>
-                <div id="volta">
-                        <p>↪ Voltar</p>
+                    <div id="volta">
+                        <a id="btnVoltar"
+                            href="/Menu">
+                            <button>Voltar</button>
+                        </a>
                     </div>
 
                     <div id="icon-page">
                         {/* CARROUSEL */}
-                        <img src={icon_paleta} alt=" "></img>
+                        <img src={icon_paleta} alt="Icone identificador da pagina de CORES"></img>
                     </div>
 
-                    <div id="content-users" on >
+                    <div id="content-users">
                         <div id="navigation-users">
                             <p>Lista de Cores</p>
                             <div id="search">
@@ -121,38 +142,26 @@ class index extends Component{
                                     placeholder="Procurar" 
                                     name="search" id="search-color" 
                                     onChange={(e)=>{
-                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                        //Ao ter uma atualização no campo, a função pesquisa é chamada, passando o valor no campo.
+                                        this.pesquisa(e.target.value.toLowerCase());
                                 }} />
                             </div>
                             
                             <button id="btn-find">Localizar</button>
 
+                            <button id="btn-create" onClick={this.btnCreate} >Criar</button>
+
                             <button 
-                                id="btn-create" 
-                                onClick={() =>{
-                                    this.setState({createState: !this.state.createState});
-                                    this.state.createState == true ? document.querySelector("#color-name").disabled = true : document.querySelector("#color-name").disabled = false;
-                                    if(this.state.editState)
-                                        this.setState({editState: false});
-                                }}
-                            >Criar</button>
-                            <button 
-                                id="btn-edit"
-                                onClick={() =>{
-                                    this.setState({editState: !this.state.editState});
-                                    this.state.editState == true ? document.querySelector("#color-name").disabled = true : document.querySelector("#color-name").disabled = false;
-                                    if(this.state.createState)
-                                        this.setState({createState: false}) ;
-                                }}
-                            >Editar</button>
+                                id="btn-edit" 
+                                className={this.state.ClassEdit} 
+                                disabled={this.state.EnableEdit} 
+                                onClick={this.btnEdit} >Editar</button>
 
                             <button 
                                 id="btn-delete" 
-                                onClick={() =>{
-                                    Connection.deleteColor(sessionStorage.getItem('Selecionado'));
-                                    // Axios.delete('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado') , {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
-                                }}
-                            >Excluir</button>
+                                className={this.state.ClassDelete}
+                                disabled={this.state.EnableDelete}
+                                onClick={() =>{ ConectServ.deleteColor(this.state.itenSelected); }} >Excluir</button>
                         </div>
                     </div>
 
@@ -160,21 +169,18 @@ class index extends Component{
                         <div id='colors-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Conteudo.map(Colors => {
-                                        if(Colors !== undefined)
+                                    this.state.content.map(Colors => {
                                         return (
-                                        <tr id={Colors.id_color}
-                                            onClick={() =>{
-                                                var cor = Colors.hexadecimal;
-                                                this.mudaCor(cor);
-
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Colors.id_color ? " " : Colors.id_color);
-                                                this.verificaLista(document.getElementById(Colors.id_color));
-                                                this.state.editState ? document.querySelector("#color-name").value = Colors.color_name : document.querySelector("#color-name").value = null;
-                                            }}
-                                        >   
-                                            <td><div id='nome'>{Colors.color_name}</div> <Bolinha cor={Colors.hexadecimal} /></td>
-                                        </tr>)
+                                            <tr key={Colors.id_color} 
+                                                onClick={()=>{ this.lineSelecting(Colors)}}
+                                                className={this.state.itenSelected.itenID === Colors.id_color ? "selecionado" : ""}
+                                            >                                                    
+                                                <td>
+                                                    <div id='nome'>{Colors.color_name}</div> 
+                                                    <Bolinha cor={Colors.hexadecimal} />
+                                                </td>
+                                            </tr>
+                                        )
                                     })}
                                     </tbody>
                             </table>
@@ -185,7 +191,9 @@ class index extends Component{
                             <input 
                                 type='text'
                                 id='color-name'
-                                disabled
+                                disabled={this.state.createState || this.state.editState ? false : true}
+                                value={this.state.colorInputName}
+                                onChange={ e=> this.setState({colorInputName: e.target.value})}
 
                             />
 
@@ -193,29 +201,15 @@ class index extends Component{
                                 type='button'
                                 id='color-salvar'
                                 value='Salvar'
-                                onClick={() =>{
-                                    var data = {
-                                        "name": document.getElementById('color-name').value,
-                                        "hexadecimal": this.state.Cor
-                                    };
-                                    if(this.state.createState && !document.querySelector("#color-name").disabled)
-                                        {
-                                            Connection.postColor(data);
-                                            // Axios.post('http://localhost:3000/color/register', data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}});
-                                            console.log(document.querySelector("#color-name").disabled);}
-                                    else if(this.state.editState && !document.querySelector("#color-name").disabled)
-                                        {
-                                            Connection.putColor(sessionStorage.getItem('Selecionado'), data);
-                                            // Axios.put('http://localhost:3000/color/' + sessionStorage.getItem('Selecionado'), data ,{headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}})
-                                        }
-                                }}
+                                style={{backgroundColor: this.state.saveColors[this.state.saveButtonColor] }}
+                                onClick={this.saveEdit}
                             />
                             <div id='color-picker'>
                                 <SliderPicker 
-                                    color={this.state.Cor}
+                                    color={this.state.colorInputHexa}
                                     onChangeComplete={this.mudaCor}/>
                                 
-                                <p>{this.state.Cor}</p>
+                                <p>{this.state.colorInputHexa}</p>
                             </div>
                         </div>
                     </div>
@@ -224,4 +218,4 @@ class index extends Component{
     }
 }
 
-export default index;
+export default color;

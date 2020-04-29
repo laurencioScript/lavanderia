@@ -1,95 +1,113 @@
 import React, {Component} from 'react';
 
-import Header from '../public/header';
+import './screenDefect.css';
 import img_placeholder from '../public/placeholder-img.jpg';
+import Header from '../public/header';
 
-import './defects.css';
-
-const Connection = require('../public/connection');
+import ConectServ from '../service/DefectService';
 
 class index extends Component{
     state ={
         createState: false,
         editState: false,
-        Defeitos: [],
-        Conteudo:[],
-        Atualiza: true
+
+        disableEdit: false,
+        disableDelete: false,
+        classEdit: "",
+        classDelete: "",
+
+        defectInputName: '',
+
+        itenSelected: {
+            itenID: '',
+            itenName: '',
+        },
+
+        saveColors:[
+            "#929292",
+            "#06ce11",
+            "#f4eb49"
+        ],
+        saveButtonColor: "0",
+
+        contentBase: [],
+        content: [],
     }
     componentDidMount(){
-        Connection.getDefects().then(res => {
-            var Defeitos = res;
-            this.setState({Defeitos, Conteudo: res});
-        });
+        this.componentAtualiza();
         this.verificaNivel();
-
-        sessionStorage.removeItem("Selecionado");
     }
 
-    componentDidUpdate(){
-        if(this.state.Atualiza)
-           {this.componenAtualiza();}
+    async componentAtualiza(){
+        let content = await ConectServ.getDefects()
+        this.setState({contentBase: content, content});
     }
 
-    componenAtualiza(){
-        Connection.getDefects().then(res => {
-            var Defeitos = res;
-            this.setState({Defeitos, Conteudo: res});
-        });
-        this.verificaLista();
-    }
     pesquisa = async (val) => {
-        val === "" 
-        ? this.setState({Atualiza: true, Conteudo: await Connection.getUnitys() })
-        : this.setState({Conteudo: this.retornaPesquisa(val), Atualiza: false});
+        if(val === ""){
+            this.componentAtualiza()
+        }else{
+            this.setState({content: this.retornaPesquisa(val)});
+        }
     }
 
     retornaPesquisa = (val) =>{
-        var data = this.state.Defeitos.map(res => {
-            return  res.defect_name.toLowerCase().search(val) !== -1 
-                    ? res : undefined;
-        });
+        let data = this.state.contentBase.filter(res => {
+            return  res.defect_name.toLowerCase().search(val) !== -1 ? res : undefined;});
 
-        return data
+        return data;
     }
 
     verificaNivel(){
-        if(sessionStorage.getItem('nivel') == 'Atendente')
-        {   console.log("BTN DESABILITADO");
-            document.querySelector('#btn-edit').disabled = true;
-            document.querySelector("#btn-delete").disabled = true;
+        if(JSON.parse(sessionStorage.getItem('user')).cargo == 'Atendente'){   
+            this.setState({EnableEdit: true, EnableDelete: true,
+                ClassDelete: "btn-delete-disabled", ClassEdit: "btn-edit-disabled"});
+            console.log("BTN DESABILITADO");
 
-            document.querySelector('#btn-edit').classList.toggle("btn-edit-disabled");
-            document.querySelector("#btn-delete").classList.toggle('btn-delete-disabled');
         }else{
+            this.setState({EnableEdit: false, EnableDelete: false,
+                ClassDelete: "", ClassEdit: ""});
             console.log("BTN HABILITADO");
-            document.querySelector("#btn-edit").disabled = false;
-            document.querySelector("#btn-delete").disabled = false;
-            document.querySelector('#btn-edit').classList.remove('btn-edit-disabled');
-            document.querySelector("#btn-delete").classList.remove('btn-delete-disabled');
         }
     }
-    limpaLista = () =>{
-        var tabela = document.getElementById("corpo_tabela");
-        var linhas = tabela.getElementsByTagName("tr");
 
-        for(var i = 0; i < linhas.length; i++){
-            var a = linhas[i];
-            a.classList.remove("selecionado");
-        }
+    btnCreate = () =>{
+        this.setState({createState: !this.state.createState, editState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "1" ? "0" : "1"});
     }
-    verificaLista = (linha) =>{
-        this.limpaLista();
-        try{
-            document.getElementById(sessionStorage.getItem("Selecionado")).classList.toggle("selecionado");
-        }catch(e){
-        }
+    
+    btnEdit = () =>{
+        this.setState({editState: !this.state.editState, createState: false});
+        this.setState({saveButtonColor: this.state.saveButtonColor === "2" ? "0" : "2"});
     }
+
+    lineSelecting = Defeitos =>{
+        this.setState({itenSelected: {itenID: Defeitos.id_defect, itenName: Defeitos.defect_name},
+            defectInputName: Defeitos.defect_name });
+    }
+
+    saveEdit = async () =>{
+        var data = {
+            "name": this.state.defectInputName
+        };
+        if(this.state.createState){
+            await ConectServ.postDefect(data);
+        }else if(this.state.editState){
+            await ConectServ.putDefect(this.state.itenSelected.itenID, data);
+        }
+
+        this.componentAtualiza();
+    }
+
     render(){
         return(
             <>
                 <Header name="defeitos"/>
-                <div id="volta">
-                        <p>↪ Voltar</p>
+                    <div id="volta">
+                        <a  id="btnVoltar"
+                            href="/Menu">
+                            <button>Voltar</button>
+                        </a>
                     </div>
 
                     <div id="icon-page">
@@ -107,7 +125,7 @@ class index extends Component{
                                     placeholder="Procurar" 
                                     name="search" id="search-defect" 
                                     onChange={(e)=>{
-                                        this.pesquisa(e.target.value.toLowerCase()).then(console.log(e.target.value))
+                                        this.pesquisa(e.target.value.toLowerCase())
                                 }} />
                             </div>
                             
@@ -115,29 +133,21 @@ class index extends Component{
 
                             <button 
                                 id="btn-create" 
-                                onClick={() =>{
-                                    this.setState({createState: !this.state.createState});
-                                    this.state.createState == true ? document.querySelector("#defect-name").disabled = true : document.querySelector("#defect-name").disabled = false;
-                                    if(this.state.editState)
-                                        this.setState({editState: false});
-                                }}
-                            >Criar</button>
+                                onClick={this.btnCreate} >Criar</button>
+
                             <button 
                                 id="btn-edit"
-                                onClick={() =>{
-                                    this.setState({editState: !this.state.editState});
-                                    this.state.editState == true ? document.querySelector("#defect-name").disabled = true : document.querySelector("#defect-name").disabled = false;
-                                    if(this.state.createState)
-                                        this.setState({createState: false}) ;
-                                }}
-                            >Editar</button>
+                                className={this.state.ClassEdit}
+                                disabled={this.state.EnableEdit}
+                                onClick={this.btnEdit} >Editar</button>
 
                             <button 
                                 id="btn-delete" 
+                                className={this.state.ClassDelete}
+                                disabled={this.state.EnableDelete}
                                 onClick={() =>{
-                                    Connection.deleteDefect(sessionStorage.getItem('Selecionado'));
-                                }}
-                            >Excluir</button>
+                                    ConectServ.deleteDefect(this.state.itenSelected);
+                                }}>Excluir</button>
                         </div>
                     </div>
 
@@ -145,19 +155,17 @@ class index extends Component{
                         <div id='defects-table'>
                             <table>
                                 <tbody id="corpo_tabela">{
-                                    this.state.Conteudo.map(Defeitos => {
-                                        if(Defeitos !== undefined)
+                                    this.state.content.map(Defeitos => {
                                         return(
-                                        <tr id={Defeitos.id_defect}
-                                            onClick={() =>{
-                                                sessionStorage.setItem("Selecionado", localStorage.getItem("Selecionado") == Defeitos.id_defect ? " " : Defeitos.id_defect);
-                                                this.verificaLista(document.getElementById(Defeitos.id_defect));
-                                                this.state.createState || this.state.editState ? document.querySelector("#defect-name").value = Defeitos.defeito : document.querySelector("#defect-name").value = null;
-                                            }}    
-                                        >
-                                            <td>{Defeitos.defect_name}</td>
-                                        </tr>)
-                                    })}</tbody>
+                                            <tr key={Defeitos.id_defect}
+                                                onClick={() =>{this.lineSelecting(Defeitos)}}  
+                                                className={this.state.itenSelected.itenID === Defeitos.id_defect ? 'selecionado' : ''}  
+                                            >
+                                                <td>{Defeitos.defect_name}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
                             </table>
                         </div>
 
@@ -166,7 +174,9 @@ class index extends Component{
                             <input 
                                 type='text'
                                 id='defect-name'
-                                disabled
+                                disabled={this.state.createState || this.state.editState ? false : true}
+                                value={this.state.defectInputName}
+                                onChange={ e => this.setState({defectInputName: e.target.value})}
 
                             />
 
@@ -174,20 +184,8 @@ class index extends Component{
                                 type='button'
                                 id='defect-salvar'
                                 value='Salvar'
-                                onClick={() =>{
-                                    var data = {
-                                        "name": document.getElementById('defect-name').value
-                                    };
-                                    if(this.state.createState && !document.querySelector("#defect-name").disabled)
-                                        {   
-                                            Connection.postDefect(data);
-                                            console.log(document.querySelector("#defect-name").disabled);
-                                        }
-                                    else if(this.state.editState && !document.querySelector("#defect-name").disabled)
-                                        {
-                                            Connection.putDefect(sessionStorage.getItem('Selecionado'), data);
-                                        }
-                                }}
+                                style={{backgroundColor: this.state.saveColors[this.state.saveButtonColor] }}
+                                onClick={this.saveEdit}
                             />
                         </div>
                     </div>

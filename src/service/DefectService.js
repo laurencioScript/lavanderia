@@ -4,30 +4,30 @@ const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("token
 let defectService = {};
 
 const getDefects = async () =>{
-    const response = Axios.get(CONNECT + '/Defect', token).then(res =>{
-        return res.data.result;
-    });
-    return response;
+    const response = await Axios.get(`${CONNECT}/Defect`, token);    
+    return response.data.result;
 }
 
 const getDefect = async (id) =>{
-    const response = Axios.get(CONNECT + 'Defect/' + id, token).then(res =>{
-        return res.data.result[0];
-    });
-    return response;
+    const response = await Axios.get(`${CONNECT}/Defect/${id}`, token)
+    return response.data.result[0];
 }
 
 const postDefect = async (data) =>{
-    Axios.post(CONNECT + 'Defect/register/', data, token);
+    const response = await Axios.post(`${CONNECT}/Defect/register`, data, token);
+    return response.data.result;
 }
 
 const putDefect = async (id, data) =>{
-    Axios.put(CONNECT + 'Defect/' + id, data, token);
+    const response = await Axios.put(`${CONNECT}/Defect/${id}`, data, token);
+    return response.data.result;
 }
 
 const deleteDefect = async (id) =>{
-    Axios.delete(CONNECT + 'Defect/' + id, token);
+    const response = await Axios.delete(`${CONNECT}/Defect/${id}`, token);
+    return response.data.result;
 }
+
 export default defectService = {
     getDefect,
     getDefects,

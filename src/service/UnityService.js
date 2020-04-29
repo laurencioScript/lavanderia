@@ -1,31 +1,43 @@
 import CONNECT from './../config.js';
 const Axios = require('axios');
-const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("Token")}};
+const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("token")}};
 
-export const getUnitys = async () =>{
-    console.log(`${CONNECT}/unity`);
-    
-    const response = Axios.get(`${CONNECT}/unity/`, token).then(res =>{
-        return res.data.result;
-    });
-    return response;
+let UnityService = {};
+
+const getUnitys = async () =>{
+    const response = await Axios.get(`${CONNECT}/unity`, token)
+        .catch(e => { console.log(e.response)});
+    return response.data.result;
 }
 
-export const getUnity = async (id) =>{
-    const response = Axios.get(`${CONNECT}/unity/${id}`, token).then(res =>{
-        return res.data.result[0];
-    });
-    return response;
+const getUnity = async (id) =>{
+    const response = await Axios.get(`${CONNECT}/Unity/${id}`, token)
+        .catch(e => { console.log(e.response)});
+    return response.data.result[0];
 }
 
-export const postUnity = async (data) =>{
-    Axios.post(`${CONNECT}/unity/register/`, data, token);
+const postUnity = async (data) =>{
+    const response = await Axios.post(`${CONNECT}/Unity/register`, data, token)
+        .catch(e => { console.log(e.response)});
+    return response.data.result;
 }
 
-export const putUnity = async (id, data) =>{
-    Axios.put(`${CONNECT}/unity/${id}`, data, token);
+const putUnity = async (id, data) =>{
+    const response = await Axios.put(`${CONNECT}/Unity/${id}`, data, token)
+        .catch(e => { console.log(e.response)});
+    return response.data.result;
 }
 
-export const deleteUnity = async (id) =>{
-    Axios.delete(`${CONNECT}/unity/${id}`, token);
+const deleteUnity = async (id) =>{
+    const response = await Axios.delete(`${CONNECT}/Unity/${id}`, token)
+        .catch(e => { console.log(e.response)});
+    return response.data.result;
+}
+
+export default UnityService = {
+    getUnity,
+    getUnitys,
+    putUnity,
+    postUnity,
+    deleteUnity
 }

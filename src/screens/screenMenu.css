@@ -1,23 +1,125 @@
 #menu{
+  /* Página inteira, incluindo a SideBar */
   background-color: white;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: row;
 }
-#container-menu{
-      height: 600px;
-      width: 900px;
-      padding: 0px;
+#menuContent{
+  /* Div responsavel por todo conteudo da pagina home */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  width: 100%;
+  height: 100%;
+}
+#menuContent > h1{
+  /* Titulo da Página */
+  color: #548EFF;
+  font-size: 55px;
+  font-weight: bold;
 
-      margin: 5% auto 0;
-  }
-  #content{
-      max-width: 100%;
-      max-height: 100%;
-      font-size: 60px;
-  }
-  #content img{
-    width: 100px;
-  }
+  margin: 15px;
+}
+#menuContent > #menuFunctionBar{
+  /* Esta div define a barra de funções (Funções de Pesquisa e botões) */
+  display: flex;
+  flex-direction: row;
+
+  width: 100%;
+}
+
+#menuFunctionBar > #searchPickers{
+  /* div que encapsula as definições de pesquisa */
+  display: flex;
+  flex-direction: row;
+
+  align-self: flex-start;
+
+  margin: 15px 70px;
+  width: 70%;
+}
+
+#searchPickers > div{
+  /* Cada tipo de seletor, é encapsulado em uma div, aqui é definido a estilização base, como tamanho da div
+  e da fonte em geral */
+  margin: 10px 30px;
+  max-width: 250px;
+  min-width: 100px;
+  width: 100%;
+  
+  font-size: 20px;
+  color: #838181;
+}
+#searchPickers > div > p, #searchPickers > div > div{
+  /* Aqui é dado um pequeno espaço entre o titulo e os seletores */
+  margin-bottom: 5px;
+}
+
+#searchPickers > #dispatchDate{
+  /* Como a parte de date, consome uma parte maior em width e tem mais elementos
+  Aqui é definido um tamanho maior para a div. */
+  max-width: 350px;
+  width: 100%;
+}
+#searchPickers > #dispatchDate > div:first-child{
+  /* pela forma que é alinhado a parte de date, aqui é feito o alinhamento do
+  icon com o titulo. e posicionamento centralizado.*/
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: center;
+}
+#searchPickers > #dispatchDate > div:first-child > img{
+  /* margin para o icon não ficar colado com o titulo */
+  margin: 0 5px;
+}
+#searchPickers > #dispatchDate > #dataPicker{
+  /* Div que fica a baixo do titulo, com os input Date e o texto.
+  aqui é feito o alinhamento em linha deles */
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  
+  justify-content: center;
+  align-items: center;
+}
+#searchPickers > #dispatchDate > #dataPicker > p{
+  /* margin no "a", entre os inputs para não ficarem colados */
+  margin: 0 10px;
+}
+
+/* Estilização dos botoões "Orçamento" e "Nova Ordem" */
+#menuButtons{
+  align-self: center;
+}
+#menuButtons > button{
+  width: 130px;
+  height: 40px;
+  margin: auto 5px;
+
+  border: none;
+  background-color: transparent;
+
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 500;
+}
+#menuButtons > #btnBudget{
+  background-color: #3378FF;
+  color: white
+}
+#menuButtons > #btnOrder{
+  color: #3ACC6C;
+  border: 1px solid #3ACC6C;
+}
+
+
+
+  
   a{
     text-decoration: none;
     color: white;

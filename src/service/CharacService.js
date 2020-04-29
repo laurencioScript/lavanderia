@@ -1,32 +1,31 @@
 import CONNECT from './../config.js';
-const Axios = require('axios');
+import Axios from 'axios';
 const token = {headers: {Authorization: "Bearer " +sessionStorage.getItem("token")}};
 let CharacService = {}
 
 const getCharacteristics = async () =>{
-    const response = Axios.get(CONNECT + '/characteristic', token).then(res =>{
-        return res.data.result;
-    });
-    return response;
+    let response = await Axios.get(`${CONNECT}/characteristic`, token);
+    return response.data.result;
 }
 
 const getCharacteristic = async (id) =>{
-    const response = Axios.get(CONNECT + 'characteristic/' + id, token).then(res =>{
-        return res.data.result[0];
-    });
-    return response;
+    let response = await Axios.get(`${CONNECT}/characteristic/${id}`, token)
+    return response.data.result[0];
 }
 
 const postCharacteristic = async (data) =>{
-    Axios.post(CONNECT + 'characteristic/register/', data, token);
+    let response = await Axios.post(`${CONNECT}/characteristic/register/`, data, token);
+    return response.data.result;
 }
 
 const putCharacteristic = async (id, data) =>{
-    Axios.put(CONNECT + 'characteristic/' + id, data, token);
+    let response = await Axios.put(`${CONNECT}/characteristic/${id}`, data, token);
+    return response.data.result;
 }
 
 const deleteCharacteristic = async (id) =>{
-    Axios.delete(CONNECT + 'characteristic/' + id, token);
+    let response = await Axios.delete(`${CONNECT}/characteristic/${id}`, token);
+    return response.data.result;
 }
 
 export default CharacService = {
