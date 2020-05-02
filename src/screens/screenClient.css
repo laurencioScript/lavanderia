@@ -10,7 +10,7 @@
     font-size: 15px;
     font-weight: bold;
 }
-#customers-table > thead > tr{
+/* #customers-table > thead > tr{
     background-color: black;
     color: white;
 
@@ -33,4 +33,4 @@
 }
 #customers-table > tbody > tr > td:last-child{
     width: 30%;
-}
+} */

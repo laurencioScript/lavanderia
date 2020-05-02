@@ -13,6 +13,7 @@ import icon_measure from './icons/medida.svg';
 import icon_clipboard from './icons/clipboard.svg';
 import icon_pdf from './icons/icon pdf.svg';
 import icon_users from './icons/users.svg';
+import icon_edit from './icons/editar.svg';
 import icon_logOut from './icons/logout.svg';
 
 function SideBar(){
@@ -32,12 +33,17 @@ function SideBar(){
     const isMenuOpen = state =>{
         setMenuOpen(state.isOpen);
     }
+
+    const logOut = () =>{
+        // Limpa a sessão para fazer logOut
+        sessionStorage.clear();
+    }
     return (
         <>
         {/* É feito o encapsulamento do componente, pois é necessario para que o 
         menu feche com onMouseLevae, visto que não há nada oficial na docuemntação 
         do componente. */}
-        <div onMouseLeave={closeMenu}> 
+        <div id="sideBarAnimated" onMouseLeave={closeMenu}> 
             <Menu
                 customBurgerIcon={false}
                 customCrossIcon={false}
@@ -52,6 +58,7 @@ function SideBar(){
                             <p >{userName}</p>
                             <p >{userOcupation}</p>
                         </div>
+                        <img id="userEditIcon" src={icon_edit} alt="Editar" />
                     </div>
                 </a>
                 <a>
@@ -103,12 +110,12 @@ function SideBar(){
                     </div>
                 </a>
 
-                <a>
+                <Link to="/" onClick={logOut}>
                     <div id="logOut">
                         <img src={icon_logOut} alt="icone de Saida" />
                         <p  className="no-select">Sair</p>
                     </div>
-                </a>
+                </Link>
 
             </Menu>
         </div>
@@ -146,7 +153,6 @@ function SideBar(){
             <div id="users">
                 <img src={icon_users} alt="icone de usuários" />
             </div>
-
 
             <div id="logOut">
                 <img src={icon_logOut} alt="icone de Saida" />

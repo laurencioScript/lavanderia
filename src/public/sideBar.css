@@ -1,14 +1,100 @@
+/* Estilização do componente */
+#page-wrap > *{
+    text-align: center;
+
+    overflow: hidden;
+}
+.bm-morph-shape{
+    fill: #222C3C;
+}
+.bm-menu{
+    width: 100%;
+    background-color: #222C3C;
+}
+.bm-item-list{
+    max-width: 300px;
+    width: 100%;
+    max-height: 50px;
+
+}
+.bm-item{
+    width: 90%;
+    height: 100%;
+
+    margin: 30px auto;
+
+    color: white;
+}
+.bm-item:hover:not(:first-child){
+    /* impede que o primeiro iten (USER), tenha a mudança com mouse em cima. */
+    background-color: #394456;
+}
+
+.bm-item > div{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    
+    align-items: center;
+    padding: 0 10px;
+}
+.bm-item:last-child{
+    /* BTN SAIR */
+    border-top: 3px solid rgba(255, 254, 254, 0.22);
+    margin-bottom: 0;
+    position: absolute;
+    height: 100px;
+    width: 300px;
+    bottom: 0;
+    left: 0;
+
+}
+.bm-item > div > #userEditIcon{
+    width: 10px;
+    margin-left: 30px;
+}
+.bm-item > div > img{
+    max-width: 50px;
+    width: 10%;
+}
+.bm-item > div > p, .bm-item > div > div > p{
+    /* Texto dos itens */
+    font-size: 25px;
+    font-weight: 500;
+    margin: 0 0 0 10px;
+}
+.bm-item > div > p{
+    /* texto normal dos itens */
+    font-weight: normal !important;
+}
+/* FIM DA SIDEBAR MOVEL */
+
+
+.no-select > *{
+    /* No select, faz com o o texto ou iten não seja selecionavel. */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+/* SIDE BAR FIXA, modelo fechado */
 #sideBar{
     /* SIDEBAR */
+    position: fixed;
     background-color: #222C3C;
     color: white;
 
-    max-width: 80px;
-    width: 100%;
+    max-width: 150px;
+    width: 5%;
+
     max-height: 100%;
     min-height: 100%;
     /* padding-top: 20px; */
-
 }
 
 #sideBar > div{
@@ -18,13 +104,9 @@
     
     align-items: center;
     
-    padding: 20px 10px !important;
-    /* margin-top: 0 !important;
-    margin: 30px 0px; */
+    padding: 20% 10px !important;
 
-    /* height: 76px; */
     max-height: 100px;
-    /* width: 100%; */
 }
 #sideBar > div:last-child{
     /* BTN SAIR */
@@ -34,7 +116,7 @@
     height: 100%;
     width: 100%;
 
-    max-width: 80px;
+    max-width: 100%;
 }
 /* #sideBar > div:hover{
     background-color: #394456;
@@ -53,6 +135,8 @@
     /* icones */
     max-width: 50px;
     width: 100%;
+    max-height: 45px;
+    height: 100%;
 }
 
 /* Faz a animação para que a SideBar fique invisvel antes de a outra sobrepor */
