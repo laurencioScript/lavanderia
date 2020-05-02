@@ -3,6 +3,7 @@
     max-height: 65%;
     margin-top: 20px;
 }
+
 table{
     max-width: 95%;
     margin: 20px auto;
@@ -22,6 +23,7 @@ table th, td{
 
     border: 1px solid #c0c0c0;
 }
+/*
 table th{
     background-color: #e5e5e5;
 }
@@ -32,4 +34,4 @@ table > tbody > tr:hover td:not(th){
 
 table tr.selecionado td{
     background-color: #5f9ea0 !important;
-}
+} */

@@ -12,6 +12,7 @@
   flex-direction: column;
   align-items: center;
   
+  margin-left: 80px;
   width: 100%;
   height: 100%;
 }
@@ -95,9 +96,11 @@
 /* Estilização dos botoões "Orçamento" e "Nova Ordem" */
 #menuButtons{
   align-self: center;
+  width: 30%;
 }
 #menuButtons > button{
-  width: 130px;
+  width: 45%;
+  max-width: 130px;
   height: 40px;
   margin: auto 5px;
 
@@ -117,16 +120,29 @@
   border: 1px solid #3ACC6C;
 }
 
+.clientDetail{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.clientDetail:hover{
+  cursor: pointer;
+}
+.iconDetails{
+  max-width: 30px ;
+}
+
 
 
   
-  a{
+  /* #sideBarAnimated > a{
     text-decoration: none;
     color: white;
   }
-  a:visited{
+  #sideBarAnimated > a:visited{
     text-decoration: none;
-  }
+  } */
 
   #content > div, #content > div > a, #segunda-linha > div a{
     display: flex;

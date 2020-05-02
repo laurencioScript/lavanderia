@@ -1,11 +1,12 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { Link } from 'react-router-dom';
-import { TextField, InputAdornment, MenuItem, makeStyles } from '@material-ui/core';
+import { TextField, InputAdornment, MenuItem, makeStyles, TablePagination } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
+import TableFooter from '@material-ui/core/TableFooter';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Skeleton from '@material-ui/lab/Skeleton'
 
@@ -18,6 +19,7 @@ import payedIcon from './../public/icons/payed.svg'
 import notPayedIcon from './../public/icons/notPayed.svg'
 import shippedIcon from './../public/icons/shipped.svg'
 import notShippedIcon from './../public/icons/notShipped.svg'
+import fileIcon from './../public/icons/fileIcon.svg'
 
 import bdConect from './../service/SerOrdService'
 
@@ -45,6 +47,7 @@ function Menu(){
     const [selectedSituation, setSelectedSituation] = useState("-----");
     const classes = useStyles();
 
+    
     useEffect(()=>{
         
         if(!firstLoading){
@@ -55,8 +58,6 @@ function Menu(){
                 setVendas(res);
                 setLoading(false)
             });
-
-            console.log("entrei no if");
             // setVendas(chamaBanco());
             setFirstLoading(true);
         }else{}
@@ -71,34 +72,39 @@ function Menu(){
     });
 
     const formatDate = (date) =>{
+        // Formata as datas que vem do servidor, para visualização na linha da tabela
         let day = new Date(date);
         return `${day.getDate()}/${day.getMonth() + 1}/${day.getFullYear()}`;        
     }
     const isPayed = (paeyd, total) =>{
+        // Altera o icone caso uma OS esteja paga ou não
         return paeyd >= total ? payedIcon : notPayedIcon;
     }
     const isShipped = (date) =>{
+        // Altera o icone caso uma OS esteja entregue ou não
         return Date(date) !== Date() ? shippedIcon : notShippedIcon;
     }
     const changeLoadingCell = () =>{
+        // Função que faz a troca da barra loading pelas linhas da tabela
         if(loading){
             console.log("Defini o skeleton")
             return(
-                <TableRow>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                    <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
-                </TableRow>
+                [<TableRow>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                        <TableCell> <Skeleton variant="text" animation="wave"/> </TableCell>
+                    </TableRow>
+                ]
             )
-        }else{ 
-            console.log("Defini as linhas")
+        }else if(vendas !== undefined){ 
+            console.log(vendas);
             return(
             vendas.map(venda => 
                 <TableRow key={venda.id_service}>
@@ -115,7 +121,12 @@ function Menu(){
                         <img src={isShipped(venda.date_removed)} alt=" "/>
                     </TableCell>
                     <TableCell align="center">{venda.situation}</TableCell>
-                    <TableCell align="center">detalhes</TableCell>
+                    <TableCell align="center">
+                        <a className="clientDetail no-select">
+                            <img src={fileIcon} alt="Detalhes do Cliente" className="iconDetails"/>
+                            <p>detalhes</p>
+                        </a>
+                    </TableCell>
                 </TableRow>
        ))}
     }
@@ -210,8 +221,8 @@ function Menu(){
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            { tableCell }
-                                
+                            {/* Conteudo da tabela, que é trocado pela barra de loading, quanso esta esperando o retorno do back */}
+                            { tableCell }                                
                         </TableBody>
                     </Table>
                 </div>
