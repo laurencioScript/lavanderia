@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {Link, Redirect, useHistory} from 'react-router-dom';
 import { render } from 'react-dom';
-import {bubble as Menu} from 'react-burger-menu';
+import {elastic as Menu} from 'react-burger-menu';
 
 import './sideBar.css';
 import './teste.css';
