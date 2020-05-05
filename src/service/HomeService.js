@@ -7,7 +7,7 @@ const login = async (data) =>{
 
     const option = {
         method: 'post',
-        url: `${CONNECT}/login`,
+        url: `${CONNECT}/user/login`,
         validateStatus: function (status) {
             return status >= 200 && status < 300; // default
         },

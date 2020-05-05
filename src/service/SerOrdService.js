@@ -6,7 +6,7 @@ const buscarVendas = async (filter) =>{
     try {
         const token = {headers: {Authorization: "Bearer " + sessionStorage.getItem("token")}};
         
-        const response = await Axios.get(`${CONNECT}/service/`, token)
+        const response = await Axios.get(`${CONNECT}/service`, token)
         
         return response.data.result;
         

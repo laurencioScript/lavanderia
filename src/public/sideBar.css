@@ -82,6 +82,8 @@
     user-select: none;
 }
 
+
+
 /* SIDE BAR FIXA, modelo fechado */
 #sideBar{
     /* SIDEBAR */
@@ -89,8 +91,8 @@
     background-color: #222C3C;
     color: white;
 
-    max-width: 150px;
-    width: 5%;
+    max-width: 90px;
+    width: 90px;
 
     max-height: 100%;
     min-height: 100%;
@@ -103,40 +105,22 @@
     flex-direction: row;
     
     align-items: center;
-    
-    padding: 20% 10px !important;
+    justify-content: center;
 
-    max-height: 100px;
+    margin: 40px 0;
+
+    height: 70px;
 }
 #sideBar > div:last-child{
     /* BTN SAIR */
-    border-top: 3px solid rgba(255, 254, 254, 0.22);
     position: absolute;
     bottom: 0;
-    height: 100%;
     width: 100%;
-
-    max-width: 100%;
-}
-/* #sideBar > div:hover{
-    background-color: #394456;
-} */
-#sideBar > div > p, #sideBar > div > div > p{
-    /* Texto dos itens */
-    font-size: 25px;
-    font-weight: 500;
-    margin: 0 0 0 10px;
-}
-#sideBar > div > p{
-    /* texto normal dos itens */
-    font-weight: normal !important;
 }
 #sideBar > div > img{
     /* icones */
-    max-width: 50px;
-    width: 100%;
-    max-height: 45px;
-    height: 100%;
+    width: 60px;
+    height: 65px; 
 }
 
 /* Faz a animação para que a SideBar fique invisvel antes de a outra sobrepor */
@@ -146,6 +130,45 @@
 }
 
 @keyframes sideBarCloseAnimation{
-    from{opacity: 1;}
+    from{opacity: 1; display: fixed;}
     to{opacity: 0; display: none;}
+}
+
+
+
+/* Readequação com Media Query */
+/* ----------------------------------Largura---------------------------------- */
+@media (max-height: 1000px){
+    #sideBar > div{
+        /* define a altura maxima */
+        height: 50px;
+    }
+}
+@media (max-height: 800px){
+    #sideBar > div{
+        height: 35px;
+    }
+}
+
+/* ----------------------------------Altura---------------------------------- */
+@media (max-width: 1280px){
+    #sideBar{   
+        width: 75px;
+    }
+    #sideBar > div > img{
+        width: 50px;
+        height: 55px;
+    }
+}
+@media(max-width: 1000px){
+    #sideBar{
+        width: 65px;
+    }
+    #sideBar > div{
+        margin: 25px 0;
+    }
+    #sideBar > div > img{
+        width: 30px;
+        height: 35px;
+    }
 }
