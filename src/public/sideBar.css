@@ -1,18 +1,22 @@
-/* Estilização do componente */
+a{
+    /* Evita com que os links tenham um sublinhado/underline */
+    text-decoration: none;
+}
+
+/* Estilização do componente sideBar (react burguer menu */
 #page-wrap > *{
     text-align: center;
 
     overflow: hidden;
 }
 .bm-morph-shape{
-    fill: #222C3C;
+    display: none;  
 }
-.bm-menu{
-    /* width: 100%; */
+.bm-menu-wrap{
     background-color: #222C3C;
 }
 .bm-item-list{
-    width: 100%;
+    width: 300px;
     max-height: 50px;
 
 }
@@ -50,10 +54,11 @@
 
 }
 .bm-item > div > #userEditIcon{
-    width: 20px;
+    width: 25px;
     margin-left: 30px;
 }
 .bm-item > div > img{
+    padding: 5px;
     width: 50px;
 }
 .bm-item > div > p, .bm-item > div > div > p{
@@ -137,8 +142,6 @@
 @media (max-height: 1000px){
     .bm-item{
         height: 60px;
-    }.bm-item:hover:not(:first-child){
-        background-color: royalblue;
     }
     .bm-item > div > img{
         max-height: 100%;
@@ -153,8 +156,6 @@
 @media (max-height: 840px){
     .bm-item{
         height: 50px;
-    }.bm-item:hover:not(:first-child){   
-        background-color: rebeccapurple;
     }
 
     #sideBar > div{
@@ -169,11 +170,10 @@
 }
 @media (max-height: 740px){
     .bm-item{
-        /* height: 40px; */
-    }.bm-item:hover:not(:first-child){
-        background-color: sandybrown;        
+        margin: 20px auto;
+    }.bm-item > div > #userEditIcon{
+        width: 20px;
     }
-
 
     #sideBar > div{
         height: 40px;
@@ -181,13 +181,8 @@
     }
 }
 /* ----------------------------------Largura---------------------------------- */
-/* @media (max-width: 1280px){
+@media (max-width: 1280px){
     #sideBar{   
         width: 75px;
     }
 }
-@media(max-width: 1000px){
-    #sideBar{
-        width: 65px;
-    }
-} */

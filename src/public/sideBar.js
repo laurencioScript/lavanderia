@@ -27,8 +27,8 @@ function SideBar(){
         setSideBarAnimation("sidebarClose");
     }
     const closeMenu = () =>{
-        // setMenuOpen(false);
-        // setSideBarAnimation("");
+        setMenuOpen(false);
+        setSideBarAnimation("");
     }
     const isMenuOpen = state =>{
         setMenuOpen(state.isOpen);
@@ -61,54 +61,54 @@ function SideBar(){
                         <img id="userEditIcon" src={icon_edit} alt="Editar" />
                     </div>
                 </a>
-                <a>
+                <Link>
                     <div id="sell">
                         <img src={icon_sell} alt="icone de vendas" />
                         <p  className="no-select">Vendas</p>
                     </div>
-                </a>
+                </Link>
 
-                <a>
+                <Link>
                     <div id="customer">
                         <img src={icon_customer} alt="icone de clientes" />
                         <p  className="no-select">Clientes</p>
                     </div>
-                </a>
+                </Link>
 
-                <a>
+                <Link>
                     <div id="shirts">
                         <img src={icon_shirt} alt="icone de roupas" />
                         <p  className="no-select">Peças</p>
                     </div>
-                </a>
+                </Link>
 
-                <a>
+                <Link>
                     <div id="measures">
                         <img src={icon_measure} alt="icone de medidas" />
                         <p  className="no-select">Medidas</p>
                     </div>
-                </a>
+                </Link>
 
-                <a>
+                <Link>
                     <div id="properties">
                         <img src={icon_clipboard} alt="icone de Propriedades" />
                         <p  className="no-select">Propriedades</p>
                     </div>
-                </a>
+                </Link>
                 
-                <a>
+                <Link>
                     <div id="report">
                         <img src={icon_pdf} alt="icone de relatórios" />
                         <p  className="no-select">Relatórios</p>
                     </div>
-                </a>
+                </Link>
 
-                <a>
+                <Link>
                     <div id="users">
                         <img src={icon_users} alt="icone de usuários" />
                         <p  className="no-select">Usuários</p>
                     </div>
-                </a>
+                </Link>
 
                 <Link to="/" onClick={logOut}>
                     <div id="logOut">
