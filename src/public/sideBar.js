@@ -9,7 +9,7 @@ import icon_user from './icons/userWhite.svg';
 import icon_sell from './icons/icon vendas.svg';
 import icon_customer from './icons/icon clientes.svg';
 import icon_shirt from './icons/icon shirt.svg';
-import icon_measure from './icons/medida.svg';
+import icon_measure from './icons/medida_inv.svg';
 import icon_clipboard from './icons/clipboard.svg';
 import icon_pdf from './icons/icon pdf.svg';
 import icon_users from './icons/users.svg';
@@ -27,8 +27,8 @@ function SideBar(){
         setSideBarAnimation("sidebarClose");
     }
     const closeMenu = () =>{
-        setMenuOpen(false);
-        setSideBarAnimation("");
+        // setMenuOpen(false);
+        // setSideBarAnimation("");
     }
     const isMenuOpen = state =>{
         setMenuOpen(state.isOpen);

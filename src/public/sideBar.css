@@ -8,19 +8,18 @@
     fill: #222C3C;
 }
 .bm-menu{
-    width: 100%;
+    /* width: 100%; */
     background-color: #222C3C;
 }
 .bm-item-list{
-    max-width: 300px;
     width: 100%;
     max-height: 50px;
 
 }
 .bm-item{
-    width: 90%;
-    height: 100%;
-
+    width: 300px;
+    height: 80px;
+    
     margin: 30px auto;
 
     color: white;
@@ -51,12 +50,11 @@
 
 }
 .bm-item > div > #userEditIcon{
-    width: 10px;
+    width: 20px;
     margin-left: 30px;
 }
 .bm-item > div > img{
-    max-width: 50px;
-    width: 10%;
+    width: 50px;
 }
 .bm-item > div > p, .bm-item > div > div > p{
     /* Texto dos itens */
@@ -90,8 +88,6 @@
     position: fixed;
     background-color: #222C3C;
     color: white;
-
-    max-width: 90px;
     width: 90px;
 
     max-height: 100%;
@@ -137,38 +133,61 @@
 
 
 /* Readequação com Media Query */
-/* ----------------------------------Largura---------------------------------- */
+/* ----------------------------------Altura---------------------------------- */
 @media (max-height: 1000px){
+    .bm-item{
+        height: 60px;
+    }.bm-item:hover:not(:first-child){
+        background-color: royalblue;
+    }
+    .bm-item > div > img{
+        max-height: 100%;
+        width: 60px;
+        height: 60px;
+    }
+
     #sideBar > div{
-        /* define a altura maxima */
         height: 50px;
     }
 }
-@media (max-height: 800px){
-    #sideBar > div{
-        height: 35px;
+@media (max-height: 840px){
+    .bm-item{
+        height: 50px;
+    }.bm-item:hover:not(:first-child){   
+        background-color: rebeccapurple;
     }
-}
 
-/* ----------------------------------Altura---------------------------------- */
-@media (max-width: 1280px){
-    #sideBar{   
-        width: 75px;
+    #sideBar > div{
+        height: 45px;
+        margin: 30px 0;
     }
     #sideBar > div > img{
-        width: 50px;
-        height: 55px;
+        max-height: 100%;
+        width: 40px;
+        height: 40px;
+    }
+}
+@media (max-height: 740px){
+    .bm-item{
+        /* height: 40px; */
+    }.bm-item:hover:not(:first-child){
+        background-color: sandybrown;        
+    }
+
+
+    #sideBar > div{
+        height: 40px;
+        margin: 35px 0;
+    }
+}
+/* ----------------------------------Largura---------------------------------- */
+/* @media (max-width: 1280px){
+    #sideBar{   
+        width: 75px;
     }
 }
 @media(max-width: 1000px){
     #sideBar{
         width: 65px;
     }
-    #sideBar > div{
-        margin: 25px 0;
-    }
-    #sideBar > div > img{
-        width: 30px;
-        height: 35px;
-    }
-}
+} */
