@@ -1,29 +1,26 @@
-a{
-    /* Evita com que os links tenham um sublinhado/underline */
-    text-decoration: none;
-}
-
-/* Estilização do componente sideBar (react burguer menu */
+/* Estilização do componente */
 #page-wrap > *{
     text-align: center;
 
     overflow: hidden;
 }
 .bm-morph-shape{
-    display: none;  
+    fill: #222C3C;
 }
-.bm-menu-wrap{
+.bm-menu{
+    width: 100%;
     background-color: #222C3C;
 }
 .bm-item-list{
-    width: 300px;
+    max-width: 300px;
+    width: 100%;
     max-height: 50px;
 
 }
 .bm-item{
-    width: 300px;
-    height: 80px;
-    
+    width: 90%;
+    height: 100%;
+
     margin: 30px auto;
 
     color: white;
@@ -54,12 +51,12 @@ a{
 
 }
 .bm-item > div > #userEditIcon{
-    width: 25px;
+    width: 10px;
     margin-left: 30px;
 }
 .bm-item > div > img{
-    padding: 5px;
-    width: 50px;
+    max-width: 50px;
+    width: 10%;
 }
 .bm-item > div > p, .bm-item > div > div > p{
     /* Texto dos itens */
@@ -85,15 +82,15 @@ a{
     user-select: none;
 }
 
-
-
 /* SIDE BAR FIXA, modelo fechado */
 #sideBar{
     /* SIDEBAR */
     position: fixed;
     background-color: #222C3C;
     color: white;
-    width: 90px;
+
+    max-width: 150px;
+    width: 5%;
 
     max-height: 100%;
     min-height: 100%;
@@ -106,22 +103,40 @@ a{
     flex-direction: row;
     
     align-items: center;
-    justify-content: center;
+    
+    padding: 20% 10px !important;
 
-    margin: 40px 0;
-
-    height: 70px;
+    max-height: 100px;
 }
 #sideBar > div:last-child{
     /* BTN SAIR */
+    border-top: 3px solid rgba(255, 254, 254, 0.22);
     position: absolute;
     bottom: 0;
+    height: 100%;
     width: 100%;
+
+    max-width: 100%;
+}
+/* #sideBar > div:hover{
+    background-color: #394456;
+} */
+#sideBar > div > p, #sideBar > div > div > p{
+    /* Texto dos itens */
+    font-size: 25px;
+    font-weight: 500;
+    margin: 0 0 0 10px;
+}
+#sideBar > div > p{
+    /* texto normal dos itens */
+    font-weight: normal !important;
 }
 #sideBar > div > img{
     /* icones */
-    width: 60px;
-    height: 65px; 
+    max-width: 50px;
+    width: 100%;
+    max-height: 45px;
+    height: 100%;
 }
 
 /* Faz a animação para que a SideBar fique invisvel antes de a outra sobrepor */
@@ -131,58 +146,6 @@ a{
 }
 
 @keyframes sideBarCloseAnimation{
-    from{opacity: 1; display: fixed;}
+    from{opacity: 1;}
     to{opacity: 0; display: none;}
-}
-
-
-
-/* Readequação com Media Query */
-/* ----------------------------------Altura---------------------------------- */
-@media (max-height: 1000px){
-    .bm-item{
-        height: 60px;
-    }
-    .bm-item > div > img{
-        max-height: 100%;
-        width: 60px;
-        height: 60px;
-    }
-
-    #sideBar > div{
-        height: 50px;
-    }
-}
-@media (max-height: 840px){
-    .bm-item{
-        height: 50px;
-    }
-
-    #sideBar > div{
-        height: 45px;
-        margin: 30px 0;
-    }
-    #sideBar > div > img{
-        max-height: 100%;
-        width: 40px;
-        height: 40px;
-    }
-}
-@media (max-height: 740px){
-    .bm-item{
-        margin: 20px auto;
-    }.bm-item > div > #userEditIcon{
-        width: 20px;
-    }
-
-    #sideBar > div{
-        height: 40px;
-        margin: 35px 0;
-    }
-}
-/* ----------------------------------Largura---------------------------------- */
-@media (max-width: 1280px){
-    #sideBar{   
-        width: 75px;
-    }
 }
